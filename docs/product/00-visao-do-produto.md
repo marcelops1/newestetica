@@ -73,7 +73,7 @@ Mulheres entre **40 e 60 anos**, que buscam tratamento estético com foco em nat
 
 **Fabiana Rosa**, proprietária e responsável técnica da clínica. Ela quer um sistema simples de operar, que transmita seriedade e acolhimento às pacientes e que organize o dia a dia sem burocracia.
 
-> Detalhes completos de persona e diretrizes de UX: `docs/01-persona-e-ux-40+.md`.
+> Detalhes completos de persona e diretrizes de UX: `docs/product/01-persona-e-ux-40+.md`.
 
 ---
 
@@ -193,7 +193,7 @@ Acolhedor, caloroso e empático. Comunicação com respeito, sem infantilizaçã
 
 - Dados e fotos tratados com máximo respeito
 - Consentimento explícito obrigatório
-- Segurança desde o desenho (ver `docs/03-seguranca.md`)
+- Segurança desde o desenho (ver `docs/security/03-seguranca.md`)
 
 ---
 
@@ -210,4 +210,4 @@ O MVP é bem-sucedido quando:
 
 ---
 
-> **Próximas leituras obrigatórias**: `docs/01-persona-e-ux-40+.md`, `docs/02-arquitetura.md`, `docs/03-seguranca.md`, `docs/04-decisoes-tecnicas.md` e `docs/05-estado-atual.md`.
+> **Próximas leituras obrigatórias**: `docs/product/01-persona-e-ux-40+.md`, `docs/architecture/02-arquitetura.md`, `docs/security/03-seguranca.md`, `docs/architecture/04-decisoes-tecnicas.md` e `docs/product/05-estado-atual.md`.

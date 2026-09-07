@@ -1,6 +1,6 @@
 # 07 — Workflow de Engenharia — Newestetica
 
-> **Fonte única do fluxo de engenharia.** Este documento detalha o COMO do processo: a junção entre as etapas do OpenSpec e o método das Agent Skills. Toda decisão de execução deve respeitar este arquivo, `AGENTS.md`, `docs/04-decisoes-tecnicas.md` e `docs/03-seguranca.md`.
+> **Fonte única do fluxo de engenharia.** Este documento detalha o COMO do processo: a junção entre as etapas do OpenSpec e o método das Agent Skills. Toda decisão de execução deve respeitar este arquivo, `AGENTS.md`, `docs/architecture/04-decisoes-tecnicas.md` e `docs/security/03-seguranca.md`.
 
 ---
 
@@ -83,15 +83,16 @@ Uma task SHALL ser considerada concluída somente quando atender a todos os iten
 - [ ] Testes com cobertura acima de 80% passando
 - [ ] Build passando (quando aplicável)
 - [ ] Revisão com `code-review-and-quality` registrada
-- [ ] Revisão de segurança contra `docs/03-seguranca.md` registrada, quando houver entrada de usuário, autenticação, dados de paciente ou integração (seção 7)
+- [ ] Revisão de segurança contra `docs/security/03-seguranca.md` registrada, quando houver entrada de usuário, autenticação, dados de paciente ou integração (seção 7)
 - [ ] Spec sincronizada com a implementação
+- [ ] `docs/product/08-backlog-produto.md` atualizado (status do Use Case/Feature refletindo o que foi concluído nesta task)
 - [ ] Nenhum dado real de paciente em mocks, testes ou exemplos
 
 ---
 
 ## 7. Segurança em cada etapa
 
-Toda etapa respeita `docs/03-seguranca.md`. A revisão com `security-and-hardening` é obrigatória na etapa Verify — e o archive é bloqueado sem o registro — sempre que o change tocar em qualquer um destes gatilhos:
+Toda etapa respeita `docs/security/03-seguranca.md`. A revisão com `security-and-hardening` é obrigatória na etapa Verify — e o archive é bloqueado sem o registro — sempre que o change tocar em qualquer um destes gatilhos:
 
 - Entrada de usuário (formulários, uploads, parâmetros, busca)
 - Autenticação ou autorização (login, sessão, papéis, 2FA)
@@ -103,10 +104,32 @@ Fora dos gatilhos, a revisão de segurança é recomendada, mas o registro conti
 
 ---
 
-## 8. Referências cruzadas
+## 9. Git: branches e commits
+
+- Uma branch por Change do OpenSpec, com nome igual ao nome do Change.
+- Prefixo por natureza do Change:
+  - `feature/<nome>` para funcionalidade nova.
+  - `fix/<nome>` para correção.
+  - `chore/<nome>` ou `infra/<nome>` para decisão técnica/infraestrutura.
+  - `docs/<nome>` para documentação pura.
+- Branch aberta no início do Explore/Propose; todo o ciclo do Change (Propose, Specs, Design, Tasks, Apply, Verify) acontece nela.
+- PR para `main` só na etapa Archive, exigindo CI verde (gates + auditoria + varredura de segredos) como condição de merge.
+- Commits no padrão Conventional Commits: `feat`, `fix`, `test`, `docs`, `chore`, `ci`, `refactor` — com escopo entre parênteses quando ajudar (ex.: `feat(catalogo): adiciona filtro por categoria`).
+- Skill responsável: `git-workflow-and-versioning`, carregada antes do primeiro commit de cada Change.
+- Amarração com a Definition of Done (seção 6): nenhuma task fecha sem commit correspondente no padrão acima.
+
+---
+
+## 11. Backlog sempre atualizado
+
+Nenhuma task ou Change fecha (Verify/Archive) sem atualizar o status correspondente em `docs/product/08-backlog-produto.md`. Isso é parte da Definition of Done, não uma etapa separada. A skill responsável por manter o backlog é `planning-and-task-breakdown`.
+
+---
+
+## 12. Referências cruzadas
 
 - Regras para IAs: `AGENTS.md`
-- Decisões técnicas: `docs/04-decisoes-tecnicas.md`
-- Segurança: `docs/03-seguranca.md`
-- Estado atual: `docs/05-estado-atual.md`
-- Arquitetura: `docs/02-arquitetura.md`
+- Decisões técnicas: `docs/architecture/04-decisoes-tecnicas.md`
+- Segurança: `docs/security/03-seguranca.md`
+- Estado atual: `docs/product/05-estado-atual.md`
+- Arquitetura: `docs/architecture/02-arquitetura.md`

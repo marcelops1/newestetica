@@ -172,9 +172,9 @@ Itens que poderão ser aprofundados depois do MVP:
 
 ## 13. Referências cruzadas
 
-- Visão de produto: `docs/00-visao-do-produto.md`
-- Persona e UX: `docs/01-persona-e-ux-40+.md`
-- Arquitetura: `docs/02-arquitetura.md`
-- Decisões técnicas: `docs/04-decisoes-tecnicas.md`
-- Estado atual: `docs/05-estado-atual.md`
+- Visão de produto: `docs/product/00-visao-do-produto.md`
+- Persona e UX: `docs/product/01-persona-e-ux-40+.md`
+- Arquitetura: `docs/architecture/02-arquitetura.md`
+- Decisões técnicas: `docs/architecture/04-decisoes-tecnicas.md`
+- Estado atual: `docs/product/05-estado-atual.md`
 - Regras para IAs: `AGENTS.md`

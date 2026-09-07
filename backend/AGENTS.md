@@ -10,10 +10,10 @@
 Antes de qualquer alteração no backend:
 
 1. Leia o `AGENTS.md` da raiz
-2. Leia `docs/00-visao-do-produto.md`
-3. Leia `docs/02-arquitetura.md`
-4. Leia `docs/03-seguranca.md`
-5. Leia `docs/04-decisoes-tecnicas.md`
+2. Leia `docs/product/00-visao-do-produto.md`
+3. Leia `docs/architecture/02-arquitetura.md`
+4. Leia `docs/security/03-seguranca.md`
+5. Leia `docs/architecture/04-decisoes-tecnicas.md`
 6. Só então trabalhe no código
 
 ---
@@ -83,7 +83,7 @@ Bounded contexts principais:
 - Respeitar consentimento de fotos
 - Não armazenar dados sensíveis desnecessários no MVP
 
-Ver detalhes em `docs/03-seguranca.md`.
+Ver detalhes em `docs/security/03-seguranca.md`.
 
 ---
 
@@ -100,6 +100,6 @@ Ver detalhes em `docs/03-seguranca.md`.
 ## 8. Referências
 
 - `AGENTS.md` (raiz)
-- `docs/02-arquitetura.md`
-- `docs/03-seguranca.md`
-- `docs/04-decisoes-tecnicas.md`
+- `docs/architecture/02-arquitetura.md`
+- `docs/security/03-seguranca.md`
+- `docs/architecture/04-decisoes-tecnicas.md`
