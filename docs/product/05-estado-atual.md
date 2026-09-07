@@ -34,7 +34,7 @@ Os dois changes de frontend estão arquivados com specs sincronizadas; o backend
 A estrutura inicial do monorepo já foi criada:
 
 - `AGENTS.md`
-- `docs/` (inclui `docs/prototypes/` com a referência visual aprovada)
+- `docs/` (inclui `docs/product/prototypes/` com a referência visual aprovada)
 - `openspec/` (com specs de domínio e changes arquivados)
 - `frontend/` (Next.js implementado — ver abaixo)
 - `backend/`
@@ -49,15 +49,15 @@ A estrutura inicial do monorepo já foi criada:
 - `AGENTS.md` (porta de entrada obrigatória para IAs)
 - `frontend/AGENTS.md`
 - `backend/AGENTS.md`
-- `docs/00-visao-do-produto.md`
-- `docs/01-persona-e-ux-40+.md`
-- `docs/02-arquitetura.md`
-- `docs/03-seguranca.md`
-- `docs/04-decisoes-tecnicas.md`
-- `docs/05-estado-atual.md` (este arquivo)
-- `docs/06-design-system.md`
-- `docs/07-workflow-de-engenharia.md` (fonte única do fluxo de engenharia)
-- `docs/prototypes/home-nano-banana.html` (tema visual oficial aprovado)
+- `docs/product/00-visao-do-produto.md`
+- `docs/product/01-persona-e-ux-40+.md`
+- `docs/architecture/02-arquitetura.md`
+- `docs/security/03-seguranca.md`
+- `docs/architecture/04-decisoes-tecnicas.md`
+- `docs/product/05-estado-atual.md` (este arquivo)
+- `docs/product/06-design-system.md`
+- `docs/engineering/07-workflow-de-engenharia.md` (fonte única do fluxo de engenharia)
+- `docs/product/prototypes/home-nano-banana.html` (tema visual oficial aprovado)
 
 ### Decisões de produto já tomadas
 
@@ -67,7 +67,7 @@ A estrutura inicial do monorepo já foi criada:
 - Estratégia Frontend-first com mocks
 - Multi-clínica apenas no futuro
 - Consentimento obrigatório para fotos de antes/depois
-- Tema visual oficial: nano banana (protótipo em `docs/prototypes/`)
+- Tema visual oficial: nano banana (protótipo em `docs/product/prototypes/`)
 
 ### Decisões técnicas já tomadas
 
@@ -97,7 +97,7 @@ A estrutura inicial do monorepo já foi criada:
 
 ### Workflow de engenharia e gates
 
-- `docs/07-workflow-de-engenharia.md` criado como fonte única do fluxo (TDD obrigatório, skill por etapa, Definition of Done única)
+- `docs/engineering/07-workflow-de-engenharia.md` criado como fonte única do fluxo (TDD obrigatório, skill por etapa, Definition of Done única)
 - Scripts reais na raiz do monorepo delegando aos workspaces (`lint`, `format`, `typecheck`, `test`, `build`)
 - Threshold de cobertura em 80% (linhas, funções, branches, statements) reprovando o build
 - Pipeline de CI (`.github/workflows/quality.yml`) com gates, auditoria de dependências e varredura de segredos (Gitleaks)
@@ -175,11 +175,11 @@ A estrutura inicial do monorepo já foi criada:
 ## 9. Referências cruzadas
 
 - `AGENTS.md`
-- `docs/00-visao-do-produto.md`
-- `docs/01-persona-e-ux-40+.md`
-- `docs/02-arquitetura.md`
-- `docs/03-seguranca.md`
-- `docs/04-decisoes-tecnicas.md`
-- `docs/06-design-system.md`
-- `docs/07-workflow-de-engenharia.md`
-- `docs/prototypes/home-nano-banana.html`
+- `docs/product/00-visao-do-produto.md`
+- `docs/product/01-persona-e-ux-40+.md`
+- `docs/architecture/02-arquitetura.md`
+- `docs/security/03-seguranca.md`
+- `docs/architecture/04-decisoes-tecnicas.md`
+- `docs/product/06-design-system.md`
+- `docs/engineering/07-workflow-de-engenharia.md`
+- `docs/product/prototypes/home-nano-banana.html`

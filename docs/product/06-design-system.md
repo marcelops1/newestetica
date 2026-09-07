@@ -205,8 +205,8 @@ Essa estrutura é a base do frontend público na fase de mocks.
 
 ## 13. Referências cruzadas
 
-- Persona e UX: `docs/01-persona-e-ux-40+.md`
-- Arquitetura: `docs/02-arquitetura.md`
-- Estado atual: `docs/05-estado-atual.md`
+- Persona e UX: `docs/product/01-persona-e-ux-40+.md`
+- Arquitetura: `docs/architecture/02-arquitetura.md`
+- Estado atual: `docs/product/05-estado-atual.md`
 - Regras gerais: `AGENTS.md`
 - Frontend: `frontend/AGENTS.md`

@@ -10,9 +10,9 @@
 Antes de qualquer alteração no frontend:
 
 1. Leia o `AGENTS.md` da raiz
-2. Leia `docs/00-visao-do-produto.md`
-3. Leia `docs/01-persona-e-ux-40+.md`
-4. Leia `docs/02-arquitetura.md`
+2. Leia `docs/product/00-visao-do-produto.md`
+3. Leia `docs/product/01-persona-e-ux-40+.md`
+4. Leia `docs/architecture/02-arquitetura.md`
 5. Só então trabalhe no código
 
 ---
@@ -36,7 +36,7 @@ O frontend **não** contém regras de negócio reais. Ele apresenta e consome da
 - TypeScript
 - Mobile-first obrigatório
 - UI/UX Pro Max obrigatório em tarefas visuais
-- Seguir estritamente `docs/01-persona-e-ux-40+.md`
+- Seguir estritamente `docs/product/01-persona-e-ux-40+.md`
 
 ---
 
@@ -84,6 +84,6 @@ O frontend **não** contém regras de negócio reais. Ele apresenta e consome da
 ## 8. Referências
 
 - `AGENTS.md` (raiz)
-- `docs/01-persona-e-ux-40+.md`
-- `docs/02-arquitetura.md`
-- `docs/03-seguranca.md`
+- `docs/product/01-persona-e-ux-40+.md`
+- `docs/architecture/02-arquitetura.md`
+- `docs/security/03-seguranca.md`

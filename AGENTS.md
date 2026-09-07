@@ -16,13 +16,13 @@ Nenhuma IA pode tocar em código ou propor mudanças antes de executar todos os 
 1. Leia este AGENTS.md por completo.
 2. Leia README.md (se existir conteúdo).
 3. Leia as Referências Obrigatórias (seção 9), nesta ordem:
-   - docs/00-visao-do-produto.md
-   - docs/01-persona-e-ux-40+.md
-   - docs/02-arquitetura.md
-   - docs/03-seguranca.md
-   - docs/04-decisoes-tecnicas.md
-   - docs/05-estado-atual.md
-   - docs/06-design-system.md
+   - docs/product/00-visao-do-produto.md
+   - docs/product/01-persona-e-ux-40+.md
+   - docs/architecture/02-arquitetura.md
+   - docs/security/03-seguranca.md
+   - docs/architecture/04-decisoes-tecnicas.md
+   - docs/product/05-estado-atual.md
+   - docs/product/06-design-system.md
 4. Explore a pasta openspec/ (especialmente openspec/specs/ e openspec/changes/).
 5. Leia frontend/AGENTS.md e backend/AGENTS.md.
 6. Somente depois de carregar todo esse contexto, identifique se a tarefa exige mudança de produto.
@@ -58,7 +58,7 @@ Não antecipe backend antes da validação do frontend.
 - Visual: clean e suave (referência Ever/Body).
 - Dispositivo: mobile-first.
 - UI/UX: seguir as diretrizes da skill UI/UX Pro Max e os requisitos específicos para o público 40+.
-- Design System e protótipo visual aprovados (ver docs/06-design-system.md).
+- Design System e protótipo visual aprovados (ver docs/product/06-design-system.md).
 
 ## 4. Stack e arquitetura de alto nível
 
@@ -69,7 +69,7 @@ Não antecipe backend antes da validação do frontend.
 
 - Backend é monólito modular (não microserviços).
 - Estratégia de dados no início: mockados no frontend.
-- Detalhes completos: docs/02-arquitetura.md e docs/04-decisoes-tecnicas.md.
+- Detalhes completos: docs/architecture/02-arquitetura.md e docs/architecture/04-decisoes-tecnicas.md.
 
 ## 5. Estrutura de pastas do monorepo
 
@@ -136,10 +136,10 @@ O que NÃO é permitido:
 
 ## 7. Modelos de IA recomendados (não obrigatórios)
 
-Orquestração / Planejamento: GLM-5.3
-Codificação geral: DeepSeek V4 ou GLM-5.3 Flash
-Frontend / UI: Kimi K3
-Revisão: DeepSeek V4 Pro (somente leitura)
+- Orquestração e especificações no OpenSpec: GLM-5.3 (orquestra e cria especificações).
+- Implementação de código e testes, incluindo tarefas pesadas: DeepSeek V4 Flash.
+- Revisão: DeepSeek V4 Pro (somente leitura).
+- Bootstrap e organização inicial: Muse Spark.
 
 A escolha do modelo é livre. O respeito ao processo OpenSpec e às regras deste arquivo é obrigatório.
 
@@ -149,29 +149,29 @@ A escolha do modelo é livre. O respeito ao processo OpenSpec e às regras deste
 2. Nunca pule a leitura das referências obrigatórias.
 3. Nunca invente decisões de produto, arquitetura ou tecnologia. Se faltar informação, pergunte.
 4. Nunca gere código fora do que foi aprovado em spec.
-5. Nunca use dados reais de pacientes em mocks sem seguir docs/03-seguranca.md.
+5. Nunca use dados reais de pacientes em mocks sem seguir docs/security/03-seguranca.md.
 6. Nunca crie documentação que contradiga as specs ou os docs vigentes.
 7. Nunca altere openspec/specs/ fora do ciclo de changes.
 8. Nunca antecipe o backend: a estratégia é frontend-first com mock.
 9. Nunca fuja do tom do produto (acolhedor, caloroso, empático).
 10. Nunca ignore o Design System e o protótipo visual aprovado.
 11. Nunca deixe conclusões importantes só na conversa. Registre nos arquivos apropriados.
-12. Nunca escreva código de comportamento antes do teste que falha (RED -> GREEN -> REFACTOR). Ver docs/07-workflow-de-engenharia.md.
-13. Nunca conclua uma task sem cumprir integralmente a Definition of Done de docs/07-workflow-de-engenharia.md.
-14. Nunca toque em entrada de usuário, autenticação, dados de paciente ou integração sem revisão com a skill security-and-hardening contra docs/03-seguranca.md.
+12. Nunca escreva código de comportamento antes do teste que falha (RED -> GREEN -> REFACTOR). Ver docs/engineering/07-workflow-de-engenharia.md.
+13. Nunca conclua uma task sem cumprir integralmente a Definition of Done de docs/engineering/07-workflow-de-engenharia.md.
+14. Nunca toque em entrada de usuário, autenticação, dados de paciente ou integração sem revisão com a skill security-and-hardening contra docs/security/03-seguranca.md.
 
 ## 9. Referências obrigatórias (leitura antes de qualquer trabalho)
 
 A IA deve ler estes arquivos na ordem abaixo antes de qualquer tarefa:
 
-1. docs/00-visao-do-produto.md
-2. docs/01-persona-e-ux-40+.md
-3. docs/02-arquitetura.md
-4. docs/03-seguranca.md
-5. docs/04-decisoes-tecnicas.md
-6. docs/05-estado-atual.md
-7. docs/06-design-system.md
-8. docs/07-workflow-de-engenharia.md
+1. docs/product/00-visao-do-produto.md
+2. docs/product/01-persona-e-ux-40+.md
+3. docs/architecture/02-arquitetura.md
+4. docs/security/03-seguranca.md
+5. docs/architecture/04-decisoes-tecnicas.md
+6. docs/product/05-estado-atual.md
+7. docs/product/06-design-system.md
+8. docs/engineering/07-workflow-de-engenharia.md
 9. openspec/ (especialmente specs/ e changes/)
 10. frontend/AGENTS.md
 11. backend/AGENTS.md
@@ -180,7 +180,7 @@ Se você não leu um arquivo desta lista e vai tocar na área que ele cobre, lei
 
 ## 10. Estado atual do projeto
 
-A fonte oficial do estado é docs/05-estado-atual.md; esta seção apenas resume.
+A fonte oficial do estado é docs/product/05-estado-atual.md; esta seção apenas resume.
 
 - Documentação base concluída
 - Design System definido e protótipo visual aprovado
@@ -189,18 +189,18 @@ A fonte oficial do estado é docs/05-estado-atual.md; esta seção apenas resume
 - Backend não iniciado
 - Validação com a Fabiana pendente
 
-Consequência prática: a IA deve seguir o fluxo de docs/07-workflow-de-engenharia.md e só implementar mediante Change OpenSpec aprovado.
+Consequência prática: a IA deve seguir o fluxo de docs/engineering/07-workflow-de-engenharia.md e só implementar mediante Change OpenSpec aprovado.
 
 ## 11. Referências cruzadas rápidas
 
-- Visão: docs/00-visao-do-produto.md
-- Persona/UX: docs/01-persona-e-ux-40+.md
-- Arquitetura: docs/02-arquitetura.md
-- Segurança: docs/03-seguranca.md
-- Decisões técnicas: docs/04-decisoes-tecnicas.md
-- Estado atual: docs/05-estado-atual.md
-- Design System: docs/06-design-system.md
-- Workflow de engenharia: docs/07-workflow-de-engenharia.md
+- Visão: docs/product/00-visao-do-produto.md
+- Persona/UX: docs/product/01-persona-e-ux-40+.md
+- Arquitetura: docs/architecture/02-arquitetura.md
+- Segurança: docs/security/03-seguranca.md
+- Decisões técnicas: docs/architecture/04-decisoes-tecnicas.md
+- Estado atual: docs/product/05-estado-atual.md
+- Design System: docs/product/06-design-system.md
+- Workflow de engenharia: docs/engineering/07-workflow-de-engenharia.md
 
 ## 12. Agent Skills (addyosmani/agent-skills)
 
@@ -219,9 +219,9 @@ Skills instaladas em `.opencode/skills/` (ver `docs/opencode-setup.md` do reposi
 - Planejamento / quebra de tarefas → `planning-and-task-breakdown`
 - Implementação (> 1 arquivo) → `incremental-implementation` + `test-driven-development`
 - Lógica, bug ou mudança de comportamento → `test-driven-development`
-- Telas, componentes, layout → `frontend-ui-engineering` (sempre com `docs/01-persona-e-ux-40+.md` e `docs/06-design-system.md`)
+- Telas, componentes, layout → `frontend-ui-engineering` (sempre com `docs/product/01-persona-e-ux-40+.md` e `docs/product/06-design-system.md`)
 - Antes de merge / revisar código → `code-review-and-quality`
-- Entrada de usuário, auth, dados, integrações → `security-and-hardening` (sempre com `docs/03-seguranca.md`)
+- Entrada de usuário, auth, dados, integrações → `security-and-hardening` (sempre com `docs/security/03-seguranca.md`)
 - Dúvida sobre qual skill usar → `using-agent-skills`
 
-A amarração obrigatória entre cada skill e a etapa do OpenSpec está em docs/07-workflow-de-engenharia.md.
+A amarração obrigatória entre cada skill e a etapa do OpenSpec está em docs/engineering/07-workflow-de-engenharia.md.

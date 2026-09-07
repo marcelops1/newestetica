@@ -116,7 +116,7 @@ Aplicar sob demanda, sem over-engineering. Preferir simplicidade.
 
 - Meta mínima de cobertura unitária: **> 80%**
 - Cobertura artificial não é aceita
-- TDD (RED → GREEN → REFACTOR) obrigatório para comportamento testável, com a única exceção de mudanças sem comportamento (ver `docs/07-workflow-de-engenharia.md`)
+- TDD (RED → GREEN → REFACTOR) obrigatório para comportamento testável, com a única exceção de mudanças sem comportamento (ver `docs/engineering/07-workflow-de-engenharia.md`)
 
 ### O que deve ser testado prioritariamente
 
@@ -139,7 +139,7 @@ Nenhuma task de implementação deve ser considerada concluída sem passar por:
 
 Se um gate falhar, a task não está pronta.
 
-Cobertura abaixo de 80% reprova o gate de testes automaticamente. A Definition of Done completa está em `docs/07-workflow-de-engenharia.md`.
+Cobertura abaixo de 80% reprova o gate de testes automaticamente. A Definition of Done completa está em `docs/engineering/07-workflow-de-engenharia.md`.
 
 ---
 
@@ -168,7 +168,7 @@ Cobertura abaixo de 80% reprova o gate de testes automaticamente. A Definition o
 - Integração do backend com Keycloak
 - Frontend admin protegido por autenticação
 
-> Detalhes de segurança: `docs/03-seguranca.md`.
+> Detalhes de segurança: `docs/security/03-seguranca.md`.
 
 ---
 
@@ -205,7 +205,7 @@ Evitar decisões que tornem a evolução para multi-clínica desnecessariamente 
 ## 15. Decisão: UI/UX e Frontend
 
 - Mobile-first obrigatório
-- Seguir `docs/01-persona-e-ux-40+.md`
+- Seguir `docs/product/01-persona-e-ux-40+.md`
 - Usar a skill **UI/UX Pro Max** em tarefas visuais
 - Priorizar legibilidade, contraste, clareza e redução de ansiedade
 - Visual clean e suave (referência Ever/Body)
@@ -238,9 +238,9 @@ Toda nova decisão técnica relevante deve:
 
 ## 18. Referências cruzadas
 
-- Visão de produto: `docs/00-visao-do-produto.md`
-- Persona e UX: `docs/01-persona-e-ux-40+.md`
-- Arquitetura: `docs/02-arquitetura.md`
-- Segurança: `docs/03-seguranca.md`
-- Estado atual: `docs/05-estado-atual.md`
+- Visão de produto: `docs/product/00-visao-do-produto.md`
+- Persona e UX: `docs/product/01-persona-e-ux-40+.md`
+- Arquitetura: `docs/architecture/02-arquitetura.md`
+- Segurança: `docs/security/03-seguranca.md`
+- Estado atual: `docs/product/05-estado-atual.md`
 - Regras para IAs: `AGENTS.md`

@@ -189,8 +189,8 @@ Toda implementação visual de frontend **deve** considerar a skill **UI/UX Pro 
 
 ## 9. Referências cruzadas
 
-- Visão de produto: `docs/00-visao-do-produto.md`
-- Arquitetura: `docs/02-arquitetura.md`
-- Segurança e privacidade: `docs/03-seguranca.md`
-- Decisões técnicas: `docs/04-decisoes-tecnicas.md`
+- Visão de produto: `docs/product/00-visao-do-produto.md`
+- Arquitetura: `docs/architecture/02-arquitetura.md`
+- Segurança e privacidade: `docs/security/03-seguranca.md`
+- Decisões técnicas: `docs/architecture/04-decisoes-tecnicas.md`
 - Regras do frontend: `frontend/AGENTS.md`

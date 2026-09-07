@@ -1,6 +1,6 @@
 # 02 — Arquitetura — Newestetica
 
-> **Fonte oficial da arquitetura de alto nível.** Este documento define como o sistema é organizado, quais princípios arquiteturais são obrigatórios e como as partes se relacionam. Toda decisão de implementação deve respeitar este arquivo e o `docs/04-decisoes-tecnicas.md`.
+> **Fonte oficial da arquitetura de alto nível.** Este documento define como o sistema é organizado, quais princípios arquiteturais são obrigatórios e como as partes se relacionam. Toda decisão de implementação deve respeitar este arquivo e o `docs/architecture/04-decisoes-tecnicas.md`.
 
 ---
 
@@ -37,7 +37,7 @@ O backend será um **monolito modular**.
 - Facilita desenvolvimento, debug e evolução inicial
 - Permite extrair módulos no futuro se necessário (sem compromisso prematuro)
 
-> Detalhes de implementação e padrões: `docs/04-decisoes-tecnicas.md`.
+> Detalhes de implementação e padrões: `docs/architecture/04-decisoes-tecnicas.md`.
 
 ---
 
@@ -114,7 +114,7 @@ newestetica/
 - **Next.js App Router**
 - **TypeScript**
 - **Mobile-first**
-- **UI/UX Pro Max** + diretrizes de `docs/01-persona-e-ux-40+.md`
+- **UI/UX Pro Max** + diretrizes de `docs/product/01-persona-e-ux-40+.md`
 - Estratégia atual: **dados mockados** até validação com a Fabiana
 
 ### Organização recomendada (alto nível)
@@ -160,7 +160,7 @@ modules/
 - Preferência por **baixo acoplamento** entre camadas
 - Regras de negócio no domínio/aplicação, não na infraestrutura
 
-> Detalhes de implementação e padrões: `docs/04-decisoes-tecnicas.md`.
+> Detalhes de implementação e padrões: `docs/architecture/04-decisoes-tecnicas.md`.
 
 ---
 
@@ -178,7 +178,7 @@ modules/
 
 - Meta mínima de cobertura de testes unitários: **> 80%**
 - Não aceitar cobertura artificial
-- Testes de comportamento SHALL ser escritos em ciclo **RED → GREEN → REFACTOR** (TDD) obrigatório, com a única exceção de mudanças sem comportamento (ver `docs/07-workflow-de-engenharia.md`)
+- Testes de comportamento SHALL ser escritos em ciclo **RED → GREEN → REFACTOR** (TDD) obrigatório, com a única exceção de mudanças sem comportamento (ver `docs/engineering/07-workflow-de-engenharia.md`)
 
 ### Quality Gates (obrigatórios antes de considerar uma task concluída)
 
@@ -200,7 +200,7 @@ A segurança não é um “módulo isolado”. Ela permeia a arquitetura:
 - Princípio do menor privilégio
 - Segredos nunca no código
 
-Detalhes completos: `docs/03-seguranca.md`.
+Detalhes completos: `docs/security/03-seguranca.md`.
 
 ---
 
@@ -244,9 +244,9 @@ Isso evita que o frontend fique refém de decisões prematuras do backend e vice
 
 ## 13. Referências cruzadas
 
-- Visão de produto: `docs/00-visao-do-produto.md`
-- Persona e UX: `docs/01-persona-e-ux-40+.md`
-- Segurança: `docs/03-seguranca.md`
-- Decisões técnicas detalhadas: `docs/04-decisoes-tecnicas.md`
-- Estado atual: `docs/05-estado-atual.md`
+- Visão de produto: `docs/product/00-visao-do-produto.md`
+- Persona e UX: `docs/product/01-persona-e-ux-40+.md`
+- Segurança: `docs/security/03-seguranca.md`
+- Decisões técnicas detalhadas: `docs/architecture/04-decisoes-tecnicas.md`
+- Estado atual: `docs/product/05-estado-atual.md`
 - Regras para IAs: `AGENTS.md`
