@@ -178,7 +178,7 @@ modules/
 
 - Meta mínima de cobertura de testes unitários: **> 80%**
 - Não aceitar cobertura artificial
-- Testes devem ser escritos preferencialmente em ciclo **RED → GREEN → REFACTOR** (TDD) quando houver comportamento testável
+- Testes de comportamento SHALL ser escritos em ciclo **RED → GREEN → REFACTOR** (TDD) obrigatório, com a única exceção de mudanças sem comportamento (ver `docs/07-workflow-de-engenharia.md`)
 
 ### Quality Gates (obrigatórios antes de considerar uma task concluída)
 

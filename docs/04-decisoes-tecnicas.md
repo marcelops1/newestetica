@@ -116,7 +116,7 @@ Aplicar sob demanda, sem over-engineering. Preferir simplicidade.
 
 - Meta mínima de cobertura unitária: **> 80%**
 - Cobertura artificial não é aceita
-- Preferir TDD (RED → GREEN → REFACTOR) quando houver comportamento testável
+- TDD (RED → GREEN → REFACTOR) obrigatório para comportamento testável, com a única exceção de mudanças sem comportamento (ver `docs/07-workflow-de-engenharia.md`)
 
 ### O que deve ser testado prioritariamente
 
@@ -138,6 +138,8 @@ Nenhuma task de implementação deve ser considerada concluída sem passar por:
 - Build (quando aplicável)
 
 Se um gate falhar, a task não está pronta.
+
+Cobertura abaixo de 80% reprova o gate de testes automaticamente. A Definition of Done completa está em `docs/07-workflow-de-engenharia.md`.
 
 ---
 

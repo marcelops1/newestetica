@@ -5,12 +5,12 @@
   "description": "Sistema para clínica de estética da Fabiana Rosa - foco em mulheres 40+",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev": "echo \"Use os scripts dentro de frontend/ ou backend/\"",
-    "lint": "echo \"Configurar lint no monorepo\"",
-    "format": "echo \"Configurar format no monorepo\"",
-    "typecheck": "echo \"Configurar typecheck no monorepo\"",
-    "test": "echo \"Configurar testes no monorepo\"",
-    "build": "echo \"Configurar build no monorepo\""
+    "dev": "pnpm --filter frontend dev",
+    "lint": "pnpm --filter frontend lint",
+    "format": "pnpm --filter frontend format",
+    "typecheck": "pnpm --filter frontend typecheck",
+    "test": "pnpm --filter frontend test",
+    "build": "pnpm --filter frontend build"
   },
   "engines": {
     "node": ">=24"

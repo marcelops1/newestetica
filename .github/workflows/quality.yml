@@ -1,0 +1,53 @@
+name: quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  gates:
+    name: quality gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (histórico completo para o Gitleaks)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm 9.15.0 (packageManager)
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+          run_install: false
+
+      - name: Setup Node 24 (engines >=24) com cache pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Instalar dependências (lockfile congelado)
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Verificar formatação
+        run: pnpm format
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Testes com cobertura
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Auditoria de dependências (reprova alta ou superior)
+        run: pnpm audit --audit-level high
+
+      - name: Varredura de segredos (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

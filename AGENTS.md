@@ -156,6 +156,9 @@ A escolha do modelo é livre. O respeito ao processo OpenSpec e às regras deste
 9. Nunca fuja do tom do produto (acolhedor, caloroso, empático).
 10. Nunca ignore o Design System e o protótipo visual aprovado.
 11. Nunca deixe conclusões importantes só na conversa. Registre nos arquivos apropriados.
+12. Nunca escreva código de comportamento antes do teste que falha (RED -> GREEN -> REFACTOR). Ver docs/07-workflow-de-engenharia.md.
+13. Nunca conclua uma task sem cumprir integralmente a Definition of Done de docs/07-workflow-de-engenharia.md.
+14. Nunca toque em entrada de usuário, autenticação, dados de paciente ou integração sem revisão com a skill security-and-hardening contra docs/03-seguranca.md.
 
 ## 9. Referências obrigatórias (leitura antes de qualquer trabalho)
 
@@ -168,23 +171,25 @@ A IA deve ler estes arquivos na ordem abaixo antes de qualquer tarefa:
 5. docs/04-decisoes-tecnicas.md
 6. docs/05-estado-atual.md
 7. docs/06-design-system.md
-8. openspec/ (especialmente specs/ e changes/)
-9. frontend/AGENTS.md
-10. backend/AGENTS.md
+8. docs/07-workflow-de-engenharia.md
+9. openspec/ (especialmente specs/ e changes/)
+10. frontend/AGENTS.md
+11. backend/AGENTS.md
 
 Se você não leu um arquivo desta lista e vai tocar na área que ele cobre, leia antes.
 
 ## 10. Estado atual do projeto
 
-O projeto está na fase de documentação de fundação concluída, com Design System e protótipo visual aprovados.
+A fonte oficial do estado é docs/05-estado-atual.md; esta seção apenas resume.
 
 - Documentação base concluída
-- Design System definido
-- Protótipo visual aprovado
-- Nenhum código de produto foi implementado ainda
-- Próximo passo: criar o Change OpenSpec para iniciar o frontend com dados mockados
+- Design System definido e protótipo visual aprovado
+- Home pública implementada com mocks e quality gates passando
+- Dois changes arquivados e quatro specs aprovadas
+- Backend não iniciado
+- Validação com a Fabiana pendente
 
-Consequência prática: a IA deve se concentrar em especificar e, somente após Change aprovado, implementar o frontend conforme o Design System e o protótipo.
+Consequência prática: a IA deve seguir o fluxo de docs/07-workflow-de-engenharia.md e só implementar mediante Change OpenSpec aprovado.
 
 ## 11. Referências cruzadas rápidas
 
@@ -195,6 +200,7 @@ Consequência prática: a IA deve se concentrar em especificar e, somente após 
 - Decisões técnicas: docs/04-decisoes-tecnicas.md
 - Estado atual: docs/05-estado-atual.md
 - Design System: docs/06-design-system.md
+- Workflow de engenharia: docs/07-workflow-de-engenharia.md
 
 ## 12. Agent Skills (addyosmani/agent-skills)
 
@@ -217,3 +223,5 @@ Skills instaladas em `.opencode/skills/` (ver `docs/opencode-setup.md` do reposi
 - Antes de merge / revisar código → `code-review-and-quality`
 - Entrada de usuário, auth, dados, integrações → `security-and-hardening` (sempre com `docs/03-seguranca.md`)
 - Dúvida sobre qual skill usar → `using-agent-skills`
+
+A amarração obrigatória entre cada skill e a etapa do OpenSpec está em docs/07-workflow-de-engenharia.md.

@@ -56,6 +56,7 @@ A estrutura inicial do monorepo já foi criada:
 - `docs/04-decisoes-tecnicas.md`
 - `docs/05-estado-atual.md` (este arquivo)
 - `docs/06-design-system.md`
+- `docs/07-workflow-de-engenharia.md` (fonte única do fluxo de engenharia)
 - `docs/prototypes/home-nano-banana.html` (tema visual oficial aprovado)
 
 ### Decisões de produto já tomadas
@@ -94,6 +95,13 @@ A estrutura inicial do monorepo já foi criada:
 - Mocks tipados e fictícios (procedimentos, depoimentos, antes/depois com consentimento, slots, posts, quiz, contatos) + 8 testes unitários
 - Quality gates passando (lint, format, typecheck, testes, build)
 
+### Workflow de engenharia e gates
+
+- `docs/07-workflow-de-engenharia.md` criado como fonte única do fluxo (TDD obrigatório, skill por etapa, Definition of Done única)
+- Scripts reais na raiz do monorepo delegando aos workspaces (`lint`, `format`, `typecheck`, `test`, `build`)
+- Threshold de cobertura em 80% (linhas, funções, branches, statements) reprovando o build
+- Pipeline de CI (`.github/workflows/quality.yml`) com gates, auditoria de dependências e varredura de segredos (Gitleaks)
+
 ---
 
 ## 4. O que ainda NÃO existe
@@ -105,7 +113,6 @@ A estrutura inicial do monorepo já foi criada:
 - Painel admin (shell com mocks ainda não iniciado)
 - Integrações reais (e-mail transacional, calendários, WhatsApp API)
 - Banco de dados real
-- Pipeline de CI completo
 - Deploy de ambiente
 
 ---
@@ -116,7 +123,9 @@ A estrutura inicial do monorepo já foi criada:
 - Changes arquivados:
   - `2026-09-07-frontend-foundation-mocks` (12/13 tasks; 5.2 validação com a Fabiana pendente)
   - `2026-09-07-align-home-to-nano-banana-prototype` (11/11 tasks)
-- Nenhum change ativo no momento
+- Change ativo: `engineering-workflow-hardening` (proposal, specs, design e tasks criados; ainda não aplicado nem arquivado)
+- Nova spec em progresso (delta no change ativo, ainda não sincronizada): `engineering-workflow`
+- Nenhum outro change ativo no momento
 - O processo OpenSpec é **inegociável** e deve ser usado antes de qualquer implementação
 
 ---
@@ -153,7 +162,10 @@ A estrutura inicial do monorepo já foi criada:
 | Decisões técnicas | Definidas |
 | Design System | Definido e implementado em código |
 | Protótipo visual (nano banana) | Aprovado e aplicado na home |
-| OpenSpec com specs de domínio | 4 specs aprovadas |
+| OpenSpec com specs de domínio | 4 specs aprovadas (+1 delta em progresso) |
+| Workflow de engenharia unificado | Definido em docs/07 |
+| TDD obrigatório | Regra absoluta (AGENTS.md, docs/02, docs/04, docs/07) |
+| CI com gates automáticos | Pipeline criado (gates, auditoria, segredos) |
 | Código frontend (home + mocks) | Implementado, gates passando |
 | Código backend | Não iniciado |
 | Validação com Fabiana | Pendente |
@@ -169,4 +181,5 @@ A estrutura inicial do monorepo já foi criada:
 - `docs/03-seguranca.md`
 - `docs/04-decisoes-tecnicas.md`
 - `docs/06-design-system.md`
+- `docs/07-workflow-de-engenharia.md`
 - `docs/prototypes/home-nano-banana.html`
