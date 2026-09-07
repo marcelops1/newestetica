@@ -36,7 +36,7 @@
 - **Critérios de aceite:**
   - Conteúdo transmite confiança e naturalidade.
   - Página mobile-first e legível (corpo mínimo 16px).
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (página `/sobre` implementada com conteúdo fictício; pendente validação com a Fabiana).
 
 ### Feature 1.3 — Catálogo de Procedimentos
 
