@@ -15,7 +15,11 @@ type CategoryFilterProps = {
   label: string;
 };
 
-export function CategoryFilter({ value, onChange, label }: CategoryFilterProps) {
+export function CategoryFilter({
+  value,
+  onChange,
+  label,
+}: CategoryFilterProps) {
   return (
     <div
       role="group"

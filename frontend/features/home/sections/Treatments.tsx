@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CategoryFilter, type CategoryFilterValue } from "@/components/CategoryFilter";
+import {
+  CategoryFilter,
+  type CategoryFilterValue,
+} from "@/components/CategoryFilter";
 import { TreatmentCard } from "@/components/TreatmentCard";
 import { getProceduresByCategory } from "@/lib/data";
 import type { Procedure } from "@/lib/types";
@@ -13,8 +16,7 @@ type TreatmentsProps = {
 
 export function Treatments({ items, onBook }: TreatmentsProps) {
   const [filter, setFilter] = useState<CategoryFilterValue>("todos");
-  const visible =
-    filter === "todos" ? items : getProceduresByCategory(filter);
+  const visible = filter === "todos" ? items : getProceduresByCategory(filter);
 
   return (
     <section

@@ -1,23 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { CategoryFilter, type CategoryFilterValue } from "@/components/CategoryFilter";
+import {
+  CategoryFilter,
+  type CategoryFilterValue,
+} from "@/components/CategoryFilter";
 import { TreatmentCard } from "@/components/TreatmentCard";
 import { Header } from "@/features/home/sections/Header";
 import { Footer } from "@/features/home/sections/Footer";
 import { BookingModal } from "@/features/booking/BookingModal";
 import { searchProcedures } from "@/lib/catalog";
-import {
-  getProcedures,
-  getTreatmentOptions,
-} from "@/lib/data";
+import { getProcedures, getTreatmentOptions } from "@/lib/data";
 
 export function CatalogPage() {
   const [filter, setFilter] = useState<CategoryFilterValue>("todos");
   const [query, setQuery] = useState("");
-  const [booking, setBooking] = useState<{ open: boolean; treatment?: string }>({
-    open: false,
-  });
+  const [booking, setBooking] = useState<{ open: boolean; treatment?: string }>(
+    {
+      open: false,
+    },
+  );
   const items = searchProcedures(getProcedures(), query, filter);
 
   return (
