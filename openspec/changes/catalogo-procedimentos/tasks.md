@@ -12,4 +12,4 @@
 ## 3. Verificação e backlog
 
 - [x] 3.1 Rodar todos os quality gates e revisar segurança (`security-and-hardening`: busca reflete entrada do usuário no DOM) e verificar que tudo passa
-- [ ] 3.2 Atualizar `docs/product/08-backlog-produto.md` (Catálogo conforme resultado; Agendamento refletindo modal + `submitBookingRequest` prontos) e verificar consistência com o implementado
+- [x] 3.2 Atualizar `docs/product/08-backlog-produto.md` (Catálogo conforme resultado; Agendamento refletindo modal + `submitBookingRequest` prontos) e verificar consistência com o implementado
