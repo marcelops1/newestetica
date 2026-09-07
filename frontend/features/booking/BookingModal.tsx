@@ -24,9 +24,10 @@ export function BookingModal({
   );
   const [confirmedTreatment, setConfirmedTreatment] = useState(treatment);
   const [errorMessage, setErrorMessage] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<{ name?: string; phone?: string }>(
-    {},
-  );
+  const [fieldErrors, setFieldErrors] = useState<{
+    name?: string;
+    phone?: string;
+  }>({});
   const panelRef = useRef<HTMLDivElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
@@ -198,8 +199,8 @@ export function BookingModal({
               >
                 <p className="text-sm font-medium text-ink">{errorMessage}</p>
                 <p className="mt-1 text-xs text-ink-secondary">
-                  Seus dados foram mantidos — confira com calma e tente de
-                  novo, sem pressa.
+                  Seus dados foram mantidos — confira com calma e tente de novo,
+                  sem pressa.
                 </p>
               </div>
             ) : null}
@@ -226,7 +227,11 @@ export function BookingModal({
                   className="w-full rounded-md border border-border bg-background px-3.5 py-2.5 text-base text-ink focus:border-primary focus:outline-none"
                 />
                 {fieldErrors.name ? (
-                  <p id="booking-name-error" role="alert" className="mt-1 text-xs text-danger">
+                  <p
+                    id="booking-name-error"
+                    role="alert"
+                    className="mt-1 text-xs text-danger"
+                  >
                     {fieldErrors.name}
                   </p>
                 ) : null}
@@ -254,7 +259,11 @@ export function BookingModal({
                     className="w-full rounded-md border border-border bg-background px-3.5 py-2.5 text-base text-ink focus:border-primary focus:outline-none"
                   />
                   {fieldErrors.phone ? (
-                    <p id="booking-phone-error" role="alert" className="mt-1 text-xs text-danger">
+                    <p
+                      id="booking-phone-error"
+                      role="alert"
+                      className="mt-1 text-xs text-danger"
+                    >
                       {fieldErrors.phone}
                     </p>
                   ) : null}

@@ -37,7 +37,9 @@ describe("resolveTreatment (pré-seleção por origem)", () => {
   const options = ["Avaliação Geral", "Toxina Botulínica", "Limpeza de pele"];
 
   it("mantém match exato", () => {
-    expect(resolveTreatment("Limpeza de pele", options)).toBe("Limpeza de pele");
+    expect(resolveTreatment("Limpeza de pele", options)).toBe(
+      "Limpeza de pele",
+    );
   });
 
   it("resolve protocolo do quiz por inclusão", () => {
@@ -47,6 +49,8 @@ describe("resolveTreatment (pré-seleção por origem)", () => {
   });
 
   it("usa o padrão quando nada combina", () => {
-    expect(resolveTreatment("Caso desconhecido", options)).toBe("Avaliação Geral");
+    expect(resolveTreatment("Caso desconhecido", options)).toBe(
+      "Avaliação Geral",
+    );
   });
 });

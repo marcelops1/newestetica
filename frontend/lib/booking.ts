@@ -10,8 +10,7 @@ export type BookingInput = {
 };
 
 export type BookingResult =
-  | { ok: true; treatment: string }
-  | { ok: false; message: string };
+  { ok: true; treatment: string } | { ok: false; message: string };
 
 const SEND_DELAY_MS = 600;
 
