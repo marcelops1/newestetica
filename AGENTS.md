@@ -78,13 +78,33 @@ newestetica/
 ├── AGENTS.md
 ├── README.md
 ├── docs/
-│   ├── 00-visao-do-produto.md
-│   ├── 01-persona-e-ux-40+.md
-│   ├── 02-arquitetura.md
-│   ├── 03-seguranca.md
-│   ├── 04-decisoes-tecnicas.md
-│   ├── 05-estado-atual.md
-│   └── 06-design-system.md
+│   ├── README.md
+│   ├── product/
+│   │   ├── 00-visao-do-produto.md
+│   │   ├── 01-persona-e-ux-40+.md
+│   │   ├── 05-estado-atual.md
+│   │   ├── 06-design-system.md
+│   │   ├── 08-backlog-produto.md
+│   │   └── prototypes/
+│   ├── requirements/
+│   │   └── README.md
+│   ├── architecture/
+│   │   ├── 02-arquitetura.md
+│   │   ├── 04-decisoes-tecnicas.md
+│   │   ├── c1-context.md
+│   │   ├── c2-container.md
+│   │   ├── c3-component.md
+│   │   └── adr/
+│   ├── security/
+│   │   └── 03-seguranca.md
+│   ├── engineering/
+│   │   └── 07-workflow-de-engenharia.md
+│   ├── qa/
+│   │   └── README.md
+│   ├── data/
+│   │   └── README.md
+│   └── infra/
+│       └── README.md
 ├── openspec/
 │   ├── specs/
 │   └── changes/
