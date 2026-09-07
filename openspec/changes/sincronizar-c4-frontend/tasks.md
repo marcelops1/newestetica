@@ -7,5 +7,5 @@
 
 ## 2. Verificação e archive
 
-- [ ] 2.1 Rodar quality gates e `openspec validate` e verificar que tudo passa sem tocar em código
-- [ ] 2.2 Registrar verificação de segurança (docs puros: sem gatilho) e arquivar com specs sincronizadas
+- [x] 2.1 Rodar quality gates e `openspec validate` e verificar que tudo passa sem tocar em código
+- [x] 2.2 Registrar verificação de segurança (docs puros: sem gatilho) e arquivar com specs sincronizadas
