@@ -1,7 +1,7 @@
 ## 1. Camada de dados (test-first)
 
 - [x] 1.1 Escrever os testes de `getProcedureBySlug()` (slug válido retorna; inválido retorna indefinido) e verificar que falham sem a implementação
-- [ ] 1.2 Implementar `getProcedureBySlug()` sobre os mocks existentes e verificar que os testes da task 1.1 passam
+- [x] 1.2 Implementar `getProcedureBySlug()` sobre os mocks existentes e verificar que os testes da task 1.1 passam
 
 ## 2. Catálogo e detalhe (test-first)
 
