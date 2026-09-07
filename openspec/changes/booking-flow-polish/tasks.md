@@ -1,6 +1,6 @@
 ## 1. Camada de dados (test-first)
 
-- [ ] 1.1 Escrever os testes de `submitBookingRequest()` (sucesso traz o tratamento, erro forçado traz mensagem acolhedora, nenhuma chamada de rede) e verificar que falham sem a implementação
+- [x] 1.1 Escrever os testes de `submitBookingRequest()` (sucesso traz o tratamento, erro forçado traz mensagem acolhedora, nenhuma chamada de rede) e verificar que falham sem a implementação
 - [ ] 1.2 Implementar `submitBookingRequest()` mockada em `lib/` (sucesso padrão, erro forçável, atraso curto, sem rede) e verificar que os testes da task 1.1 passam e `vitest run` fica verde
 
 ## 2. Estados do modal (test-first)
