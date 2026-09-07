@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CTAButton } from "@/components/CTAButton";
 import { getContactInfo } from "@/lib/data";
 
 const NAV_ITEMS = [
-  { href: "#tratamentos", label: "Tratamentos" },
-  { href: "#diferenciais", label: "Diferenciais" },
-  { href: "#resultados", label: "Resultados" },
-  { href: "#depoimentos", label: "Depoimentos" },
-  { href: "#sobre", label: "A Clínica" },
+  { href: "/tratamentos", label: "Tratamentos" },
+  { href: "/#diferenciais", label: "Diferenciais" },
+  { href: "/#resultados", label: "Resultados" },
+  { href: "/#depoimentos", label: "Depoimentos" },
+  { href: "/sobre", label: "A Clínica" },
 ];
 
 export function Header({ onBook }: { onBook: () => void }) {
@@ -19,27 +20,31 @@ export function Header({ onBook }: { onBook: () => void }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#topo" className="flex min-h-[44px] flex-col justify-center">
+        <Link
+          href="/"
+          aria-label="Newestetica — início"
+          className="flex min-h-[44px] flex-col justify-center"
+        >
           <span className="font-display text-2xl font-semibold tracking-wide text-ink sm:text-3xl">
             Newestetica
           </span>
           <span className="-mt-1 text-[10px] font-medium uppercase tracking-widest text-ink-muted">
             Clínica Avançada
           </span>
-        </a>
+        </Link>
 
         <nav
           aria-label="Navegação principal"
           className="hidden items-center gap-8 md:flex"
         >
           {NAV_ITEMS.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className="inline-flex min-h-[44px] items-center text-sm font-medium text-ink-secondary hover:text-primary"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -82,14 +87,14 @@ export function Header({ onBook }: { onBook: () => void }) {
         <div className="border-b border-border bg-surface px-4 pb-6 pt-3 md:hidden">
           <nav aria-label="Navegação móvel" className="flex flex-col">
             {NAV_ITEMS.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className="inline-flex min-h-[44px] items-center py-2 text-base font-medium text-ink-secondary hover:text-primary"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="flex flex-col gap-2 pt-2">
