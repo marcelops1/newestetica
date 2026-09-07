@@ -35,14 +35,14 @@ jobs:
       - name: Verificar formatação
         run: pnpm format
 
+      - name: Build
+        run: pnpm build
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Testes com cobertura
         run: pnpm test
-
-      - name: Build
-        run: pnpm build
 
       - name: Auditoria de dependências (reprova alta ou superior)
         run: pnpm audit --audit-level high
