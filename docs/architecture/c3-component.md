@@ -5,11 +5,18 @@ Componentes existentes do frontend (`frontend/`). O backend será detalhado por 
 ```mermaid
 flowchart LR
     subgraph Rotas
+        R1[/]
+        R2[/tratamentos/]
+        R3[/tratamentos/[slug]/]
+        R4[/sobre/]
         APP[app/<br/>rotas e páginas]
     end
     subgraph UI
         COMP[components/<br/>reutilizáveis]
-        FEAT[features/<br/>por domínio]
+        HOME[features/home/]
+        CAT[features/catalog/]
+        ABOUT[features/about/]
+        BOOK[features/booking/<br/>modal/]
     end
     subgraph Dados
         LIB[lib/<br/>interfaces + mocks + acesso]
@@ -17,15 +24,28 @@ flowchart LR
     subgraph Estilo
         STY[styles/<br/>tokens]
     end
-    APP --> FEAT
+    R1 --> HOME
+    R2 --> CAT
+    R3 --> CAT
+    R4 --> ABOUT
+    APP --> HOME
+    APP --> CAT
+    APP --> ABOUT
     APP --> COMP
-    FEAT --> COMP
-    FEAT --> LIB
+    HOME --> COMP
+    CAT --> COMP
+    ABOUT --> COMP
+    BOOK --> LIB
+    HOME --> LIB
+    CAT --> LIB
+    ABOUT --> LIB
     COMP --> STY
-    FEAT --> STY
+    HOME --> STY
+    CAT --> STY
+    ABOUT --> STY
 ```
 
-- Pastas verificadas no repositório: `app/`, `components/`, `features/`, `lib/`, `styles/`.
+- Pastas verificadas no repositório: `app/` (com `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`), `components/`, `features/` (`home`, `catalog`, `about`, `booking`), `lib/`, `styles/`.
 - Regra: componentes consomem `lib/` via interfaces; trocar mocks pela API altera só `lib/`.
 
 ## Backend (placeholder normatizado)
