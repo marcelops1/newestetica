@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { submitBookingRequest } from "@/lib/booking";
 
 type BookingModalProps = {
   open: boolean;
@@ -9,14 +10,18 @@ type BookingModalProps = {
   onClose: () => void;
 };
 
+type Status = "idle" | "sending" | "success" | "error";
+
 export function BookingModal({
   open,
   treatment = "Avaliação Geral",
   treatmentOptions,
   onClose,
 }: BookingModalProps) {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
   const [selected, setSelected] = useState(treatment);
+  const [confirmedTreatment, setConfirmedTreatment] = useState(treatment);
+  const [errorMessage, setErrorMessage] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
@@ -39,6 +44,30 @@ export function BookingModal({
   }, [open, onClose]);
 
   if (!open) return null;
+
+  const sending = status === "sending";
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (sending) return;
+    const data = new FormData(event.currentTarget);
+    const name = String(data.get("name") ?? "");
+    const phone = String(data.get("phone") ?? "");
+    setStatus("sending");
+    const result = await submitBookingRequest({
+      name,
+      phone,
+      treatment: selected,
+      notes: String(data.get("notes") ?? ""),
+    });
+    if (result.ok) {
+      setConfirmedTreatment(result.treatment);
+      setStatus("success");
+    } else {
+      setErrorMessage(result.message);
+      setStatus("error");
+    }
+  }
 
   return (
     <div
@@ -76,7 +105,40 @@ export function BookingModal({
           </svg>
         </button>
 
-        {!sent ? (
+        {status === "success" ? (
+          <div className="space-y-4 py-8 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success-soft text-success">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h4 id={titleId} className="font-display text-2xl text-ink">
+              Solicitação Recebida!
+            </h4>
+            <p className="text-sm leading-relaxed text-ink-secondary">
+              Tratamento solicitado: <strong>{confirmedTreatment}</strong>.
+              Agradecemos o contato. Nossa recepção entrará em contato via
+              WhatsApp em até 2 horas úteis para confirmar a data.
+            </p>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-md border border-border bg-background px-6 py-2.5 text-base font-medium text-ink"
+            >
+              Fechar Janela
+            </button>
+          </div>
+        ) : (
           <>
             <div className="mb-6">
               <span className="text-xs font-semibold uppercase tracking-wider text-primary-hover">
@@ -94,13 +156,20 @@ export function BookingModal({
               </p>
             </div>
 
-            <form
-              className="space-y-4"
-              onSubmit={(event) => {
-                event.preventDefault();
-                setSent(true);
-              }}
-            >
+            {status === "error" ? (
+              <div
+                role="alert"
+                className="mb-4 rounded-md border border-danger/30 bg-danger-soft p-4"
+              >
+                <p className="text-sm font-medium text-ink">{errorMessage}</p>
+                <p className="mt-1 text-xs text-ink-secondary">
+                  Seus dados foram mantidos — confira com calma e tente de
+                  novo, sem pressa.
+                </p>
+              </div>
+            ) : null}
+
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="booking-name"
@@ -110,6 +179,7 @@ export function BookingModal({
                 </label>
                 <input
                   id="booking-name"
+                  name="name"
                   type="text"
                   required
                   placeholder="Ex: Maria Oliveira"
@@ -128,6 +198,7 @@ export function BookingModal({
                   </label>
                   <input
                     id="booking-phone"
+                    name="phone"
                     type="tel"
                     required
                     placeholder="(00) 00000-0000"
@@ -166,6 +237,7 @@ export function BookingModal({
                 </label>
                 <textarea
                   id="booking-notes"
+                  name="notes"
                   rows={3}
                   placeholder="Descreva brevemente o que gostaria de tratar..."
                   className="w-full rounded-md border border-border bg-background px-3.5 py-2.5 text-base text-ink focus:border-primary focus:outline-none"
@@ -175,9 +247,15 @@ export function BookingModal({
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-primary-hover"
+                  disabled={sending}
+                  aria-busy={sending}
+                  className="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-primary-hover disabled:opacity-70"
                 >
-                  Enviar solicitação de agendamento
+                  {sending
+                    ? "Enviando com cuidado…"
+                    : status === "error"
+                      ? "Tentar de novo"
+                      : "Enviar solicitação de agendamento"}
                 </button>
               </div>
               <p className="text-center text-xs text-ink-muted">
@@ -186,38 +264,6 @@ export function BookingModal({
               </p>
             </form>
           </>
-        ) : (
-          <div className="space-y-4 py-8 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success-soft text-success">
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <h4 id={titleId} className="font-display text-2xl text-ink">
-              Solicitação Recebida!
-            </h4>
-            <p className="text-sm leading-relaxed text-ink-secondary">
-              Agradecemos o contato. Nossa recepção entrará em contato via
-              WhatsApp em até 2 horas úteis para confirmar a data.
-            </p>
-            <button
-              type="button"
-              onClick={onClose}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-md border border-border bg-background px-6 py-2.5 text-base font-medium text-ink"
-            >
-              Fechar Janela
-            </button>
-          </div>
         )}
       </div>
     </div>
