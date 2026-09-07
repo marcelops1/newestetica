@@ -22,6 +22,9 @@ export function BookingModal({
   const [selected, setSelected] = useState(treatment);
   const [confirmedTreatment, setConfirmedTreatment] = useState(treatment);
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{ name?: string; phone?: string }>(
+    {},
+  );
   const panelRef = useRef<HTMLDivElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
@@ -51,8 +54,19 @@ export function BookingModal({
     event.preventDefault();
     if (sending) return;
     const data = new FormData(event.currentTarget);
-    const name = String(data.get("name") ?? "");
+    const name = String(data.get("name") ?? "").trim();
     const phone = String(data.get("phone") ?? "");
+    const digits = phone.replace(/\D/g, "");
+    const errors: { name?: string; phone?: string } = {};
+    if (name.length < 2) {
+      errors.name = "Conte-nos seu nome para podermos te chamar com carinho.";
+    }
+    if (digits.length < 10) {
+      errors.phone =
+        "Confira o WhatsApp com DDD, assim conseguimos te retornar.";
+    }
+    setFieldErrors(errors);
+    if (errors.name || errors.phone) return;
     setStatus("sending");
     const result = await submitBookingRequest({
       name,
@@ -184,8 +198,17 @@ export function BookingModal({
                   required
                   placeholder="Ex: Maria Oliveira"
                   autoComplete="name"
+                  aria-invalid={Boolean(fieldErrors.name)}
+                  aria-describedby={
+                    fieldErrors.name ? "booking-name-error" : undefined
+                  }
                   className="w-full rounded-md border border-border bg-background px-3.5 py-2.5 text-base text-ink focus:border-primary focus:outline-none"
                 />
+                {fieldErrors.name ? (
+                  <p id="booking-name-error" role="alert" className="mt-1 text-xs text-danger">
+                    {fieldErrors.name}
+                  </p>
+                ) : null}
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -203,8 +226,17 @@ export function BookingModal({
                     required
                     placeholder="(00) 00000-0000"
                     autoComplete="tel"
+                    aria-invalid={Boolean(fieldErrors.phone)}
+                    aria-describedby={
+                      fieldErrors.phone ? "booking-phone-error" : undefined
+                    }
                     className="w-full rounded-md border border-border bg-background px-3.5 py-2.5 text-base text-ink focus:border-primary focus:outline-none"
                   />
+                  {fieldErrors.phone ? (
+                    <p id="booking-phone-error" role="alert" className="mt-1 text-xs text-danger">
+                      {fieldErrors.phone}
+                    </p>
+                  ) : null}
                 </div>
                 <div>
                   <label

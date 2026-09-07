@@ -8,7 +8,7 @@
 - [x] 2.1 Escrever a verificação dos quatro estados (formulário, enviando com duplo clique ignorado, sucesso com resumo, erro com nova tentativa preservando dados) e constatar que ela falha com o modal atual
 - [x] 2.2 Implementar os quatro estados no modal e verificar que a verificação da task 2.1 passa
 - [x] 2.3 Escrever os casos de verificação da validação amigável (nome vazio e WhatsApp inválido orientam a correção via `aria-invalid`/`aria-describedby`) e constatar que falham com o modal atual
-- [ ] 2.4 Implementar a validação amigável por campo com mensagens em português e verificar que os casos da task 2.3 passam
+- [x] 2.4 Implementar a validação amigável por campo com mensagens em português e verificar que os casos da task 2.3 passam
 
 ## 3. Foco e pré-seleção (test-first)
 
