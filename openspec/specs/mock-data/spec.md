@@ -91,3 +91,12 @@ A camada de dados SHALL expor `submitBookingRequest()` mockada que recebe os cam
 
 - **WHEN** o envio é disparado com erro forçado
 - **THEN** o resultado indica falha com mensagem acolhedora, sem expor detalhes técnicos
+
+### Requirement: Busca de procedimento por slug
+
+A camada de dados SHALL expor acessor que retorna o procedimento pelo slug/id, ou indefinido quando inexistente, sobre os mesmos mocks (sem novos dados).
+
+#### Scenario: Slug válido e inválido
+
+- **WHEN** solicitado um slug existente
+- **THEN** retorna o procedimento; quando inexistente, retorna indefinido

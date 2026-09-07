@@ -29,6 +29,11 @@ export function getProcedures(): Procedure[] {
   return proceduresMock;
 }
 
+/** Retorna o procedimento pelo slug (id) ou indefinido. */
+export function getProcedureBySlug(slug: string): Procedure | undefined {
+  return proceduresMock.find((item) => item.id === slug);
+}
+
 export function getTestimonials(): Testimonial[] {
   return testimonialsMock;
 }

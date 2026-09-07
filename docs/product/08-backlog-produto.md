@@ -51,7 +51,7 @@
 - **Critérios de aceite:**
   - Cada procedimento explica o que esperar (conforto, tempo, cuidados).
   - Linguagem acessível, sem jargão desnecessário.
-- **Status atual:** Em andamento (seção com filtros existe na home; página dedicada pendente).
+- **Status atual:** Em andamento (seção com filtros existe na home; página dedicada implementada neste change, pendente validação com a Fabiana).
 
 **Use Case 1.3.2 — Filtrar por categoria**
 
@@ -63,7 +63,7 @@
 - **Fluxos alternativos/exceção:** —
 - **Critérios de aceite:**
   - Filtragem sem recarregar a página; aba ativa indicada visualmente e por `aria-pressed`.
-- **Status atual:** Em andamento (funciona na home com mocks).
+- **Status atual:** Em andamento (funciona na home com mocks; página dedicada com busca implementada neste change).
 
 ### Feature 1.4 — Antes/Depois
 
@@ -109,7 +109,7 @@
 - **Critérios de aceite:**
   - Fluxo concluído sozinha pelo celular, com confirmação visível.
   - Envio 100% mockado até o backend existir; nenhum dado sai do navegador.
-- **Status atual:** Em andamento (modal base com mocks; polimento proposto no change `booking-flow-polish`).
+- **Status atual:** Em andamento (modal com 4 estados, validação, focus trap e pré-seleção prontos via change `booking-flow-polish`; `submitBookingRequest` mockada pronta; confirmação real por e-mail pendente de backend).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 **Use Case 1.6.2 — Receber confirmação por e-mail**
@@ -535,7 +535,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 
 | Épico | nº de Features | nº de Use Cases | Status geral |
 | ----- | -------------- | --------------- | ------------ |
-| 1. Site Público | 9 | 11 | Em andamento (Home concluída pendente validação; demais telas pendentes) |
+| 1. Site Público | 9 | 11 | Em andamento (Home e Catálogo implementados, pendentes validação; demais telas pendentes) |
 | 2. Painel Administrativo | 7 | 9 | Não iniciado |
 | 3. Autenticação e Acesso | 3 | 3 | Não iniciado |
 | 4. Backend e Contratos | 3 | 9 | Não iniciado |
