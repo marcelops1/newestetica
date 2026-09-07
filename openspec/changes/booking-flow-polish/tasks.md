@@ -19,5 +19,5 @@
 
 ## 4. Verificação
 
-- [ ] 4.1 Rodar todos os quality gates (lint, format, typecheck, testes, build) e verificar que todos passam
-- [ ] 4.2 Revisar todos os textos do fluxo contra o tom (acolhedor, sem culpa no erro, sem pressão) e verificar que nenhuma mensagem soa técnica ou apressada
+- [x] 4.1 Rodar todos os quality gates (lint, format, typecheck, testes, build) e verificar que todos passam
+- [x] 4.2 Revisar todos os textos do fluxo contra o tom (acolhedor, sem culpa no erro, sem pressão) e verificar que nenhuma mensagem soa técnica ou apressada
