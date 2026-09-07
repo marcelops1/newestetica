@@ -47,7 +47,10 @@ export function AboutPage() {
           </p>
         </div>
 
-        <section aria-label="História da clínica" className="mx-auto mt-12 max-w-3xl">
+        <section
+          aria-label="História da clínica"
+          className="mx-auto mt-12 max-w-3xl"
+        >
           <SectionHeader
             eyebrow="Nossa história"
             title="Cuidado que começa na escuta"
@@ -76,8 +79,8 @@ export function AboutPage() {
             Formação e compromisso
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-ink-secondary">
-            Formação contínua em estética avançada, protocolos personalizados
-            e acompanhamento próximo em cada etapa — do primeiro olhar ao
+            Formação contínua em estética avançada, protocolos personalizados e
+            acompanhamento próximo em cada etapa — do primeiro olhar ao
             resultado.
           </p>
           <div className="mt-8">
