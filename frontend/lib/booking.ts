@@ -15,6 +15,23 @@ export type BookingResult =
 
 const SEND_DELAY_MS = 600;
 
+export const DEFAULT_TREATMENT = "Avaliação Geral";
+
+/** Resolve a pré-seleção pela origem: match exato, depois inclusão, senão padrão. */
+export function resolveTreatment(
+  treatment: string,
+  treatmentOptions: string[],
+): string {
+  if (treatmentOptions.includes(treatment)) return treatment;
+  const lower = treatment.toLowerCase();
+  const partial = treatmentOptions.find(
+    (option) =>
+      lower.includes(option.toLowerCase()) ||
+      option.toLowerCase().includes(lower),
+  );
+  return partial ?? DEFAULT_TREATMENT;
+}
+
 export function submitBookingRequest(
   input: BookingInput,
   options?: { forceError?: boolean },

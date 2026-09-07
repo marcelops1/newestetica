@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { submitBookingRequest } from "../booking";
-import { resolveTreatment } from "@/features/booking/BookingModal";
+import { resolveTreatment, submitBookingRequest } from "../booking";
 
 describe("submitBookingRequest (mock)", () => {
   it("retorna sucesso com o tratamento solicitado", async () => {

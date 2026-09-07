@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { submitBookingRequest } from "@/lib/booking";
+import { resolveTreatment, submitBookingRequest } from "@/lib/booking";
 
 type BookingModalProps = {
   open: boolean;
@@ -12,26 +12,9 @@ type BookingModalProps = {
 
 type Status = "idle" | "sending" | "success" | "error";
 
-const DEFAULT_TREATMENT = "Avaliação Geral";
-
-/** Resolve a pré-seleção pela origem: match exato, depois inclusão, senão padrão. */
-export function resolveTreatment(
-  treatment: string,
-  treatmentOptions: string[],
-): string {
-  if (treatmentOptions.includes(treatment)) return treatment;
-  const lower = treatment.toLowerCase();
-  const partial = treatmentOptions.find(
-    (option) =>
-      lower.includes(option.toLowerCase()) ||
-      option.toLowerCase().includes(lower),
-  );
-  return partial ?? DEFAULT_TREATMENT;
-}
-
 export function BookingModal({
   open,
-  treatment = DEFAULT_TREATMENT,
+  treatment = "Avaliação Geral",
   treatmentOptions,
   onClose,
 }: BookingModalProps) {
