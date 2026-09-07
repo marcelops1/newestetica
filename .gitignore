@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.next/
+out/
+coverage/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Turbo
+.turbo/
+
+# Test and coverage
+coverage/
+*.lcov
+
+# TypeScript
+*.tsbuildinfo
+
+# Docker
+docker-data/
+
+# Backups and temporary
+backups/*
+!backups/.gitkeep
+tmp/
+temp/
+*.tmp
+
+# OpenSpec / local (opencode)
+# Ignora arquivos locais do opencode, mas versiona os workflows do OpenSpec
+.opencode/*
+!.opencode/commands/
+!.opencode/skills/
+
+# Misc
+*.local
+.cache/

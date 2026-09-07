@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* Base 40+: corpo mínimo 16px, altura de linha generosa, fundo claro + texto escuro. */
+body {
+  background: var(--background);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}

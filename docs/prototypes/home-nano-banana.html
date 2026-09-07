@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newestetica — Estética Avançada & Naturalidade</title>
+
+    <!-- Google Fonts: Cormorant Garamond for Headings & Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#FAFAF9',
+                        surface: '#FFFFFF',
+                        borderSubtle: '#E7E5E4',
+                        textPrimary: '#1C1917',
+                        textSecondary: '#57534E',
+                        textMuted: '#A8A29E',
+                        primary: {
+                            DEFAULT: '#9A7B6B',
+                            hover: '#866A5C',
+                            soft: '#F5EDE8',
+                        },
+                        success: {
+                            DEFAULT: '#5F8F6B',
+                            soft: '#EAF2EC'
+                        },
+                        warning: {
+                            DEFAULT: '#C2A15A',
+                            soft: '#F9F5EC'
+                        },
+                        danger: {
+                            DEFAULT: '#B85C5C',
+                            soft: '#F8ECEC'
+                        },
+                        info: {
+                            DEFAULT: '#6B7F9A',
+                            soft: '#EEF2F6'
+                        },
+                    },
+                    fontFamily: {
+                        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'sm': '8px',
+                        'md': '12px',
+                        'lg': '18px',
+                        'xl': '24px',
+                    },
+                    boxShadow: {
+                        'subtle-sm': '0 1px 2px 0 rgba(28, 25, 23, 0.03)',
+                        'subtle-md': '0 4px 20px -2px rgba(28, 25, 23, 0.05), 0 2px 6px -1px rgba(28, 25, 23, 0.02)',
+                        'subtle-lg': '0 12px 32px -4px rgba(28, 25, 23, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar and baseline tweaks adhering to design principles */
+        body {
+            background-color: #FAFAF9;
+            color: #1C1917;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .heading-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Image comparison slider styling */
+        .before-after-container {
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+        .before-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            overflow: hidden;
+            border-right: 2px solid #FFFFFF;
+        }
+
+        /* Custom smooth transition for modal overlay */
+        .modal-fade-enter {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+        .modal-fade-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 200ms ease-out, transform 200ms ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-primary-soft selection:text-primary">
+
+    <header class="sticky top-0 z-40 bg-bg/90 backdrop-blur-md border-b border-borderSubtle transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+            <!-- Brand Logo -->
+            <a href="#" class="flex flex-col group">
+                <span class="heading-font text-2xl sm:text-3xl font-semibold tracking-wide text-textPrimary group-hover:text-primary transition-colors">
+                    Newestetica
+                </span>
+                <span class="text-[10px] tracking-widest text-textMuted uppercase font-medium -mt-1">
+                    Clínica Avançada
+                </span>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-textSecondary">
+                <a href="#tratamentos" class="hover:text-primary transition-colors">Tratamentos</a>
+                <a href="#diferenciais" class="hover:text-primary transition-colors">Diferenciais</a>
+                <a href="#resultados" class="hover:text-primary transition-colors">Resultados</a>
+                <a href="#depoimentos" class="hover:text-primary transition-colors">Depoimentos</a>
+                <a href="#sobre" class="hover:text-primary transition-colors">A Clínica</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="hidden sm:flex items-center space-x-4">
+                <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer"
+                   class="px-4 py-2 text-xs sm:text-sm font-medium text-textSecondary hover:text-textPrimary bg-surface border border-borderSubtle rounded-md hover:bg-primary-soft/50 transition-colors inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                    WhatsApp
+                </a>
+                <button onclick="openBookingModal()"
+                        class="px-5 py-2.5 text-xs sm:text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-subtle-sm transition-all transform active:scale-95">
+                    Agendar Avaliação
+                </button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-textSecondary hover:text-textPrimary focus:outline-none" aria-label="Abrir Menu">
+                <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-borderSubtle bg-surface px-4 pt-3 pb-6 space-y-3">
+            <a href="#tratamentos" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium text-textSecondary hover:text-primary">Tratamentos</a>
+            <a href="#diferenciais" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium text-textSecondary hover:text-primary">Diferenciais</a>
+            <a href="#resultados" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium text-textSecondary hover:text-primary">Resultados</a>
+            <a href="#depoimentos" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium text-textSecondary hover:text-primary">Depoimentos</a>
+            <a href="#sobre" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium text-textSecondary hover:text-primary">A Clínica</a>
+            <div class="pt-2 flex flex-col gap-2">
+                <button onclick="toggleMobileMenu(); openBookingModal();" class="w-full py-3 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-subtle-sm text-center">
+                    Agendar Avaliação
+                </button>
+                <a href="https://wa.me/5511999999999" target="_blank" class="w-full py-2.5 text-sm font-medium text-textSecondary bg-bg border border-borderSubtle rounded-md text-center block">
+                    Falar via WhatsApp
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+
+        <section class="py-12 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+                <!-- Hero Content Left -->
+                <div class="lg:col-span-7 space-y-6 sm:space-y-8 text-left">
+
+                    <!-- Soft Badge -->
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-soft text-primary text-xs sm:text-sm font-medium border border-primary/10">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Estética Avançada e Naturalidade
+                    </div>
+
+                    <!-- Main Headline -->
+                    <h1 class="heading-font text-3xl sm:text-5xl lg:text-6xl font-normal text-textPrimary leading-[1.15] tracking-tight">
+                        Realce sua beleza natural com cuidados <span class="italic font-light text-primary">personalizados</span> e seguros.
+                    </h1>
+
+                    <!-- Subtitle / Paragraph -->
+                    <p class="text-base sm:text-lg text-textSecondary leading-relaxed max-w-2xl font-normal">
+                        Protocolos faciais e corporais sob medida, desenvolvidos por biomédicas estetas para rejuvenescer com sutileza, harmonia e transparência. Sem exageros.
+                    </p>
+
+                    <!-- CTA Group -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
+                        <button onclick="openBookingModal()"
+                                class="px-6 py-3.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-subtle-md transition-all text-center flex items-center justify-center gap-2">
+                            <span>Agendar Consulta de Avaliação</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </button>
+                        <a href="#tratamentos"
+                           class="px-6 py-3.5 text-sm font-medium text-textSecondary hover:text-textPrimary bg-surface border border-borderSubtle hover:border-primary/40 rounded-md transition-all text-center">
+                            Conhecer Tratamentos
+                        </a>
+                    </div>
+
+                    <!-- Micro Trust Highlights -->
+                    <div class="pt-6 border-t border-borderSubtle grid grid-cols-3 gap-4 text-left">
+                        <div>
+                            <p class="text-lg sm:text-2xl font-semibold heading-font text-textPrimary">+3.500</p>
+                            <p class="text-xs text-textMuted mt-0.5">Pacientes satisfeitas</p>
+                        </div>
+                        <div>
+                            <p class="text-lg sm:text-2xl font-semibold heading-font text-textPrimary">100%</p>
+                            <p class="text-xs text-textMuted mt-0.5">Profissionais certificados</p>
+                        </div>
+                        <div>
+                            <p class="text-lg sm:text-2xl font-semibold heading-font text-textPrimary">Sutil & Seguro</p>
+                            <p class="text-xs text-textMuted mt-0.5">Sem resultados artificiais</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Visual Right -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+
+                        <!-- Main Card / Image Holder -->
+                        <div class="bg-surface rounded-lg p-3 border border-borderSubtle shadow-subtle-lg overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80"
+                                 alt="Tratamento Estético Suave Newestetica"
+                                 class="w-full h-[380px] sm:h-[440px] object-cover rounded-md"
+                                 loading="lazy"
+                                 onerror="this.src='https://placehold.co/600x800/F5EDE8/9A7B6B?text=Newestetica+Clinica'">
+                        </div>
+
+                        <!-- Floating Feature Card -->
+                        <div class="absolute -bottom-6 -left-4 sm:-left-6 bg-surface p-4 rounded-md border border-borderSubtle shadow-subtle-md max-w-[240px] hidden sm:block">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center text-primary flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-semibold text-textPrimary">Consulta Transparente</p>
+                                    <p class="text-[11px] text-textMuted">Plano com previsibilidade total de etapas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="bg-surface border-y border-borderSubtle py-12 sm:py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-bg rounded-lg border border-borderSubtle p-6 sm:p-10 shadow-subtle-sm">
+
+                    <div class="max-w-2xl mb-8">
+                        <span class="text-xs uppercase tracking-wider text-primary font-semibold">Simulador de Atendimento</span>
+                        <h2 class="heading-font text-2xl sm:text-3xl text-textPrimary font-normal mt-1">Qual é a sua principal prioridade hoje?</h2>
+                        <p class="text-sm text-textSecondary mt-2">Selecione seu objetivo para ver a recomendação personalizada da nossa equipe.</p>
+                    </div>
+
+                    <!-- Options Selector -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="quizOptions">
+                        <button onclick="selectGoal('rejuvenecimento', this)" class="quiz-btn text-left p-4 rounded-md bg-surface border border-borderSubtle hover:border-primary/50 transition-all focus:outline-none">
+                            <span class="inline-block p-2 rounded-sm bg-primary-soft text-primary mb-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/></svg>
+                            </span>
+                            <h3 class="text-sm font-semibold text-textPrimary">Firmeza e Linhas</h3>
+                            <p class="text-xs text-textMuted mt-1">Estimular colágeno e suavizar rugas finas.</p>
+                        </button>
+
+                        <button onclick="selectGoal('manchas', this)" class="quiz-btn text-left p-4 rounded-md bg-surface border border-borderSubtle hover:border-primary/50 transition-all focus:outline-none">
+                            <span class="inline-block p-2 rounded-sm bg-primary-soft text-primary mb-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                            </span>
+                            <h3 class="text-sm font-semibold text-textPrimary">Manchas e Textura</h3>
+                            <p class="text-xs text-textMuted mt-1">Uniformizar tom e poros dilatados.</p>
+                        </button>
+
+                        <button onclick="selectGoal('contorno', this)" class="quiz-btn text-left p-4 rounded-md bg-surface border border-borderSubtle hover:border-primary/50 transition-all focus:outline-none">
+                            <span class="inline-block p-2 rounded-sm bg-primary-soft text-primary mb-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            </span>
+                            <h3 class="text-sm font-semibold text-textPrimary">Contorno e Volume</h3>
+                            <p class="text-xs text-textMuted mt-1">Definição leve sem perder a naturalidade.</p>
+                        </button>
+
+                        <button onclick="selectGoal('prevencao', this)" class="quiz-btn text-left p-4 rounded-md bg-surface border border-borderSubtle hover:border-primary/50 transition-all focus:outline-none">
+                            <span class="inline-block p-2 rounded-sm bg-primary-soft text-primary mb-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </span>
+                            <h3 class="text-sm font-semibold text-textPrimary">Prevenção e Glow</h3>
+                            <p class="text-xs text-textMuted mt-1">Limpeza profunda e hidratação injetável.</p>
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Recommendation Box -->
+                    <div id="quizResult" class="mt-6 p-5 rounded-md bg-primary-soft/60 border border-primary/20 hidden">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs font-semibold uppercase text-primary tracking-wider">Protocolo Indicado</span>
+                                <h4 id="quizTitle" class="heading-font text-xl font-semibold text-textPrimary mt-0.5">Bioestimulador de Colágeno + Peeling Suave</h4>
+                                <p id="quizDesc" class="text-xs sm:text-sm text-textSecondary mt-1">Ideal para recuperar a densidade dérmica sem alterar seus traços originais. Sessões espaçadas de 30 dias.</p>
+                            </div>
+                            <button onclick="openBookingModalWithService()" class="px-5 py-2.5 text-xs font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-subtle-sm transition-all whitespace-nowrap">
+                                Agendar este protocolo
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="tratamentos" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Section Header -->
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-primary">Nossos Tratamentos</span>
+                <h2 class="heading-font text-3xl sm:text-4xl text-textPrimary font-normal mt-1">Cuidados desenhados para a sua pele</h2>
+                <p class="text-sm sm:text-base text-textSecondary mt-3">
+                    Todos os tratamentos iniciam com uma análise facial completa para garantir indicação segura e alinhada às suas expectativas.
+                </p>
+            </div>
+
+            <!-- Service Filter Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 mb-10">
+                <button onclick="filterServices('todos', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-medium bg-primary text-white border border-primary transition-all">Todos</button>
+                <button onclick="filterServices('facial', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-medium bg-surface text-textSecondary border border-borderSubtle hover:bg-primary-soft transition-all">Facial</button>
+                <button onclick="filterServices('corporal', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-medium bg-surface text-textSecondary border border-borderSubtle hover:bg-primary-soft transition-all">Corporal</button>
+                <button onclick="filterServices('rejuvenescimento', this)" class="filter-btn px-4 py-2 rounded-full text-xs font-medium bg-surface text-textSecondary border border-borderSubtle hover:bg-primary-soft transition-all">Rejuvenescimento</button>
+            </div>
+
+            <!-- Service Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Service Card 1 -->
+                <div class="service-card facial rejuvenescimento bg-surface border border-borderSubtle rounded-lg p-6 flex flex-col justify-between hover:shadow-subtle-md transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-[11px] font-medium text-primary bg-primary-soft rounded-full">Facial</span>
+                            <span class="text-xs text-textMuted font-medium">Aprox. 45 min</span>
+                        </div>
+                        <h3 class="heading-font text-2xl text-textPrimary font-normal">Toxina Botulínica Preventiva</h3>
+                        <p class="text-xs sm:text-sm text-textSecondary mt-2 leading-relaxed">
+                            Suavização estratégica de rugas dinâmicas no terço superior do rosto. Mantém a expressividade natural com aspecto descansado.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center justify-between">
+                        <span class="text-xs text-textMuted">Avaliação prévia inclusa</span>
+                        <button onclick="openBookingModal('Toxina Botulínica')" class="text-xs font-semibold text-primary hover:text-primary-hover flex items-center gap-1">
+                            Agendar <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="service-card facial rejuvenescimento bg-surface border border-borderSubtle rounded-lg p-6 flex flex-col justify-between hover:shadow-subtle-md transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-[11px] font-medium text-primary bg-primary-soft rounded-full">Facial</span>
+                            <span class="text-xs text-textMuted font-medium">Aprox. 60 min</span>
+                        </div>
+                        <h3 class="heading-font text-2xl text-textPrimary font-normal">Bioestimuladores de Colágeno</h3>
+                        <p class="text-xs sm:text-sm text-textSecondary mt-2 leading-relaxed">
+                            Estimulação gradual da produção natural de colágeno. Devolve a firmeza e a espessura saudável da pele no rosto e pescoço.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center justify-between">
+                        <span class="text-xs text-textMuted">Resultados progressivos</span>
+                        <button onclick="openBookingModal('Bioestimuladores')" class="text-xs font-semibold text-primary hover:text-primary-hover flex items-center gap-1">
+                            Agendar <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="service-card facial bg-surface border border-borderSubtle rounded-lg p-6 flex flex-col justify-between hover:shadow-subtle-md transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-[11px] font-medium text-primary bg-primary-soft rounded-full">Facial</span>
+                            <span class="text-xs text-textMuted font-medium">Aprox. 75 min</span>
+                        </div>
+                        <h3 class="heading-font text-2xl text-textPrimary font-normal">Limpeza de Pele & Glow Derm</h3>
+                        <p class="text-xs sm:text-sm text-textSecondary mt-2 leading-relaxed">
+                            Remoção delicada de impurezas, desobstrução de poros e nutrição com ativos antioxidantes para viço imediato.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center justify-between">
+                        <span class="text-xs text-textMuted">Indicado para todas as peles</span>
+                        <button onclick="openBookingModal('Limpeza de Pele')" class="text-xs font-semibold text-primary hover:text-primary-hover flex items-center gap-1">
+                            Agendar <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Card 4 -->
+                <div class="service-card corporal bg-surface border border-borderSubtle rounded-lg p-6 flex flex-col justify-between hover:shadow-subtle-md transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-[11px] font-medium text-info bg-info-soft rounded-full">Corporal</span>
+                            <span class="text-xs text-textMuted font-medium">Aprox. 60 min</span>
+                        </div>
+                        <h3 class="heading-font text-2xl text-textPrimary font-normal">Protocolo Firmeza Corporal</h3>
+                        <p class="text-xs sm:text-sm text-textSecondary mt-2 leading-relaxed">
+                            Tratamento focado na flacidez de braços, abdômen ou glúteos combinando tecnologias não invasivas e ativos tensores.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center justify-between">
+                        <span class="text-xs text-textMuted">Pacotes personalizados</span>
+                        <button onclick="openBookingModal('Protocolo Corporal')" class="text-xs font-semibold text-primary hover:text-primary-hover flex items-center gap-1">
+                            Agendar <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Card 5 -->
+                <div class="service-card facial rejuvenescimento bg-surface border border-borderSubtle rounded-lg p-6 flex flex-col justify-between hover:shadow-subtle-md transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-[11px] font-medium text-primary bg-primary-soft rounded-full">Facial</span>
+                            <span class="text-xs text-textMuted font-medium">Aprox. 50 min</span>
+                        </div>
+                        <h3 class="heading-font text-2xl text-textPrimary font-normal">Preenchimento Ácido Hialurônico</h3>
+                        <p class="text-xs sm:text-sm text-textSecondary mt-2 leading-relaxed">
+                            Restauração sutil de volumes perdidos (olheiras, lábios, sulco nasogeniano) mantendo a anatomia natural.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center justify-between">
+                        <span class="text-xs text-textMuted">Técnica anatômica</span>
+                        <button onclick="openBookingModal('Preenchimento')" class="text-xs font-semibold text-primary hover:text-primary-hover flex items-center gap-1">
+                            Agendar <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Card 6 -->
+                <div class="service-card facial bg-surface border border-borderSubtle rounded-lg p-6 flex flex-col justify-between hover:shadow-subtle-md transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 text-[11px] font-medium text-primary bg-primary-soft rounded-full">Facial</span>
+                            <span class="text-xs text-textMuted font-medium">Aprox. 40 min</span>
+                        </div>
+                        <h3 class="heading-font text-2xl text-textPrimary font-normal">Peeling Químico Renovador</h3>
+                        <p class="text-xs sm:text-sm text-textSecondary mt-2 leading-relaxed">
+                            Estimulação do turnover celular para redução de manchas superficiais, poros e uniformização do tom da pele.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center justify-between">
+                        <span class="text-xs text-textMuted">Ácidos de alta pureza</span>
+                        <button onclick="openBookingModal('Peeling Químico')" class="text-xs font-semibold text-primary hover:text-primary-hover flex items-center gap-1">
+                            Agendar <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="resultados" class="py-16 sm:py-24 bg-surface border-y border-borderSubtle">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-widest text-primary">Resultados Reais</span>
+                        <h2 class="heading-font text-3xl sm:text-4xl text-textPrimary font-normal mt-1">Transformações sutis e autênticas</h2>
+                    </div>
+
+                    <!-- Consent Badge Required by Design System -->
+                    <div class="inline-flex items-center gap-2 p-3 bg-bg border border-borderSubtle rounded-md text-xs text-textSecondary max-w-md">
+                        <svg class="w-5 h-5 text-success flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        <span>Imagens divulgadas com <strong>consentimento prévio e expresso</strong> da paciente. Os resultados podem variar de acordo com o organismo.</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Before / After Card -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-bg border border-borderSubtle rounded-lg p-6 sm:p-8 shadow-subtle-sm">
+
+                    <!-- Slider Interactive Container -->
+                    <div class="lg:col-span-7">
+                        <div class="before-after-container w-full h-[320px] sm:h-[420px] rounded-md overflow-hidden relative cursor-ew-resize border border-borderSubtle" id="sliderBox" onmousemove="moveSlider(event)" touchmove="moveSlider(event)">
+
+                            <!-- After Image (Base) -->
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80"
+                                 alt="Resultado Depois Newestetica"
+                                 class="absolute inset-0 w-full h-full object-cover">
+                            <span class="absolute bottom-3 right-3 bg-textPrimary/80 text-white text-[11px] font-medium px-2.5 py-1 rounded">Depois</span>
+
+                            <!-- Before Image (Clipped Overlay) -->
+                            <div class="before-image" id="beforeImage">
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80"
+                                     alt="Resultado Antes Newestetica"
+                                     class="w-[100vw] max-w-none h-full object-cover filter grayscale contrast-125 brightness-90">
+                                <span class="absolute bottom-3 left-3 bg-textPrimary/80 text-white text-[11px] font-medium px-2.5 py-1 rounded">Antes</span>
+                            </div>
+
+                            <!-- Slider Handle -->
+                            <div class="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg pointer-events-none" id="sliderDivider" style="left: 50%;">
+                                <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white shadow-subtle-md border border-borderSubtle flex items-center justify-center text-textSecondary text-xs">
+                                    ↔
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center text-xs text-textMuted mt-3">Arraste para o lado para comparar o resultado antes e depois</p>
+                    </div>
+
+                    <!-- Details Right -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="inline-block px-2.5 py-1 text-xs font-semibold text-primary bg-primary-soft rounded-full">
+                            Caso Clínico nº 142
+                        </div>
+                        <h3 class="heading-font text-2xl sm:text-3xl text-textPrimary">Bioestimulação com Rejuvenescimento Natural</h3>
+                        <p class="text-sm text-textSecondary leading-relaxed">
+                            Paciente com queixa de perda de firmeza e viço. Foi realizado o protocolo de 2 sessões de bioestimulador de colágeno associado à hidratação profunda.
+                        </p>
+
+                        <div class="space-y-2 pt-2 border-t border-borderSubtle">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-textMuted">Sessões realizadas:</span>
+                                <span class="font-medium text-textPrimary">2 sessões (intervalo de 30 dias)</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-textMuted">Tempo de recuperação:</span>
+                                <span class="font-medium text-textPrimary">Imediato (sem downtime)</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-textMuted">Objetivo principal:</span>
+                                <span class="font-medium text-textPrimary">Firmeza e contorno sutil</span>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button onclick="openBookingModal('Bioestimulador de Colágeno')" class="w-full py-3 text-xs sm:text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-subtle-sm transition-all">
+                                Quero uma avaliação semelhante
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <section id="diferenciais" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-semibold uppercase tracking-widest text-primary">Nossa Ética</span>
+                <h2 class="heading-font text-3xl sm:text-4xl text-textPrimary font-normal mt-1">Por que escolher a Newestetica?</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <div class="p-6 bg-surface border border-borderSubtle rounded-lg space-y-3">
+                    <div class="w-10 h-10 rounded-md bg-primary-soft text-primary flex items-center justify-center font-medium">
+                        01
+                    </div>
+                    <h3 class="heading-font text-xl text-textPrimary">Atendimento Individualizado</h3>
+                    <p class="text-xs text-textSecondary leading-relaxed">
+                        Não usamos receitas prontas. Cada rosto e corpo é estudado para criar um plano exclusivo.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-surface border border-borderSubtle rounded-lg space-y-3">
+                    <div class="w-10 h-10 rounded-md bg-primary-soft text-primary flex items-center justify-center font-medium">
+                        02
+                    </div>
+                    <h3 class="heading-font text-xl text-textPrimary">Produtos Premium</h3>
+                    <p class="text-xs text-textSecondary leading-relaxed">
+                        Trabalhamos exclusivamente com marcas registradas na ANVISA e reconhecidas mundialmente.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-surface border border-borderSubtle rounded-lg space-y-3">
+                    <div class="w-10 h-10 rounded-md bg-primary-soft text-primary flex items-center justify-center font-medium">
+                        03
+                    </div>
+                    <h3 class="heading-font text-xl text-textPrimary">Conforto e Segurança</h3>
+                    <p class="text-xs text-textSecondary leading-relaxed">
+                        Ambiente asséptico, acolhedor e com protocolo rigoroso de acompanhamento pós-procedimento.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-surface border border-borderSubtle rounded-lg space-y-3">
+                    <div class="w-10 h-10 rounded-md bg-primary-soft text-primary flex items-center justify-center font-medium">
+                        04
+                    </div>
+                    <h3 class="heading-font text-xl text-textPrimary">Transparência Total</h3>
+                    <p class="text-xs text-textSecondary leading-relaxed">
+                        Orientação franca sobre o que é possível alcançar, sem promessas irrealistas ou milagrosas.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="depoimentos" class="py-16 sm:py-24 bg-surface border-y border-borderSubtle">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-primary">Depoimentos</span>
+                    <h2 class="heading-font text-3xl sm:text-4xl text-textPrimary font-normal mt-1">O que nossas pacientes dizem</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- Testimonial Card 1 -->
+                    <div class="bg-bg border border-borderSubtle p-6 rounded-lg flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <!-- Star Rating -->
+                            <div class="flex text-warning gap-1">
+                                ★★★★★
+                            </div>
+                            <p class="text-xs sm:text-sm text-textSecondary italic leading-relaxed">
+                                "Eu tinha muito medo de ficar com o rosto artificial. Na Newestetica me explicaram tudo com paciência e o resultado do bioestimulador ficou super delicado!"
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-primary-soft text-primary font-semibold text-xs flex items-center justify-center">
+                                MS
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-textPrimary">Mariana S.</p>
+                                <p class="text-[11px] text-textMuted">Paciente há 2 anos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial Card 2 -->
+                    <div class="bg-bg border border-borderSubtle p-6 rounded-lg flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex text-warning gap-1">
+                                ★★★★★
+                            </div>
+                            <p class="text-xs sm:text-sm text-textSecondary italic leading-relaxed">
+                                "O atendimento é humano e sem aquela pressão para comprar pacotes desnecessários. Sinto total confiança no trabalho das biomédicas."
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-primary-soft text-primary font-semibold text-xs flex items-center justify-center">
+                                CR
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-textPrimary">Camila R.</p>
+                                <p class="text-[11px] text-textMuted">Tratamento Facial</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial Card 3 -->
+                    <div class="bg-bg border border-borderSubtle p-6 rounded-lg flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex text-warning gap-1">
+                                ★★★★★
+                            </div>
+                            <p class="text-xs sm:text-sm text-textSecondary italic leading-relaxed">
+                                "Clínica impecável, cheirosa, pontual e muito profissional. Fiz a toxina preventiva e o resultado ficou descansado como eu queria."
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-borderSubtle flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-primary-soft text-primary font-semibold text-xs flex items-center justify-center">
+                                PB
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-textPrimary">Patricia B.</p>
+                                <p class="text-[11px] text-textMuted">Tratamento Preventivo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sobre" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-primary-soft rounded-xl p-8 sm:p-12 border border-primary/20 text-center max-w-4xl mx-auto relative overflow-hidden">
+                <span class="text-xs font-semibold uppercase tracking-widest text-primary">Agendamento Simplificado</span>
+                <h2 class="heading-font text-3xl sm:text-5xl text-textPrimary font-normal mt-2">Dê o primeiro passo para o seu cuidado</h2>
+                <p class="text-sm sm:text-base text-textSecondary mt-4 max-w-xl mx-auto leading-relaxed">
+                    Agende sua consulta inicial. Vamos conversar sobre suas queixas e alinhar um plano de tratamento personalizado.
+                </p>
+                <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="openBookingModal()" class="px-8 py-3.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-subtle-md transition-all">
+                        Agendar Consulta Agora
+                    </button>
+                    <a href="https://wa.me/5511999999999" target="_blank" class="px-8 py-3.5 text-sm font-medium text-textSecondary bg-surface border border-borderSubtle hover:bg-white rounded-md transition-all inline-flex items-center justify-center gap-2">
+                        Falar com Recepção
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-surface border-t border-borderSubtle pt-12 pb-8 text-xs text-textSecondary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-borderSubtle">
+
+                <!-- Brand Info -->
+                <div class="space-y-3 md:col-span-1">
+                    <span class="heading-font text-2xl font-semibold text-textPrimary">Newestetica</span>
+                    <p class="text-textMuted leading-relaxed">
+                        Clínica de estética avançada focada em resultados naturais, previsibilidade e bem-estar.
+                    </p>
+                </div>
+
+                <!-- Fast Links -->
+                <div>
+                    <h4 class="font-semibold text-textPrimary mb-3 text-sm">Navegação</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#tratamentos" class="hover:text-primary">Tratamentos</a></li>
+                        <li><a href="#resultados" class="hover:text-primary">Resultados</a></li>
+                        <li><a href="#depoimentos" class="hover:text-primary">Depoimentos</a></li>
+                        <li><a href="#diferenciais" class="hover:text-primary">Diferenciais</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact & Hours -->
+                <div>
+                    <h4 class="font-semibold text-textPrimary mb-3 text-sm">Horários</h4>
+                    <p class="text-textMuted">Segunda a Sexta: 08h às 19h</p>
+                    <p class="text-textMuted mt-1">Sábados: 08h às 13h</p>
+                    <p class="text-textMuted mt-1">Domingos e Feriados: Fechado</p>
+                </div>
+
+                <!-- Local -->
+                <div>
+                    <h4 class="font-semibold text-textPrimary mb-3 text-sm">Endereço</h4>
+                    <p class="text-textMuted leading-relaxed">
+                        Av. Paulista, 1000 — Sala 802<br>
+                        Bela Vista, São Paulo - SP<br>
+                        CEP 01310-100
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Bottom Legal & Technical Responsibility -->
+            <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-textMuted">
+                <p>© 2026 Newestetica. Todos os direitos reservados.</p>
+                <p class="text-[11px]">Responsável Técnica: Dra. Juliana Silva — CRBM 12345/SP</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="bookingModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-textPrimary/40 backdrop-blur-sm transition-opacity">
+        <div class="bg-surface rounded-lg border border-borderSubtle max-w-lg w-full p-6 sm:p-8 shadow-subtle-lg relative my-auto">
+
+            <!-- Close Button -->
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-textMuted hover:text-textPrimary p-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="mb-6">
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Agendamento Online</span>
+                <h3 class="heading-font text-2xl text-textPrimary mt-0.5">Solicitar Consulta de Avaliação</h3>
+                <p class="text-xs text-textMuted mt-1">Preencha seus dados para receber o contato de confirmação da nossa equipe.</p>
+            </div>
+
+            <!-- Form -->
+            <form id="bookingForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+
+                <div>
+                    <label for="userName" class="block text-xs font-medium text-textSecondary mb-1">Nome completo</label>
+                    <input type="text" id="userName" required placeholder="Ex: Maria Oliveira"
+                           class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-md bg-bg border border-borderSubtle text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="userPhone" class="block text-xs font-medium text-textSecondary mb-1">Telefone / WhatsApp</label>
+                        <input type="tel" id="userPhone" required placeholder="(11) 99999-9999"
+                               class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-md bg-bg border border-borderSubtle text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                    </div>
+
+                    <div>
+                        <label for="userTreatment" class="block text-xs font-medium text-textSecondary mb-1">Tratamento de interesse</label>
+                        <select id="userTreatment" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-md bg-bg border border-borderSubtle text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                            <option value="Avaliação Geral">Avaliação Geral</option>
+                            <option value="Toxina Botulínica">Toxina Botulínica</option>
+                            <option value="Bioestimulador de Colágeno">Bioestimulador de Colágeno</option>
+                            <option value="Limpeza de Pele">Limpeza de Pele</option>
+                            <option value="Protocolo Corporal">Protocolo Corporal</option>
+                            <option value="Preenchimento">Preenchimento</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="userNotes" class="block text-xs font-medium text-textSecondary mb-1">Mensagem ou dúvida (opcional)</label>
+                    <textarea id="userNotes" rows="3" placeholder="Descreva brevemente o que gostaria de tratar..."
+                              class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-md bg-bg border border-borderSubtle text-textPrimary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 text-xs sm:text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-md shadow-subtle-sm transition-all">
+                        Enviar solicitação de agendamento
+                    </button>
+                </div>
+
+                <p class="text-[11px] text-textMuted text-center">Seus dados estão protegidos de acordo com a LGPD.</p>
+            </form>
+
+            <!-- Success Message Card (Hidden initially) -->
+            <div id="bookingSuccess" class="hidden text-center py-8 space-y-4">
+                <div class="w-12 h-12 rounded-full bg-success-soft text-success mx-auto flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h4 class="heading-font text-2xl text-textPrimary">Solicitação Recebida!</h4>
+                <p class="text-xs text-textSecondary leading-relaxed">
+                    Agradecemos o contato. Nossa recepção entrará em contato via WhatsApp em até 2 horas úteis para confirmar a data.
+                </p>
+                <button onclick="closeBookingModal()" class="px-6 py-2.5 text-xs font-medium text-textPrimary bg-bg border border-borderSubtle hover:bg-surface rounded-md">
+                    Fechar Janela
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Mobile Navigation Drawer Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Modal Controls
+        function openBookingModal(serviceName = null) {
+            const modal = document.getElementById('bookingModal');
+            const select = document.getElementById('userTreatment');
+            const form = document.getElementById('bookingForm');
+            const success = document.getElementById('bookingSuccess');
+
+            if (serviceName && select) {
+                // Pre-select service if passed
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].text.toLowerCase().includes(serviceName.toLowerCase())) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            form.classList.remove('hidden');
+            success.classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('bookingModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Handle Booking Form Submission (In-memory feedback without alert)
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = document.getElementById('bookingForm');
+            const success = document.getElementById('bookingSuccess');
+
+            form.classList.add('hidden');
+            success.classList.remove('hidden');
+        }
+
+        // Service Category Filtering
+        function filterServices(category, btnElement) {
+            const cards = document.querySelectorAll('.service-card');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            // Reset tab styles
+            filterBtns.forEach(btn => {
+                btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-medium bg-surface text-textSecondary border border-borderSubtle hover:bg-primary-soft transition-all';
+            });
+
+            // Set active tab style
+            btnElement.className = 'filter-btn px-4 py-2 rounded-full text-xs font-medium bg-primary text-white border border-primary transition-all';
+
+            cards.forEach(card => {
+                if (category === 'todos' || card.classList.contains(category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Interactive Before / After Image Comparison Slider
+        function moveSlider(e) {
+            const box = document.getElementById('sliderBox');
+            const beforeImage = document.getElementById('beforeImage');
+            const divider = document.getElementById('sliderDivider');
+
+            if (!box || !beforeImage || !divider) return;
+
+            const rect = box.getBoundingClientRect();
+            let clientX = e.clientX;
+
+            if (e.touches && e.touches[0]) {
+                clientX = e.touches[0].clientX;
+            }
+
+            let position = ((clientX - rect.left) / rect.width) * 100;
+
+            if (position < 5) position = 5;
+            if (position > 95) position = 95;
+
+            beforeImage.style.width = position + '%';
+            divider.style.left = position + '%';
+        }
+
+        // Interactive Goal Recommendation Simulator
+        const goalData = {
+            'rejuvenecimento': {
+                title: 'Bioestimulador de Colágeno + Suavização Preventiva',
+                desc: 'Combinação indicada para estimular a firmeza dérmica gradual sem criar volume artificial.'
+            },
+            'manchas': {
+                title: 'Peeling Químico Sequencial + Glow Derm',
+                desc: 'Tratamento em 3 etapas para renovação celular, atenuação de manchas e viço homogêneo.'
+            },
+            'contorno': {
+                title: 'Harmonização Sutil com Ácido Hialurônico',
+                desc: 'Aplicações milimétricas focadas na estrutura do queixo, malar ou mandíbula.'
+            },
+            'prevencao': {
+                title: 'Limpeza de Pele Profunda + Toxina Preventiva',
+                desc: 'Manutenção ideal para preservar a textura jovem e impedir a fixação de rugas dinâmicas.'
+            }
+        };
+
+        let selectedGoalKey = 'rejuvenecimento';
+
+        function selectGoal(key, btnElement) {
+            const buttons = document.querySelectorAll('.quiz-btn');
+            const resultBox = document.getElementById('quizResult');
+            const titleEl = document.getElementById('quizTitle');
+            const descEl = document.getElementById('quizDesc');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary-soft/30');
+            });
+
+            btnElement.classList.add('border-primary', 'bg-primary-soft/30');
+
+            if (goalData[key]) {
+                selectedGoalKey = key;
+                titleEl.textContent = goalData[key].title;
+                descEl.textContent = goalData[key].desc;
+                resultBox.classList.remove('hidden');
+            }
+        }
+
+        function openBookingModalWithService() {
+            const title = goalData[selectedGoalKey] ? goalData[selectedGoalKey].title : 'Avaliação Geral';
+            openBookingModal(title);
+        }
+    </script>
+</body>
+</html>

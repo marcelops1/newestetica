@@ -1,0 +1,65 @@
+/* Design tokens — Newestetica (fonte única, ver docs/06-design-system.md) */
+
+:root {
+  /* Neutros */
+  --background: #fafaf9;
+  --surface: #ffffff;
+  --border: #e7e5e4;
+  --ink: #1c1917;
+  --ink-secondary: #57534e;
+  --ink-muted: #a8a29e;
+
+  /* Marca */
+  --primary: #9a7b6b;
+  --primary-hover: #866a5c;
+  --primary-soft: #f5ede8;
+
+  /* Apoio */
+  --success: #5f8f6b;
+  --success-soft: #eaf2ec;
+  --warning: #c2a15a;
+  --warning-soft: #f9f5ec;
+  --danger: #b85c5c;
+  --danger-soft: #f8ecec;
+  --info: #6b7f9a;
+  --info-soft: #eef2f6;
+
+  /* Tipografia */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  /* Radius, sombra, borda */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 2px rgb(28 25 23 / 0.05);
+  --shadow-md: 0 4px 12px rgb(28 25 23 / 0.08);
+  --border-default: 1px solid #e7e5e4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-ink: var(--ink);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-muted: var(--ink-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+}

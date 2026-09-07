@@ -1,0 +1,18 @@
+{
+  "name": "newestetica",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Sistema para clínica de estética da Fabiana Rosa - foco em mulheres 40+",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "echo \"Use os scripts dentro de frontend/ ou backend/\"",
+    "lint": "echo \"Configurar lint no monorepo\"",
+    "format": "echo \"Configurar format no monorepo\"",
+    "typecheck": "echo \"Configurar typecheck no monorepo\"",
+    "test": "echo \"Configurar testes no monorepo\"",
+    "build": "echo \"Configurar build no monorepo\""
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
