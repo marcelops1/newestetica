@@ -12,14 +12,33 @@ type BookingModalProps = {
 
 type Status = "idle" | "sending" | "success" | "error";
 
+const DEFAULT_TREATMENT = "Avaliação Geral";
+
+/** Resolve a pré-seleção pela origem: match exato, depois inclusão, senão padrão. */
+export function resolveTreatment(
+  treatment: string,
+  treatmentOptions: string[],
+): string {
+  if (treatmentOptions.includes(treatment)) return treatment;
+  const lower = treatment.toLowerCase();
+  const partial = treatmentOptions.find(
+    (option) =>
+      lower.includes(option.toLowerCase()) ||
+      option.toLowerCase().includes(lower),
+  );
+  return partial ?? DEFAULT_TREATMENT;
+}
+
 export function BookingModal({
   open,
-  treatment = "Avaliação Geral",
+  treatment = DEFAULT_TREATMENT,
   treatmentOptions,
   onClose,
 }: BookingModalProps) {
   const [status, setStatus] = useState<Status>("idle");
-  const [selected, setSelected] = useState(treatment);
+  const [selected, setSelected] = useState(() =>
+    resolveTreatment(treatment, treatmentOptions),
+  );
   const [confirmedTreatment, setConfirmedTreatment] = useState(treatment);
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ name?: string; phone?: string }>(

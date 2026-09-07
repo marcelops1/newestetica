@@ -15,7 +15,7 @@
 - [x] 3.1 Escrever a verificação de teclado do focus trap (Tab circula no diálogo, Escape fecha devolvendo o foco) e constatar que ela falha com o modal atual
 - [x] 3.2 Implementar o focus trap mantendo Escape, overlay e devolução de foco, e verificar que a verificação da task 3.1 passa
 - [x] 3.3 Escrever a verificação da pré-seleção por origem (card, quiz, caso; padrão "Avaliação Geral") e constatar as lacunas no modal atual
-- [ ] 3.4 Explicitar a pré-seleção de tratamento por origem e verificar que cada origem abre o modal com a opção correta
+- [x] 3.4 Explicitar a pré-seleção de tratamento por origem e verificar que cada origem abre o modal com a opção correta
 
 ## 4. Verificação
 

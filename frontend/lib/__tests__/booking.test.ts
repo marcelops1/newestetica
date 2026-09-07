@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { submitBookingRequest } from "../booking";
+import { resolveTreatment } from "@/features/booking/BookingModal";
 
 describe("submitBookingRequest (mock)", () => {
   it("retorna sucesso com o tratamento solicitado", async () => {
@@ -30,5 +31,23 @@ describe("submitBookingRequest (mock)", () => {
     await submitBookingRequest({ name: "A", phone: "000" });
     expect(fetchSpy).not.toHaveBeenCalled();
     fetchSpy.mockRestore();
+  });
+});
+
+describe("resolveTreatment (pré-seleção por origem)", () => {
+  const options = ["Avaliação Geral", "Toxina Botulínica", "Limpeza de pele"];
+
+  it("mantém match exato", () => {
+    expect(resolveTreatment("Limpeza de pele", options)).toBe("Limpeza de pele");
+  });
+
+  it("resolve protocolo do quiz por inclusão", () => {
+    expect(
+      resolveTreatment("Toxina Botulínica Preventiva e mais", options),
+    ).toBe("Toxina Botulínica");
+  });
+
+  it("usa o padrão quando nada combina", () => {
+    expect(resolveTreatment("Caso desconhecido", options)).toBe("Avaliação Geral");
   });
 });
