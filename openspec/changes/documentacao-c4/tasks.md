@@ -8,5 +8,5 @@
 
 ## 2. Verificação e proposta de gatilho
 
-- [ ] 2.1 Revisar os 3 arquivos contra tom, português e links, e verificar que `openspec validate` passa
-- [ ] 2.2 Propor (sem aplicar) o texto do novo gatilho na Definition of Done (`docs/07` §6) e verificar que ele não referencia skill inexistente
+- [x] 2.1 Revisar os 3 arquivos contra tom, português e links, e verificar que `openspec validate` passa
+- [x] 2.2 Propor (sem aplicar) o texto do novo gatilho na Definition of Done (`docs/07` §6) e verificar que ele não referencia skill inexistente

@@ -40,3 +40,11 @@ Alternativas consideradas: amarrar mesmo assim (rejeitado: referência quebrada)
 - [Risco] Diagramas desatualizarem após mudanças → Mitigação: nota de manutenção por arquivo + gatilho na DoD.
 - [Risco] Mermaid complexo demais para revisar em diff → Mitigação: diagramas pequenos, um por arquivo, texto de apoio curto.
 - [Trade-off] C1/C2 mostram sistemas ainda não existentes → Aceito: marcados como planejados, é o norte aprovado, não promessa de prazo.
+
+## Gatilho proposto para a DoD (NÃO aplicado nesta sessão)
+
+Texto sugerido para `docs/07-workflow-de-engenharia.md` §6, a aplicar em change próprio:
+
+- [ ] Diagramas C4 da camada tocada atualizados (`docs/architecture/c1-context.md`, `c2-container.md`, `c3-component.md`), quando o Change alterar atores, contêineres, componentes ou integrações.
+
+Sem amarração de skill (`documentation-and-adrs` não instalada — ver Decisão 4).
