@@ -7,5 +7,5 @@
 
 ## 2. Verificação e backlog
 
-- [ ] 2.1 Rodar quality gates e revisar segurança (página estática sem entrada de usuário: registrar não-aplicabilidade) e verificar que tudo passa
-- [ ] 2.2 Atualizar `docs/product/08-backlog-produto.md` (Sobre + linha do Épico 1) e verificar consistência
+- [x] 2.1 Rodar quality gates e revisar segurança (página estática sem entrada de usuário: registrar não-aplicabilidade) e verificar que tudo passa
+- [x] 2.2 Atualizar `docs/product/08-backlog-produto.md` (Sobre + linha do Épico 1) e verificar consistência
