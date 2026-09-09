@@ -13,7 +13,7 @@
 
 > Lógica testável (consentimento + conteúdo) coberta pelo teste 1.1; montagem de UI verificada por gates (sem testing-library no projeto — adicionar a dependência está fora do escopo).
 
-- [ ] 3.1 Implementar `features/results/ResultsPage.tsx` (lista via `getBeforeAfterPageCases`, comparador + badge de consentimento por caso, painel, CTA com `BookingModal`) e `app/antes-depois/page.tsx` com metadata, e verificar que lint, typecheck, testes e build passam
+- [x] 3.1 Implementar `features/results/ResultsPage.tsx` (lista via `getBeforeAfterPageCases`, comparador + badge de consentimento por caso, painel, CTA com `BookingModal`) e `app/antes-depois/page.tsx` com metadata, e verificar que lint, typecheck, testes e build passam
 - [ ] 3.2 Adicionar link "Ver todos os casos" na seção Resultados da home para `/antes-depois` e verificar que o link existe e o build passa
 
 ## 4. Backlog, C4, verificação e archive
