@@ -16,7 +16,7 @@ Fornece o mapa visual da arquitetura em 3 níveis C4, distinguindo o implementad
 
 ### Requirement: Diagrama de contêineres real vs planejado
 
-`docs/architecture/c2-container.md` SHALL conter diagrama Mermaid com Frontend Next.js (real, detalhando as rotas `/`, `/tratamentos`, `/tratamentos/[slug]` e `/sobre`), Backend NestJS, PostgreSQL e Keycloak (planejados), sem inventar contêineres fora de `docs/02`.
+`docs/architecture/c2-container.md` SHALL conter diagrama Mermaid com Frontend Next.js (real, detalhando as rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre` e `/antes-depois`), Backend NestJS, PostgreSQL e Keycloak (planejados), sem inventar contêineres fora de `docs/02`.
 
 #### Scenario: Distinção real/planejado
 
@@ -26,11 +26,11 @@ Fornece o mapa visual da arquitetura em 3 níveis C4, distinguindo o implementad
 #### Scenario: Rotas visíveis no contêiner
 
 - **WHEN** alguém pergunta quais páginas públicas existem
-- **THEN** o C2 lista as 4 rotas reais sem precisar abrir o código
+- **THEN** o C2 lista as 5 rotas reais sem precisar abrir o código
 
 ### Requirement: Diagrama de componentes do frontend real
 
-`docs/architecture/c3-component.md` SHALL conter diagrama Mermaid dos componentes existentes (`app/` com as rotas reais, `components/` reutilizáveis, `features/` com `home`, `catalog`, `about` e `booking`, `lib/` com interfaces + mocks + acesso) e registrar que componentes internos do backend (Domain/Application/Infrastructure/Presentation) serão detalhados por módulo quando implementados.
+`docs/architecture/c3-component.md` SHALL conter diagrama Mermaid dos componentes existentes (`app/` com as rotas reais, `components/` reutilizáveis incluindo o comparador antes/depois compartilhado, `features/` com `home`, `catalog`, `about`, `booking` e `results`, `lib/` com interfaces + mocks + acesso) e registrar que componentes internos do backend (Domain/Application/Infrastructure/Presentation) serão detalhados por módulo quando implementados.
 
 #### Scenario: Mapeamento de código novo
 
