@@ -7,7 +7,7 @@
 
 > Exceção aplicável: mover código literal sem alterar classes nem comportamento; verificação por gates + build + revisão do diff, sem ciclo RED.
 
-- [ ] 2.1 Extrair `Comparator` de `Results.tsx` para `components/BeforeAfterComparator.tsx`, fazer a home usá-lo, e verificar que lint, typecheck, testes e build passam sem mudança visual
+- [x] 2.1 Extrair `Comparator` de `Results.tsx` para `components/BeforeAfterComparator.tsx`, fazer a home usá-lo, e verificar que lint, typecheck, testes e build passam sem mudança visual
 
 ## 3. Página /antes-depois (consome o contrato testado na seção 1)
 
