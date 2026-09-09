@@ -88,6 +88,8 @@ Uma task SHALL ser considerada concluída somente quando atender a todos os iten
 - [ ] `docs/product/08-backlog-produto.md` atualizado (status do Use Case/Feature refletindo o que foi concluído nesta task)
 - [ ] Nenhum dado real de paciente em mocks, testes ou exemplos
 
+> Esta Definition of Done é auto-verificável no momento da abertura do PR através do checklist em `.github/pull_request_template.md` — cada item acima tem um item correspondente no template.
+
 ---
 
 ## 7. Segurança em cada etapa
