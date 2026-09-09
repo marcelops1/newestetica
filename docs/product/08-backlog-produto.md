@@ -78,7 +78,7 @@
 - **Critérios de aceite:**
   - Badge de consentimento visível junto aos resultados.
   - Nenhum item sem consentimento é renderizado.
-- **Status atual:** Em andamento (comparador acessível existe na home com blocos locais; fotos reais pendentes).
+- **Status atual:** Em andamento (página `/antes-depois` lista casos com consentimento, cada um com comparador acessível e badge; fotos reais pendentes).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ### Feature 1.5 — Depoimentos

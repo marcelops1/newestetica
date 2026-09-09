@@ -18,5 +18,5 @@
 
 ## 4. Backlog, C4, verificação e archive
 
-- [ ] 4.1 Atualizar `docs/product/08-backlog-produto.md` (UC 1.4.1) e `docs/architecture/c2-container.md` + `c3-component.md` (rota `/antes-depois`, `features/results/`, comparador compartilhado) e verificar que cada rota/pasta citada existe no repositório
+- [x] 4.1 Atualizar `docs/product/08-backlog-produto.md` (UC 1.4.1) e `docs/architecture/c2-container.md` + `c3-component.md` (rota `/antes-depois`, `features/results/`, comparador compartilhado) e verificar que cada rota/pasta citada existe no repositório
 - [ ] 4.2 Rodar quality gates e `openspec validate`, registrar revisão `security-and-hardening` (gatilho docs/07 §7: consentimento de imagem) em `verification.md`, e arquivar via `openspec-archive-change` com specs sincronizadas
