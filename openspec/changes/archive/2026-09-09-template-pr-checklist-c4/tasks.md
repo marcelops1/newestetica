@@ -7,5 +7,5 @@
 
 ## 2. Verificação e archive
 
-- [ ] 2.1 Rodar quality gates e `openspec validate` e verificar que tudo passa sem tocar em código de produto
-- [ ] 2.2 Registrar verificação de segurança (templates/docs puros: sem gatilho docs/07 §7) em `verification.md` e arquivar via `openspec-archive-change` com specs sincronizadas
+- [x] 2.1 Rodar quality gates e `openspec validate` e verificar que tudo passa sem tocar em código de produto
+- [x] 2.2 Registrar verificação de segurança (templates/docs puros: sem gatilho docs/07 §7) em `verification.md` e arquivar via `openspec-archive-change` com specs sincronizadas
