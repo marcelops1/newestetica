@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CTAButton } from "@/components/CTAButton";
 import { BeforeAfterComparator } from "@/components/BeforeAfterComparator";
 import type { BeforeAfter } from "@/lib/types";
@@ -83,10 +84,16 @@ export function Results({ items, onBook }: ResultsProps) {
                 <span className="font-medium text-ink">{featured.goal}</span>
               </div>
             </div>
-            <div className="pt-4">
+            <div className="flex flex-wrap items-center gap-4 pt-4">
               <CTAButton onClick={() => onBook(featured.title)}>
                 Quero uma avaliação semelhante
               </CTAButton>
+              <Link
+                href="/antes-depois"
+                className="inline-flex min-h-[44px] items-center text-sm font-medium text-primary-hover underline-offset-4 hover:underline"
+              >
+                Ver todos os casos
+              </Link>
             </div>
           </div>
         </div>
