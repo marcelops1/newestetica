@@ -1,7 +1,7 @@
 ## 1. Contrato de consentimento da rota (TDD estrito — RED comprovado antes de cada GREEN)
 
 - [x] 1.1 RED: escrever `frontend/lib/__tests__/before-after.test.ts` importando `getBeforeAfterPageCases` de `../before-after` e asserindo que `resultado-3` (sem consentimento) nunca aparece e que todo caso listado tem `hasConsent` e painel completo, e verificar que a suite falha (módulo ainda inexistente)
-- [ ] 1.2 GREEN: implementar `frontend/lib/before-after.ts` com `getBeforeAfterPageCases()` delegando a `getVisibleResults()` e verificar que o teste da task 1.1 agora passa e a cobertura segue acima de 80%
+- [x] 1.2 GREEN: implementar `frontend/lib/before-after.ts` com `getBeforeAfterPageCases()` delegando a `getVisibleResults()` e verificar que o teste da task 1.1 agora passa e a cobertura segue acima de 80%
 
 ## 2. Comparador compartilhado (refatoração sem comportamento — exceção docs/07 §4 registrada aqui)
 
