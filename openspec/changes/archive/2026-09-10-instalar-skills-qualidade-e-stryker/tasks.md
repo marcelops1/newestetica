@@ -8,5 +8,5 @@
 
 ## 2. Verificação e archive
 
-- [ ] 2.1 Rodar quality gates e `openspec validate` e verificar que tudo passa sem tocar em código de produto
-- [ ] 2.2 Registrar em `verification.md` a avaliação (tooling/docs: sem gatilho docs/07 §7; fidelidade das skills; decisão de não integrar ao CI; SOLID sem checklist como decisão consciente) e arquivar via `openspec-archive-change` com specs sincronizadas
+- [x] 2.1 Rodar quality gates e `openspec validate` e verificar que tudo passa sem tocar em código de produto
+- [x] 2.2 Registrar em `verification.md` a avaliação (tooling/docs: sem gatilho docs/07 §7; fidelidade das skills; decisão de não integrar ao CI; SOLID sem checklist como decisão consciente) e arquivar via `openspec-archive-change` com specs sincronizadas
