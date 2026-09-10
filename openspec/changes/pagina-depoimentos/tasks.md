@@ -5,7 +5,7 @@
 
 ## 2. Página /depoimentos e link na home (lógica testada na seção 1; montagem de UI por gates — sem testing-library no projeto, lacuna registrada no design)
 
-- [ ] 2.1 Implementar `features/testimonials/TestimonialsPage.tsx` (server component: lista via `getTestimonialsPageCases`, estrelas 5/5, iniciais via helper, citação e contexto) e `app/depoimentos/page.tsx` com metadata, e verificar que lint, typecheck, testes e build passam com `/depoimentos` prerenderizada
+- [x] 2.1 Implementar `features/testimonials/TestimonialsPage.tsx` (server component: lista via `getTestimonialsPageCases`, estrelas 5/5, iniciais via helper, citação e contexto) e `app/depoimentos/page.tsx` com metadata, e verificar que lint, typecheck, testes e build passam com `/depoimentos` prerenderizada
 - [ ] 2.2 Fazer `Testimonials.tsx` usar `initialsOf` de `lib/testimonials.ts` (sem duplicação — comportamento idêntico para os autores atuais) e adicionar link "Ver todos os depoimentos" para `/depoimentos`, e verificar com `grep` que não existe `innerHTML`/`dangerouslySetInnerHTML` no frontend (OWASP: auto-escape) e que o build passa
 
 ## 3. Backlog, C4, verificação e archive (docs/07 §13: integração de navegação coberta pelo build+grep; OWASP registrado em verification.md; mutation/falha-resiliência dispensados com registro)
