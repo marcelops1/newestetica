@@ -1,6 +1,6 @@
 ## 1. Contrato da rota e helper de iniciais (TDD estrito — RED comprovado antes de cada GREEN; docs/07 §13: unitários com edge cases + contrato/schema)
 
-- [ ] 1.1 RED: escrever `frontend/lib/__tests__/testimonials.test.ts` testando `getTestimonialsPageCases` (lista não-vazia com ao menos 5 itens, todo campo string não-vazia) e `initialsOf` (nome único `"Ana"` → `"A"`; espaço duplo `"Maria  Silva"` → `"MS"` — bug real atual produz `"Mundefined"`; 3 partes `"Maria Silva Santos"` → `"MS"`) e verificar que a suite falha (módulo ainda inexistente)
+- [x] 1.1 RED: escrever `frontend/lib/__tests__/testimonials.test.ts` testando `getTestimonialsPageCases` (lista não-vazia com ao menos 5 itens, todo campo string não-vazia) e `initialsOf` (nome único `"Ana"` → `"A"`; espaço duplo `"Maria  Silva"` → `"MS"` — bug real atual produz `"Mundefined"`; 3 partes `"Maria Silva Santos"` → `"MS"`) e verificar que a suite falha (módulo ainda inexistente)
 - [ ] 1.2 GREEN: implementar `frontend/lib/testimonials.ts` (`initialsOf` filtrando partes vazias + `getTestimonialsPageCases()` delegando a `getTestimonials()`) e estender `testimonialsMock` com 2 depoimentos fictícios (mesmos campos, padrão "Primeiro nome + inicial", sem dado real), e verificar que o teste da task 1.1 passa, os testes de contrato existentes (`data.test.ts`) seguem passando e a cobertura fica acima de 80%
 
 ## 2. Página /depoimentos e link na home (lógica testada na seção 1; montagem de UI por gates — sem testing-library no projeto, lacuna registrada no design)
