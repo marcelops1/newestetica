@@ -1,5 +1,5 @@
 /* Stryker Mutator — mutation testing do frontend (NÃO integrado ao CI ainda — decisão
-   registrada em docs/engineering/07-workflow-de-engenharia.md §13). Executar com: pnpm mutation */
+   registrada em docs/engineering/07-workflow-de-engenharia.md §13). Executar com: pnpm --filter frontend mutation */
 /** @type {import('@stryker-mutator/api/core').StrykerOptions} */
 export default {
   testRunner: "vitest",

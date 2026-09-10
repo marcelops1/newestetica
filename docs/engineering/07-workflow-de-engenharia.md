@@ -149,7 +149,7 @@ Sempre exigir (parte da Definition of Done, sem exceção):
 
 Exigir com frequência (a critério do Verify, registrado em verification.md quando aplicado ou quando dispensado):
 
-- Mutation testing em lógica de negócio sensível — ferramenta: Stryker Mutator (`npx stryker run` no workspace frontend, via script `pnpm mutation`); meta de mutation score 80%; NÃO integrado ao CI nem aos gates ainda (decisão registrada: adoção manual primeiro, enforcement reavaliado depois)
+- Mutation testing em lógica de negócio sensível — ferramenta: Stryker Mutator (`npx stryker run` no workspace frontend, via script `pnpm --filter frontend mutation`); meta de mutation score 80%; NÃO integrado ao CI nem aos gates ainda (decisão registrada: adoção manual primeiro, enforcement reavaliado depois)
 - Testes de falha e resiliência (o que acontece quando a dependência falha, dado vem malformado, etc.)
 - Revisão de segurança do código gerado por IA, além do gatilho já previsto na seção 7
 

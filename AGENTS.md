@@ -224,7 +224,7 @@ Consequência prática: a IA deve seguir o fluxo de docs/engineering/07-workflow
 
 ## 12. Agent Skills (addyosmani/agent-skills)
 
-Skills instaladas em `.opencode/skills/` (ver `docs/opencode-setup.md` do repositório oficial para detalhes).
+Skills instaladas em `.opencode/skills/` e `.agents/skills/` (ver `docs/opencode-setup.md` do repositório oficial para detalhes).
 
 ### Regras
 
