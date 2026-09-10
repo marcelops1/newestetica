@@ -241,6 +241,8 @@ Skills instaladas em `.opencode/skills/` (ver `docs/opencode-setup.md` do reposi
 - Lógica, bug ou mudança de comportamento → `test-driven-development`
 - Telas, componentes, layout → `frontend-ui-engineering` (sempre com `docs/product/01-persona-e-ux-40+.md` e `docs/product/06-design-system.md`)
 - Antes de merge / revisar código → `code-review-and-quality`
+- Design de API/contrato/interface entre módulos → `api-and-interface-design` (sempre ao desenhar `contracts/` ou fronteira entre módulos do backend)
+- Simplificar após feature funcionar / revisar complexidade → `code-simplification` (KISS/YAGNI; sempre antes de `code-review-and-quality` quando o diff parecer maior que o necessário)
 - Entrada de usuário, auth, dados, integrações → `security-and-hardening` (sempre com `docs/security/03-seguranca.md`)
 - Dúvida sobre qual skill usar → `using-agent-skills`
 
