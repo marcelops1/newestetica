@@ -144,12 +144,12 @@ Sempre exigir (parte da Definition of Done, sem exceção):
 
 - Testes unitários completos: casos de sucesso, edge cases e propriedades relevantes da função
 - Testes de segurança orientados a OWASP (entrada maliciosa, injeção, escaping) quando o código lida com entrada de usuário ou dado sensível
-- Testes de contrato/schema quando há fronteira de dados (mock ↔ UI, futuro contrato de API)
+- Testes de contrato/schema quando há fronteira de dados (mock ↔ UI, futuro contrato de API) — cobertos via skill `api-and-interface-design` (instalada), a aplicar quando `contracts/` nascer
 - Testes de integração dos fluxos críticos (ex.: fluxo de agendamento, exibição condicional por consentimento)
 
 Exigir com frequência (a critério do Verify, registrado em verification.md quando aplicado ou quando dispensado):
 
-- Mutation testing em lógica de negócio sensível
+- Mutation testing em lógica de negócio sensível — ferramenta: Stryker Mutator (`npx stryker run` no workspace frontend, via script `pnpm --filter frontend mutation`); meta de mutation score 80%; NÃO integrado ao CI nem aos gates ainda (decisão registrada: adoção manual primeiro, enforcement reavaliado depois)
 - Testes de falha e resiliência (o que acontece quando a dependência falha, dado vem malformado, etc.)
 - Revisão de segurança do código gerado por IA, além do gatilho já previsto na seção 7
 
@@ -159,3 +159,5 @@ Exigir com parcimônia (só quando o valor justificar o custo):
 - Testes de carga — só quando houver requisito de performance real
 
 Cobertura mínima de testes unitários: 80% (linhas, funções, branches, statements), já configurado como threshold que reprova o build (seção 6 e vitest.config.ts). Cobertura acima de 80% não substitui os testes de segurança/contrato/integração acima — são dimensões diferentes, não intercambiáveis.
+
+Nota sobre princípios: KISS/YAGNI são formalizados via skill `code-simplification` (redução preservando comportamento exato, Cerca de Chesterton) — aplicar sempre antes de `code-review-and-quality` quando o diff parecer maior que o necessário. SOLID fica coberto pelo eixo Arquitetura de `code-review-and-quality` (fronteiras de módulo, direção de dependências, acoplamento) — sem checklist item-a-item dedicado, decisão consciente, não lacuna crítica.
