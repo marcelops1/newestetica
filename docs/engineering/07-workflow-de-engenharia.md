@@ -135,3 +135,27 @@ Nenhuma task ou Change fecha (Verify/Archive) sem atualizar o status corresponde
 - Segurança: `docs/security/03-seguranca.md`
 - Estado atual: `docs/product/05-estado-atual.md`
 - Arquitetura: `docs/architecture/02-arquitetura.md`
+
+---
+
+## 13. Padrão de testes por prioridade
+
+Sempre exigir (parte da Definition of Done, sem exceção):
+
+- Testes unitários completos: casos de sucesso, edge cases e propriedades relevantes da função
+- Testes de segurança orientados a OWASP (entrada maliciosa, injeção, escaping) quando o código lida com entrada de usuário ou dado sensível
+- Testes de contrato/schema quando há fronteira de dados (mock ↔ UI, futuro contrato de API)
+- Testes de integração dos fluxos críticos (ex.: fluxo de agendamento, exibição condicional por consentimento)
+
+Exigir com frequência (a critério do Verify, registrado em verification.md quando aplicado ou quando dispensado):
+
+- Mutation testing em lógica de negócio sensível
+- Testes de falha e resiliência (o que acontece quando a dependência falha, dado vem malformado, etc.)
+- Revisão de segurança do código gerado por IA, além do gatilho já previsto na seção 7
+
+Exigir com parcimônia (só quando o valor justificar o custo):
+
+- Testes E2E completos — reservados a jornadas de alto valor (ex.: fluxo completo de agendamento), não a toda tela nova
+- Testes de carga — só quando houver requisito de performance real
+
+Cobertura mínima de testes unitários: 80% (linhas, funções, branches, statements), já configurado como threshold que reprova o build (seção 6 e vitest.config.ts). Cobertura acima de 80% não substitui os testes de segurança/contrato/integração acima — são dimensões diferentes, não intercambiáveis.
