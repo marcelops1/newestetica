@@ -10,5 +10,5 @@
 
 ## 3. Backlog, C4, verificação e archive (docs/07 §13: integração de navegação coberta pelo build+grep; OWASP registrado em verification.md; mutation/falha-resiliência dispensados com registro)
 
-- [ ] 3.1 Atualizar `docs/product/08-backlog-produto.md` (UC 1.5.1) e `docs/architecture/c2-container.md` (rota `/depoimentos`) + `c3-component.md` (`features/testimonials/`, helper em `lib/`), e verificar que cada rota/pasta citada existe no repositório
+- [x] 3.1 Atualizar `docs/product/08-backlog-produto.md` (UC 1.5.1) e `docs/architecture/c2-container.md` (rota `/depoimentos`) + `c3-component.md` (`features/testimonials/`, helper em `lib/`), e verificar que cada rota/pasta citada existe no repositório
 - [ ] 3.2 Rodar quality gates e `openspec validate`, registrar em `verification.md` o OWASP (texto livre renderizado como texto, sem HTML cru) e as dispensas (mutation, falha/resiliência, E2E, carga) com justificativa, e arquivar via `openspec-archive-change` com specs sincronizadas
