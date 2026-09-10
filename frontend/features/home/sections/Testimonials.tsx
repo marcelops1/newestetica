@@ -1,13 +1,6 @@
+import Link from "next/link";
+import { initialsOf } from "@/lib/testimonials";
 import type { Testimonial } from "@/lib/types";
-
-function initialsOf(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
 
 export function Testimonials({ items }: { items: Testimonial[] }) {
   return (
@@ -56,6 +49,14 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
             </li>
           ))}
         </ul>
+        <div className="mt-8 text-center">
+          <Link
+            href="/depoimentos"
+            className="inline-flex min-h-[44px] items-center text-sm font-medium text-primary-hover underline-offset-4 hover:underline"
+          >
+            Ver todos os depoimentos
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -32,10 +32,10 @@ Achado da investigação: `initialsOf` tem bug real de edge case — `initialsOf
 
 ## Decisions
 
-### 1. Página 100% server component (sem "use client")
+### 1. Página client component com modal (refinamento na apply)
 
-Rationale: depoimentos não têm interação nem modal — página estática renderiza mais barato e segue sendo SSG como `/antes-depois`.
-Alternativas consideradas: copiar o padrão client de `ResultsPage` (rejeitado: estado desnecessário).
+Rationale inicial: página 100% estática. Na apply, o `Header` (client) exige `onBook` — passar função de um server component quebra a serialização. Adotado o padrão já validado em `AboutPage`/`CatalogPage`: client component + `BookingModal` (pré-seleção "Avaliação Geral"), garantindo o CTA de agendar do header.
+Alternativas consideradas: manter server e ignorar o CTA (rejeitado: botão morto no header).
 
 ### 2. `initialsOf` + `getTestimonialsPageCases()` em `lib/testimonials.ts`
 
