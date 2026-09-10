@@ -93,7 +93,7 @@
 - **Fluxos alternativos/exceção:** —
 - **Critérios de aceite:**
   - Depoimentos éticos, próximos e identificáveis com a faixa 40–60.
-- **Status atual:** Em andamento (seção existe na home com mocks fictícios).
+- **Status atual:** Em andamento (página `/depoimentos` lista depoimentos fictícios com estrelas e iniciais; seção na home com link "Ver todos os depoimentos"; pendente validação com a Fabiana).
 
 ### Feature 1.6 — Agendamento Self-Service (paciente)
 

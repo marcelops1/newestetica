@@ -23,4 +23,18 @@ export const testimonialsMock: Testimonial[] = [
     author: "Patricia B.",
     context: "Paciente ilustrativa",
   },
+  {
+    id: "depoimento-4",
+    quote:
+      "Nunca me senti pressionada a fazer nada além do que eu queria. Acolhimento de verdade, do início ao fim.",
+    author: "Cristina M.",
+    context: "Paciente ilustrativa",
+  },
+  {
+    id: "depoimento-5",
+    quote:
+      "A clínica explica cada etapa com carinho e sem pressa. Cheguei insegura e saí confiante.",
+    author: "Helena D.",
+    context: "Paciente ilustrativa",
+  },
 ];

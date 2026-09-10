@@ -10,6 +10,7 @@ flowchart LR
         R3[/tratamentos/[slug]/]
         R4[/sobre/]
         R5[/antes-depois/]
+        R6[/depoimentos/]
         APP[app/<br/>rotas e páginas]
     end
     subgraph UI
@@ -18,6 +19,7 @@ flowchart LR
         CAT[features/catalog/]
         ABOUT[features/about/]
         RES[features/results/<br/>página antes-depois/]
+        TEST[features/testimonials/<br/>página depoimentos/]
         BOOK[features/booking/<br/>modal/]
     end
     subgraph Dados
@@ -31,28 +33,33 @@ flowchart LR
     R3 --> CAT
     R4 --> ABOUT
     R5 --> RES
+    R6 --> TEST
     APP --> HOME
     APP --> CAT
     APP --> ABOUT
     APP --> RES
+    APP --> TEST
     APP --> COMP
     HOME --> COMP
     CAT --> COMP
     ABOUT --> COMP
     RES --> COMP
+    TEST --> COMP
     BOOK --> LIB
     HOME --> LIB
     CAT --> LIB
     ABOUT --> LIB
     RES --> LIB
+    TEST --> LIB
     COMP --> STY
     HOME --> STY
     CAT --> STY
     ABOUT --> STY
     RES --> STY
+    TEST --> STY
 ```
 
-- Pastas verificadas no repositório: `app/` (com `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`), `components/` (incluindo o comparador antes/depois compartilhado), `features/` (`home`, `catalog`, `about`, `booking`, `results`), `lib/`, `styles/`.
+- Pastas verificadas no repositório: `app/` (com `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`), `components/` (incluindo o comparador antes/depois compartilhado), `features/` (`home`, `catalog`, `about`, `booking`, `results`, `testimonials`), `lib/` (interfaces + mocks + acesso + helpers de domínio, ex. iniciais), `styles/`.
 - Regra: componentes consomem `lib/` via interfaces; trocar mocks pela API altera só `lib/`.
 
 ## Backend (placeholder normatizado)
