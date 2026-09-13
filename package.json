@@ -5,6 +5,7 @@
   "description": "Sistema para clínica de estética da Fabiana Rosa - foco em mulheres 40+",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
+    "prepare": "husky",
     "dev": "pnpm --filter frontend dev",
     "lint": "pnpm --filter frontend lint",
     "format": "pnpm --filter frontend format",
@@ -14,5 +15,9 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1"
   }
 }
