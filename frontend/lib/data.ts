@@ -51,6 +51,16 @@ export function getPosts(): Post[] {
   return postsMock;
 }
 
+/** Retorna o post pelo slug (id) ou indefinido. */
+export function getPostBySlug(slug: string): Post | undefined {
+  return postsMock.find((item) => item.id === slug);
+}
+
+/** Categorias derivadas dos posts, na ordem de inserção dos mocks. */
+export function getPostCategories(): string[] {
+  return [...new Set(postsMock.map((item) => item.category))];
+}
+
 export function getProceduresByCategory(
   category: TreatmentCategory,
 ): Procedure[] {
