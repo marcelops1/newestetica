@@ -12,6 +12,7 @@ flowchart LR
         R5[/antes-depois/]
         R6[/depoimentos/]
         R7[/orcamento/]
+        R8[/contato/]
         APP[app/<br/>rotas e páginas]
     end
     subgraph UI
@@ -22,6 +23,7 @@ flowchart LR
         RES[features/results/<br/>página antes-depois/]
         TEST[features/testimonials/<br/>página depoimentos/]
         QUO[features/quote/<br/>página orçamento/]
+        CONT[features/contact/<br/>página contato/]
         BOOK[features/booking/<br/>modal/]
     end
     subgraph Dados
@@ -37,12 +39,14 @@ flowchart LR
     R5 --> RES
     R6 --> TEST
     R7 --> QUO
+    R8 --> CONT
     APP --> HOME
     APP --> CAT
     APP --> ABOUT
     APP --> RES
     APP --> TEST
     APP --> QUO
+    APP --> CONT
     APP --> COMP
     HOME --> COMP
     CAT --> COMP
@@ -50,6 +54,7 @@ flowchart LR
     RES --> COMP
     TEST --> COMP
     QUO --> BOOK
+    CONT --> BOOK
     BOOK --> LIB
     HOME --> LIB
     CAT --> LIB
@@ -57,6 +62,7 @@ flowchart LR
     RES --> LIB
     TEST --> LIB
     QUO --> LIB
+    CONT --> LIB
     COMP --> STY
     HOME --> STY
     CAT --> STY
@@ -64,9 +70,10 @@ flowchart LR
     RES --> STY
     TEST --> STY
     QUO --> STY
+    CONT --> STY
 ```
 
-- Pastas verificadas no repositório: `app/` (com `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`), `components/` (incluindo o comparador antes/depois compartilhado), `features/` (`home`, `catalog`, `about`, `booking`, `results`, `testimonials`, `quote`), `lib/` (interfaces + mocks + acesso + helpers de domínio, ex. iniciais, contrato e submissão do orçamento), `styles/`.
+- Pastas verificadas no repositório: `app/` (com `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`), `components/` (incluindo o comparador antes/depois compartilhado), `features/` (`home`, `catalog`, `about`, `booking`, `results`, `testimonials`, `quote`, `contact`), `lib/` (interfaces + mocks + acesso + helpers de domínio, ex. iniciais, contratos e submissões de orçamento e contato), `styles/`.
 - Regra: componentes consomem `lib/` via interfaces; trocar mocks pela API altera só `lib/`.
 
 ## Backend (placeholder normatizado)
