@@ -10,7 +10,7 @@
 
 ## 3. Páginas /blog e /blog/[slug] (lógica testada nas seções 1–2; montagem de UI por gates — sem testing-library no projeto, lacuna registrada no design)
 
-- [ ] 3.1 Implementar `frontend/features/blog/BlogPage.tsx` (client component padrão `CatalogPage`: busca + filtro por categoria com `aria-pressed`, cards com categoria/título/resumo/data, vazio acolhedor sem ecoar a query, Header/Footer/BookingModal) e `frontend/app/blog/page.tsx` com metadata em tom acolhedor, e verificar que lint, format, typecheck, testes e build passam com `/blog` prerenderizada
+- [x] 3.1 Implementar `frontend/features/blog/BlogPage.tsx` (client component padrão `CatalogPage`: busca + filtro por categoria com `aria-pressed`, cards com categoria/título/resumo/data, vazio acolhedor sem ecoar a query, Header/Footer/BookingModal) e `frontend/app/blog/page.tsx` com metadata em tom acolhedor, e verificar que lint, format, typecheck, testes e build passam com `/blog` prerenderizada — lint 0 erros (1 warning pre-existente), format ok, typecheck ok, 98/98 testes, build com `/blog` estática
 - [ ] 3.2 Implementar `frontend/features/blog/PostDetail.tsx` (categoria, título, data, parágrafos como texto, link de volta, CTA via `BookingModal` com pré-seleção padrão), `frontend/app/blog/[slug]/page.tsx` (`generateStaticParams` + `generateMetadata` + `notFound()`, padrão da rota de tratamentos) e `frontend/app/blog/not-found.tsx` escopado com 404 acolhedora e caminho de volta, e verificar que lint, format, typecheck, testes e build passam com `/blog` e `/blog/[slug]` prerenderizadas e slug inválido caindo na 404 acolhedora
 
 ## 4. Gates, revisão de segurança e backlog (Definition of Done docs/07 §6; revisão `security-and-hardening` obrigatória pelo gatilho §7)
