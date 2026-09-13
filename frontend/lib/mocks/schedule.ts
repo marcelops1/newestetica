@@ -56,7 +56,7 @@ export const postsMock: Post[] = [
     category: "Cuidados diários",
     content: [
       "É comum associar hidratação ao calor, mas a pele perde água em todas as estações — inclusive no ar-condicionado do dia a dia.",
-      "O segredo está na constância: um bom hidratante usado todos os dias vale mais do que intensões de fim de semana.",
+      "O segredo está na constância: um bom hidratante usado todos os dias vale mais do que intenções de fim de semana.",
       "Ativos como ácido hialurônico ajudam a reter água na pele com suavidade. Seu uso pode ser combinado em uma avaliação rápida e sem mistério.",
     ],
     publishedAt: "2026-09-03",
