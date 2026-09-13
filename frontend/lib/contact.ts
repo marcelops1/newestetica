@@ -120,6 +120,10 @@ export function submitContactRequest(
   if (!parsed.ok) {
     return Promise.resolve({ ok: false, message: WARM_ERROR });
   }
+  const fields = validateContactFields(parsed.input);
+  if (fields.name || fields.contact || fields.message) {
+    return Promise.resolve({ ok: false, message: WARM_ERROR });
+  }
   return new Promise((resolve) => {
     setTimeout(() => {
       if (options?.forceError) {
