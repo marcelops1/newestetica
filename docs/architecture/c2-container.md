@@ -14,6 +14,7 @@ flowchart TB
         R4[/sobre<br/>institucional/]
         R5[/antes-depois<br/>casos com consentimento/]
         R6[/depoimentos<br/>depoimentos fictícios/]
+        R7[/orcamento<br/>orçamento personalizado/]
     end
     subgraph Planejado
         BE[Backend NestJS<br/>monolito modular]
@@ -28,13 +29,14 @@ flowchart TB
     FE --- R4
     FE --- R5
     FE --- R6
+    FE --- R7
     FE -->|API REST futura| BE
     BE -->|Repository + Data Mapper| DB
     BE -->|OIDC| K
     F -->|login| K
 ```
 
-- **Real:** somente o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois` e `/depoimentos`.
+- **Real:** somente o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos` e `/orcamento`.
 - **Planejado:** Backend, PostgreSQL e Keycloak entram após a validação visual, via contratos em `contracts/`.
 - Nenhum outro contêiner existe ou está previsto no MVP (sem microserviços, sem app nativo).
 
