@@ -56,10 +56,8 @@ export function validateContactFields(input: {
   message: string;
 }): ContactFieldErrors {
   const name = typeof input.name === "string" ? input.name.trim() : "";
-  const contact =
-    typeof input.contact === "string" ? input.contact.trim() : "";
-  const message =
-    typeof input.message === "string" ? input.message.trim() : "";
+  const contact = typeof input.contact === "string" ? input.contact.trim() : "";
+  const message = typeof input.message === "string" ? input.message.trim() : "";
   const errors: ContactFieldErrors = {};
   if (name.length < 2) {
     errors.name = NAME_ERROR;
