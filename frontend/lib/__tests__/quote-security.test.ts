@@ -14,7 +14,10 @@ describe("validateQuoteFields (validação amigável por campo)", () => {
   });
 
   it("WhatsApp sem 10 dígitos orienta com mensagem acolhedora", () => {
-    const errors = validateQuoteFields({ name: "Maria Exemplo", phone: "(0) 0-0" });
+    const errors = validateQuoteFields({
+      name: "Maria Exemplo",
+      phone: "(0) 0-0",
+    });
     expect(errors.phone).toBeTruthy();
     expect(errors.phone).not.toMatch(/undefined|TypeError|stack/i);
   });

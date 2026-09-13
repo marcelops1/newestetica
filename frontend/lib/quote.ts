@@ -97,7 +97,9 @@ export function parseQuoteInput(
       ...(candidate.procedure !== undefined
         ? { procedure: candidate.procedure }
         : {}),
-      ...(candidate.message !== undefined ? { message: candidate.message } : {}),
+      ...(candidate.message !== undefined
+        ? { message: candidate.message }
+        : {}),
     },
   };
 }
