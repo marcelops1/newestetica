@@ -9,24 +9,37 @@ export const CATEGORY_LABELS: Record<TreatmentCategory, string> = {
 
 export type CategoryFilterValue = TreatmentCategory | "todos";
 
-type CategoryFilterProps = {
-  value: CategoryFilterValue;
-  onChange: (value: CategoryFilterValue) => void;
+type CategoryFilterProps<T extends string = CategoryFilterValue> = {
+  value: T;
+  onChange: (value: T) => void;
   label: string;
+  /** Abas opcionais derivadas (ex.: categorias do blog). Padrão: categorias de tratamento. */
+  options?: readonly T[];
+  /** Rótulos opcionais por aba. Padrão: rótulos de tratamento. */
+  labels?: Record<string, string>;
 };
 
-export function CategoryFilter({
+const DEFAULT_OPTIONS: readonly CategoryFilterValue[] = [
+  "todos",
+  ...TREATMENT_CATEGORIES,
+];
+
+export function CategoryFilter<T extends string = CategoryFilterValue>({
   value,
   onChange,
   label,
-}: CategoryFilterProps) {
+  options,
+  labels,
+}: CategoryFilterProps<T>) {
+  const resolvedOptions = (options ?? DEFAULT_OPTIONS) as readonly T[];
+  const resolvedLabels: Record<string, string> = labels ?? { ...CATEGORY_LABELS };
   return (
     <div
       role="group"
       aria-label={label}
       className="mb-10 flex flex-wrap justify-center gap-2"
     >
-      {(["todos", ...TREATMENT_CATEGORIES] as const).map((category) => {
+      {resolvedOptions.map((category) => {
         const active = value === category;
         return (
           <button
@@ -40,7 +53,9 @@ export function CategoryFilter({
                 : "border-border bg-surface text-ink-secondary hover:bg-primary-soft"
             }`}
           >
-            {category === "todos" ? "Todos" : CATEGORY_LABELS[category]}
+            {category === "todos"
+              ? "Todos"
+              : (resolvedLabels[category] ?? category)}
           </button>
         );
       })}
