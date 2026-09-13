@@ -137,7 +137,7 @@
 - **Fluxos alternativos/exceção:** —
 - **Critérios de aceite:**
   - Solicitação clara, sem pressão comercial e sem valores enganosos.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (página `/orcamento` implementada com solicitação 100% mockada: formulário nome/WhatsApp/procedimento dos mocks/mensagem opcional, validação amigável, 4 estados com confirmação acolhedora sem valores fechados e revisão de segurança registrada; pendente validação com a Fabiana).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ### Feature 1.8 — Contato
