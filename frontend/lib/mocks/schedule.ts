@@ -64,7 +64,8 @@ export const postsMock: Post[] = [
   {
     id: "o-que-e-um-protocolo-personalizado",
     title: "O que é um protocolo personalizado",
-    excerpt: "Entenda por que cada plano nasce de uma conversa, nunca de uma prateleira.",
+    excerpt:
+      "Entenda por que cada plano nasce de uma conversa, nunca de uma prateleira.",
     category: "Primeira visita",
     content: [
       "Protocolo personalizado é o nome do cuidado que considera a sua pele, o seu momento de vida e o que você espera — e não uma lista pronta que vale para todo mundo.",
