@@ -154,6 +154,21 @@
   - Link visível no header, CTA final e rodapé; abre corretamente no mobile.
 - **Status atual:** Em andamento (links existem com contatos fictícios; número real pendente).
 
+**Use Case 1.8.2 — Enviar mensagem pelo site**
+
+- **Ator principal:** Paciente (visitante).
+- **Pré-condição:** Site acessível pelo celular.
+- **Fluxo principal:**
+  1. A paciente abre Contato e informa nome, e-mail ou WhatsApp e mensagem.
+  2. O sistema registra a mensagem para retorno da clínica, com confirmação visível de recebimento.
+- **Fluxos alternativos/exceção:** Envio falha → mensagem acolhedora sem culpa, dados preservados, nova tentativa.
+- **Critérios de aceite:**
+  - Envio 100% mockado até o backend existir; nenhum dado sai do navegador.
+  - Contato flexível aceita e-mail válido OU WhatsApp com DDD, com orientação acolhedora quando nenhum formato serve.
+  - Informações institucionais claramente fictícias, sem número ou endereço real.
+- **Status atual:** Em andamento (página `/contato` implementada com mensagem 100% mockada: validação amigável das duas faces do contato flexível, 4 estados com confirmação acolhedora e revisão de segurança registrada; pendente validação com a Fabiana).
+- **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
+
 ### Feature 1.9 — Blog
 
 **Use Case 1.9.1 — Ler conteúdo educativo**
@@ -535,13 +550,13 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 
 | Épico | nº de Features | nº de Use Cases | Status geral |
 | ----- | -------------- | --------------- | ------------ |
-| 1. Site Público | 9 | 11 | Em andamento (Home e Catálogo implementados, pendentes validação; demais telas pendentes) |
+| 1. Site Público | 9 | 12 | Em andamento (Home e Catálogo implementados, pendentes validação; demais telas pendentes) |
 | 2. Painel Administrativo | 7 | 9 | Não iniciado |
 | 3. Autenticação e Acesso | 3 | 3 | Não iniciado |
 | 4. Backend e Contratos | 3 | 9 | Não iniciado |
 | 5. Integração Frontend-Backend | 1 | 1 | Não iniciado |
 | 6. Infraestrutura e Qualidade | 3 | 3 | Em andamento (CI concluído; observabilidade e deploy pendentes) |
-| **Total** | **26** | **36** | — |
+| **Total** | **26** | **37** | — |
 
 ---
 
