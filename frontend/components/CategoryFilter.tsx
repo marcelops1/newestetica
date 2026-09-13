@@ -32,7 +32,9 @@ export function CategoryFilter<T extends string = CategoryFilterValue>({
   labels,
 }: CategoryFilterProps<T>) {
   const resolvedOptions = (options ?? DEFAULT_OPTIONS) as readonly T[];
-  const resolvedLabels: Record<string, string> = labels ?? { ...CATEGORY_LABELS };
+  const resolvedLabels: Record<string, string> = labels ?? {
+    ...CATEGORY_LABELS,
+  };
   return (
     <div
       role="group"
