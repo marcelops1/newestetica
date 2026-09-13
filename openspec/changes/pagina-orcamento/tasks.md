@@ -5,8 +5,8 @@
 
 ## 2. Segurança OWASP de entrada (task dedicada — gatilho docs/07 §7: formulário = entrada de usuário real; docs/07 §13: segurança orientada a OWASP)
 
-- [ ] 2.1 RED: estender `frontend/lib/__tests__/quote.test.ts` (ou novo `quote-security.test.ts`) com casos maliciosos — `<script>alert(1)</script>`, `<img src=x onerror=...>`, `&`, aspas em nome/mensagem, WhatsApp com letras/máscara incompleta, mensagem longa — exigindo tratamento como texto (sem execução/interpretação de HTML), validação nome ≥2 caracteres e WhatsApp ≥10 dígitos com mensagens acolhedoras em português, e verificar que os novos testes falham
-- [ ] 2.2 GREEN: implementar o hardening na validação/escaping de `lib/quote.ts` (e no reaproveitamento da validação do `BookingModal` na página) e verificar que os testes da task 2.1 passam, que `grep -r "innerHTML\|dangerouslySetInnerHTML" frontend/` retorna vazio na nova superfície, e que a cobertura segue acima de 80%
+- [x] 2.1 RED: estender `frontend/lib/__tests__/quote.test.ts` (ou novo `quote-security.test.ts`) com casos maliciosos — `<script>alert(1)</script>`, `<img src=x onerror=...>`, `&`, aspas em nome/mensagem, WhatsApp com letras/máscara incompleta, mensagem longa — exigindo tratamento como texto (sem execução/interpretação de HTML), validação nome ≥2 caracteres e WhatsApp ≥10 dígitos com mensagens acolhedoras em português, e verificar que os novos testes falham — RED comprovado: 8/12 falhando (`validateQuoteFields` inexistente + fronteira aceitando payload inválido)
+- [x] 2.2 GREEN: implementar o hardening na validação/escaping de `lib/quote.ts` (e no reaproveitamento da validação do `BookingModal` na página) e verificar que os testes da task 2.1 passam, que `grep -r "innerHTML\|dangerouslySetInnerHTML" frontend/` retorna vazio na nova superfície, e que a cobertura segue acima de 80% — GREEN comprovado: 50/50 testes, grep vazio, cobertura 97,95% stmts / 92,42% branches / 100% funcs / 97,77% lines
 
 ## 3. Página /orcamento e fluxo crítico (lógica testada nas seções 1–2; montagem de UI por gates — sem testing-library no projeto, lacuna registrada no design)
 
