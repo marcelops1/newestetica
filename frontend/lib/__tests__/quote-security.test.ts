@@ -38,6 +38,15 @@ describe("validateQuoteFields (validação amigável por campo)", () => {
     expect(errors.name).toBeUndefined();
     expect(errors.phone).toBeUndefined();
   });
+
+  it("entrada não-string em nome e WhatsApp gera erro nos dois campos", () => {
+    const errors = validateQuoteFields({
+      name: 123 as unknown as string,
+      phone: 456 as unknown as string,
+    });
+    expect(errors.name).toBeTruthy();
+    expect(errors.phone).toBeTruthy();
+  });
 });
 
 describe("segurança de entrada (OWASP — texto nunca vira HTML)", () => {

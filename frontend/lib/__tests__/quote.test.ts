@@ -52,6 +52,32 @@ describe("parseQuoteInput (contrato da fronteira UI ↔ submissão mockada)", ()
     }
   });
 
+  it("procedure presente mas não-string é rejeitado com erro acolhedor", () => {
+    const parsed = parseQuoteInput({
+      name: "Maria Exemplo",
+      phone: "(00) 00000-0000",
+      procedure: 42 as unknown as string,
+    });
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.message.length).toBeGreaterThan(0);
+      expect(parsed.message).not.toMatch(/undefined|TypeError|stack|schema/i);
+    }
+  });
+
+  it("message presente mas não-string é rejeitado com erro acolhedor", () => {
+    const parsed = parseQuoteInput({
+      name: "Maria Exemplo",
+      phone: "(00) 00000-0000",
+      message: 123 as unknown as string,
+    });
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.message.length).toBeGreaterThan(0);
+      expect(parsed.message).not.toMatch(/undefined|TypeError|stack|schema/i);
+    }
+  });
+
   it("entrada nula retorna erro acolhedor", () => {
     expect(parseQuoteInput(null).ok).toBe(false);
   });

@@ -112,13 +112,9 @@ export function submitQuoteRequest(
   if (!parsed.ok) {
     return Promise.resolve({ ok: false, message: WARM_ERROR });
   }
-  if (typeof value === "object" && value !== null) {
-    const fields = validateQuoteFields(
-      value as { name: string; phone: string },
-    );
-    if (fields.name || fields.phone) {
-      return Promise.resolve({ ok: false, message: WARM_ERROR });
-    }
+  const fields = validateQuoteFields(parsed.input);
+  if (fields.name || fields.phone) {
+    return Promise.resolve({ ok: false, message: WARM_ERROR });
   }
   const procedure = parsed.input.procedure?.trim() || DEFAULT_PROCEDURE;
   return new Promise((resolve) => {
