@@ -47,6 +47,10 @@ export type Post = {
   id: string;
   title: string;
   excerpt: string;
+  /** Categoria editorial livre (abas derivadas dos mocks). */
+  category: string;
+  /** Conteúdo completo em parágrafos, renderizado como texto. */
+  content: string[];
   publishedAt: string;
 };
 

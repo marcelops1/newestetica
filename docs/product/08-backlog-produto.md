@@ -181,7 +181,7 @@
 - **Fluxos alternativos/exceção:** —
 - **Critérios de aceite:**
   - Artigos legíveis no mobile, tom acolhedor, sem promessas milagrosas.
-- **Status atual:** Não iniciado (mocks de posts existem; página pendente).
+- **Status atual:** Em andamento (páginas `/blog` com busca e filtro por categoria e `/blog/[slug]` com conteúdo completo e 404 acolhedora implementadas sobre 4 posts fictícios; pendente validação com a Fabiana).
 
 ---
 
