@@ -18,12 +18,39 @@ export type QuoteInput = {
 export type QuoteResult =
   { ok: true; procedure: string } | { ok: false; message: string };
 
+export type QuoteFieldErrors = { name?: string; phone?: string };
+
 export const DEFAULT_PROCEDURE = "Avaliação Geral";
 
 const SEND_DELAY_MS = 600;
 
 const WARM_ERROR =
   "Não conseguimos registrar agora — sem pressa, confira os dados e tente de novo.";
+
+/* Texto livre (nome, mensagem) é sempre tratado como texto opaco:
+   nunca é interpretado como HTML na submissão nem na renderização
+   (a UI renderiza via React, que faz escaping automático). */
+const NAME_ERROR = "Conte-nos seu nome para podermos te chamar com carinho.";
+const PHONE_ERROR =
+  "Confira o WhatsApp com DDD, assim conseguimos te retornar.";
+
+/** Validação amigável por campo, reaproveitada pela UI (mesmo padrão do booking). */
+export function validateQuoteFields(input: {
+  name: string;
+  phone: string;
+}): QuoteFieldErrors {
+  const name = typeof input.name === "string" ? input.name.trim() : "";
+  const phone = typeof input.phone === "string" ? input.phone : "";
+  const digits = phone.replace(/\D/g, "");
+  const errors: QuoteFieldErrors = {};
+  if (name.length < 2) {
+    errors.name = NAME_ERROR;
+  }
+  if (digits.length < 10) {
+    errors.phone = PHONE_ERROR;
+  }
+  return errors;
+}
 
 /** Contrato do payload: valida a estrutura sem confiar no chamador. */
 export function parseQuoteInput(
@@ -82,6 +109,14 @@ export function submitQuoteRequest(
   const parsed = parseQuoteInput(value);
   if (!parsed.ok) {
     return Promise.resolve({ ok: false, message: WARM_ERROR });
+  }
+  if (typeof value === "object" && value !== null) {
+    const fields = validateQuoteFields(
+      value as { name: string; phone: string },
+    );
+    if (fields.name || fields.phone) {
+      return Promise.resolve({ ok: false, message: WARM_ERROR });
+    }
   }
   const procedure = parsed.input.procedure?.trim() || DEFAULT_PROCEDURE;
   return new Promise((resolve) => {
