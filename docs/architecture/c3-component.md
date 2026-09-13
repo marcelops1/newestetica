@@ -13,6 +13,8 @@ flowchart LR
         R6[/depoimentos/]
         R7[/orcamento/]
         R8[/contato/]
+        R9[/blog/]
+        R10[/blog/[slug]/]
         APP[app/<br/>rotas e páginas]
     end
     subgraph UI
@@ -24,6 +26,7 @@ flowchart LR
         TEST[features/testimonials/<br/>página depoimentos/]
         QUO[features/quote/<br/>página orçamento/]
         CONT[features/contact/<br/>página contato/]
+        BLOG[features/blog/<br/>páginas blog/]
         BOOK[features/booking/<br/>modal/]
     end
     subgraph Dados
@@ -40,6 +43,8 @@ flowchart LR
     R6 --> TEST
     R7 --> QUO
     R8 --> CONT
+    R9 --> BLOG
+    R10 --> BLOG
     APP --> HOME
     APP --> CAT
     APP --> ABOUT
@@ -47,6 +52,7 @@ flowchart LR
     APP --> TEST
     APP --> QUO
     APP --> CONT
+    APP --> BLOG
     APP --> COMP
     HOME --> COMP
     CAT --> COMP
@@ -55,6 +61,7 @@ flowchart LR
     TEST --> COMP
     QUO --> BOOK
     CONT --> BOOK
+    BLOG --> BOOK
     BOOK --> LIB
     HOME --> LIB
     CAT --> LIB
@@ -63,6 +70,7 @@ flowchart LR
     TEST --> LIB
     QUO --> LIB
     CONT --> LIB
+    BLOG --> LIB
     COMP --> STY
     HOME --> STY
     CAT --> STY
@@ -71,9 +79,10 @@ flowchart LR
     TEST --> STY
     QUO --> STY
     CONT --> STY
+    BLOG --> STY
 ```
 
-- Pastas verificadas no repositório: `app/` (com `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`), `components/` (incluindo o comparador antes/depois compartilhado), `features/` (`home`, `catalog`, `about`, `booking`, `results`, `testimonials`, `quote`, `contact`), `lib/` (interfaces + mocks + acesso + helpers de domínio, ex. iniciais, contratos e submissões de orçamento e contato), `styles/`.
+- Pastas verificadas no repositório: `app/` (com `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog`, `/blog/[slug]`), `components/` (incluindo o comparador antes/depois e o filtro de categoria compartilhados), `features/` (`home`, `catalog`, `about`, `booking`, `results`, `testimonials`, `quote`, `contact`, `blog`), `lib/` (interfaces + mocks + acesso + helpers de domínio, ex. iniciais, contratos e submissões de orçamento e contato, busca e data do blog), `styles/`.
 - Regra: componentes consomem `lib/` via interfaces; trocar mocks pela API altera só `lib/`.
 
 ## Backend (placeholder normatizado)
