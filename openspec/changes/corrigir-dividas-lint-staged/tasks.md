@@ -1,0 +1,13 @@
+## 1. Dívida 1 — deleções no stage (RED→GREEN executável, sem exceção docs/07 §4)
+
+- [ ] 1.1 RED: criar scratch `frontend/lib/__tests__/hook-proof.tmp.ts` limpo, commitar, depois `git rm` o scratch (stageando a deleção) e tentar commitar a deleção; verificar que o hook FALHA em path inexistente e barra o commit (exit ≠ 0, nada commitado) — prova que a aresta existe; se o commit passar sem correção, registrar o achado (dívida inexistente na prática), remover a task 1.2 correspondente e seguir só com a dívida 2. Em qualquer caso, desfazer commits de prova (`git reset`) e manter a árvore limpa de scratch ao final da task
+- [ ] 1.2 GREEN: adicionar o filtro `fs.existsSync` em `lint-staged.config.mjs` (só caminhos existentes em disco seguem para eslint/prettier); refazer o mesmo commit de deleção do scratch e verificar que PASSA; em seguida provar o caso misto (stage com deleção + arquivo existente com erro não-corrigível real, ex. `react/no-unescaped-entities`) e verificar que o hook ignora o caminho deletado, reprova no arquivo existente e barra o commit; limpar todo scratch (`reset` + remoção) e verificar `git status` limpo de temporários
+
+## 2. Dívida 2 — gates da raiz sobre a config (prova executável preferível; exceção §4 só se confirmada como só-config)
+
+- [ ] 2.1 RED: sujar temporariamente a formatação de `lint-staged.config.mjs` (ex.: espaçamentos) e rodar `pnpm format` (raiz), verificando que PASSA hoje (prova que a raiz não é coberta); restaurar o arquivo e verificar que volta a passar. Repetir para sintaxe (`node --check` não existe no `lint` raiz hoje — registrar a ausência como parte da prova)
+- [ ] 2.2 GREEN: estender os scripts raiz — `lint` += `node --check lint-staged.config.mjs`, `format` += `prettier --check` do `.mjs` via o binário do frontend (`pnpm --filter frontend exec prettier --check ../lint-staged.config.mjs`); repetir a sujeira temporária da task 2.1 e verificar que `pnpm format`/`pnpm lint` agora FALHAM; restaurar e verificar que passam; se confirmado que não há lógica nova (só wiring de scripts), registrar aqui a exceção docs/07 §4 para esta task, senão manter a prova executável como teste
+
+## 3. Verificação final
+
+- [ ] 3.1 Rodar quality gates (`lint`, `format`, `typecheck`, testes com cobertura >80%, `build`) e `openspec validate`, registrar em `verification.md` as provas executáveis das tasks 1.1–2.2, a dispensa de gatilho §7 (tooling puro, sem entrada de usuário/dado sensível — registro obrigatório mantido para o archive) e a revisão com `code-review-and-quality`, e verificar que tudo está verde (backlog N/A: tooling sem UC, como no change de origem; C4 intocado)
