@@ -2,7 +2,7 @@
 
 ### Requirement: Hook pre-commit tolerante a deleções no stage
 
-Quando o stage contiver deleção de arquivo `.ts`/`.tsx` de `frontend/`, o hook SHALL excluir os caminhos inexistentes em disco antes de invocar eslint/prettier, de modo que um commit que só deleta arquivos (ou deleta entre outros) SHALL passar pelo hook sem erro espúrio de "arquivo não encontrado"; arquivos existentes staged SHALL continuar passando por `eslint --fix` + `prettier --write` normalmente.
+Quando o stage contiver deleção de arquivo `.ts`/`.tsx` de `frontend/`, o hook SHALL passar o commit de deleção sem erro espúrio — paths que não existem mais em disco SHALL NOT ser enviados ao eslint/prettier — e arquivos existentes staged SHALL continuar passando por `eslint --fix` + `prettier --write` normalmente, de modo que um commit que só deleta arquivos (ou deleta entre outros) bata no hook apenas sobre o que existe.
 
 #### Scenario: Commit só de deleção passa pelo hook
 
