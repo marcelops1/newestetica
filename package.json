@@ -7,8 +7,8 @@
   "scripts": {
     "prepare": "husky",
     "dev": "pnpm --filter frontend dev",
-    "lint": "pnpm --filter frontend lint",
-    "format": "pnpm --filter frontend format",
+    "lint": "node --check lint-staged.config.mjs && pnpm --filter frontend lint",
+    "format": "pnpm --filter frontend exec prettier --check ../lint-staged.config.mjs && pnpm --filter frontend format",
     "typecheck": "pnpm --filter frontend typecheck",
     "test": "pnpm --filter frontend test",
     "build": "pnpm --filter frontend build"
