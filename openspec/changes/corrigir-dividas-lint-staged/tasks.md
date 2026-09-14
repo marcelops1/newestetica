@@ -10,4 +10,4 @@
 
 ## 3. Verificação final
 
-- [ ] 3.1 Rodar quality gates (`lint`, `format`, `typecheck`, testes com cobertura >80%, `build`) e `openspec validate`, registrar em `verification.md` as provas executáveis das tasks 1.1–2.2, a dispensa de gatilho §7 (tooling puro, sem entrada de usuário/dado sensível — registro obrigatório mantido para o archive) e a revisão com `code-review-and-quality`, e verificar que tudo está verde (backlog N/A: tooling sem UC, como no change de origem; C4 intocado)
+- [x] 3.1 Rodar quality gates (`lint`, `format`, `typecheck`, testes com cobertura >80%, `build`) e `openspec validate`, registrar em `verification.md` as provas executáveis das tasks 1.1–2.2, a dispensa de gatilho §7 (tooling puro, sem entrada de usuário/dado sensível — registro obrigatório mantido para o archive) e a revisão com `code-review-and-quality`, e verificar que tudo está verde (backlog N/A: tooling sem UC, como no change de origem; C4 intocado) — gates verdes (98/98 testes, cobertura 100% nas 4 métricas); provas, saída honrosa e dispensa registradas em `verification.md`
