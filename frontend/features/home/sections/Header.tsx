@@ -4,14 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CTAButton } from "@/components/CTAButton";
 import { getContactInfo } from "@/lib/data";
-
-const NAV_ITEMS = [
-  { href: "/tratamentos", label: "Tratamentos" },
-  { href: "/#diferenciais", label: "Diferenciais" },
-  { href: "/#resultados", label: "Resultados" },
-  { href: "/#depoimentos", label: "Depoimentos" },
-  { href: "/sobre", label: "A Clínica" },
-];
+import { NAV_ITEMS } from "./nav-items";
 
 export function Header({ onBook }: { onBook: () => void }) {
   const [open, setOpen] = useState(false);
