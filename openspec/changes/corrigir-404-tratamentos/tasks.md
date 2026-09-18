@@ -1,7 +1,7 @@
 ## 1. 404 escopada do catálogo (test-first)
 
 - [x] 1.1 Escrever o teste de contrato de `app/tratamentos/not-found.tsx` (o módulo existe e seu export default é função) e constatar que falha (`Cannot find module`, precedente do change `pagina-blog`)
-- [ ] 1.2 Criar `app/tratamentos/not-found.tsx` no padrão do blog (badge, título e texto acolhedores em PT, CTA de volta ao catálogo para `/tratamentos` via `next/link`, 44px+, tom 40+) e verificar que o teste da task 1.1 passa
+- [x] 1.2 Criar `app/tratamentos/not-found.tsx` no padrão do blog (badge, título e texto acolhedores em PT, CTA de volta ao catálogo para `/tratamentos` via `next/link`, 44px+, tom 40+) e verificar que o teste da task 1.1 passa
 
 ## 2. Verificação e backlog
 
