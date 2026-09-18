@@ -1,4 +1,5 @@
 import { getContactInfo } from "@/lib/data";
+import { FOOTER_NAV_ITEMS } from "./footer-nav-items";
 
 export function Footer() {
   const contact = getContactInfo();
@@ -18,18 +19,13 @@ export function Footer() {
           <nav aria-label="Navegação do rodapé">
             <h4 className="mb-3 text-sm font-semibold text-ink">Navegação</h4>
             <ul className="space-y-2">
-              {[
-                ["#tratamentos", "Tratamentos"],
-                ["#resultados", "Resultados"],
-                ["#depoimentos", "Depoimentos"],
-                ["#diferenciais", "Diferenciais"],
-              ].map(([href, label]) => (
-                <li key={href}>
+              {FOOTER_NAV_ITEMS.map((item) => (
+                <li key={item.href}>
                   <a
-                    href={href}
+                    href={item.href}
                     className="inline-flex min-h-[44px] items-center hover:text-primary"
                   >
-                    {label}
+                    {item.label}
                   </a>
                 </li>
               ))}
