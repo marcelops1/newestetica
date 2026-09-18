@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getContactInfo } from "@/lib/data";
 import { FOOTER_NAV_ITEMS } from "./footer-nav-items";
 
@@ -21,12 +22,12 @@ export function Footer() {
             <ul className="space-y-2">
               {FOOTER_NAV_ITEMS.map((item) => (
                 <li key={item.href}>
-                  <a
+                  <Link
                     href={item.href}
                     className="inline-flex min-h-[44px] items-center hover:text-primary"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

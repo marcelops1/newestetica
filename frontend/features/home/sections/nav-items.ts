@@ -3,10 +3,18 @@ export type NavItem = {
   label: string;
 };
 
+export const NAV_DESTINATIONS = {
+  tratamentos: "/tratamentos",
+  diferenciais: "/#diferenciais",
+  resultados: "/antes-depois",
+  depoimentos: "/depoimentos",
+  sobre: "/sobre",
+} as const;
+
 export const NAV_ITEMS: readonly NavItem[] = [
-  { href: "/tratamentos", label: "Tratamentos" },
-  { href: "/#diferenciais", label: "Diferenciais" },
-  { href: "/antes-depois", label: "Resultados" },
-  { href: "/depoimentos", label: "Depoimentos" },
-  { href: "/sobre", label: "A Clínica" },
+  { href: NAV_DESTINATIONS.tratamentos, label: "Tratamentos" },
+  { href: NAV_DESTINATIONS.diferenciais, label: "Diferenciais" },
+  { href: NAV_DESTINATIONS.resultados, label: "Resultados" },
+  { href: NAV_DESTINATIONS.depoimentos, label: "Depoimentos" },
+  { href: NAV_DESTINATIONS.sobre, label: "A Clínica" },
 ];
