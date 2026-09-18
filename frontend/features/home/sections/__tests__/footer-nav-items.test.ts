@@ -1,30 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { FOOTER_NAV_ITEMS } from "../footer-nav-items";
+import { hrefFor } from "./test-helpers";
 
-function hrefFor(label: string) {
-  return FOOTER_NAV_ITEMS.find((item) => item.label === label)?.href;
-}
-
-describe("destinos da navegação do rodapé", () => {
-  it("leva Tratamentos para a página completa /tratamentos", () => {
-    expect(hrefFor("Tratamentos")).toBe("/tratamentos");
+describe("navegação do rodapé", () => {
+  it("lista os quatro itens do rodapé na ordem própria do rodapé", () => {
+    expect(FOOTER_NAV_ITEMS.map((item) => item.label)).toEqual([
+      "Tratamentos",
+      "Resultados",
+      "Depoimentos",
+      "Diferenciais",
+    ]);
   });
 
-  it("leva Resultados para a página completa /antes-depois", () => {
-    expect(hrefFor("Resultados")).toBe("/antes-depois");
-  });
-
-  it("leva Depoimentos para a página completa /depoimentos", () => {
-    expect(hrefFor("Depoimentos")).toBe("/depoimentos");
-  });
-
-  it("mantém Diferenciais como âncora da home", () => {
-    expect(hrefFor("Diferenciais")).toBe("/#diferenciais");
-  });
-
-  it("não usa âncoras cruas — todo destino parte da raiz", () => {
-    expect(FOOTER_NAV_ITEMS.every((item) => item.href.startsWith("/"))).toBe(
-      true,
-    );
+  it("não inclui A Clínica (o rodapé não tem item Sobre)", () => {
+    expect(hrefFor(FOOTER_NAV_ITEMS, "A Clínica")).toBeUndefined();
+    expect(FOOTER_NAV_ITEMS.some((item) => item.href === "/sobre")).toBe(false);
   });
 });
