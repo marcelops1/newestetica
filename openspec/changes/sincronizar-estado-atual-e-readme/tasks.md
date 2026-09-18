@@ -6,8 +6,8 @@ Valores observados em 2026-09-18 (branch `docs/sincronizar-estado-atual-e-readme
 
 ## 2. Reescrever documentos
 
-- [ ] 2.1 Reescrever `docs/product/05-estado-atual.md` usando somente os valores verificados na task 1.1, preservando a estrutura de seções e as referências cruzadas (exceção docs/07 §4: sem comportamento executável; verificação por releitura comparando cada número ao registro da task 1.1)
-- [ ] 2.2 Reescrever `README.md` (estado real, caminhos de docs corretos, tabela de modelos igual à do AGENTS.md §7) usando somente valores verificados (exceção docs/07 §4: sem comportamento executável; verificação por releitura + checagem de cada caminho citado com `ls`)
+- [x] 2.1 Reescrever `docs/product/05-estado-atual.md` usando somente os valores verificados na task 1.1, preservando a estrutura de seções e as referências cruzadas (exceção docs/07 §4: sem comportamento executável; verificação por releitura comparando cada número ao registro da task 1.1)
+- [x] 2.2 Reescrever `README.md` (estado real, caminhos de docs corretos, tabela de modelos igual à do AGENTS.md §7) usando somente valores verificados (exceção docs/07 §4: sem comportamento executável; verificação por releitura + checagem de cada caminho citado com `ls`)
 
 ## 3. Verificação e registro
 
