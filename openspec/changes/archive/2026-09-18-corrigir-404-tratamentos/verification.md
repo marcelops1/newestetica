@@ -14,7 +14,7 @@ Revisão com `code-review-and-quality` e avaliação de gatilhos com `security-a
 
 ## Revisão code-review-and-quality (5 eixos)
 
-- **Correção:** slug inválido do catálogo agora renderiza a 404 acolhedora escopada — provado em runtime (`next start` + `curl`, abaixo) e pelo contrato (o módulo existe e exporta função). `page.tsx` já chamava `notFound()`; nenhuma outra mudança de comportamento.
+- **Correção:** slug inválido do catálogo agora serve a 404 acolhedora escopada — conteúdo **confirmado presente no payload RSC servido** (renderização client-side via React; comportamento idêntico ao padrão já aprovado em `/blog`), provado em runtime (`next start` + `curl`, abaixo) e pelo contrato (o módulo existe e exporta função). `page.tsx` já chamava `notFound()`; nenhuma outra mudança de comportamento.
 - **Legibilidade:** `not-found.tsx` com 24 linhas espelhando o padrão do blog; copy PT própria do contexto de tratamento, tom 40+ (docs 01/06).
 - **Arquitetura:** página escopada por rota (padrão do blog), sem componente compartilhado — YAGNI registrado no design; sem ciclo; nada de lógica no frontend.
 - **Segurança:** nenhum gatilho; sem entrada, segredo ou I/O. Ver acima.
@@ -25,6 +25,8 @@ Revisão com `code-review-and-quality` e avaliação de gatilhos com `security-a
 ## Verificação em runtime (task 2.1 — método dos changes anteriores)
 
 `next build` + `next start` + `curl`:
+
+> **Escopo da prova por `curl`:** as strings abaixo são confirmadas **presentes no payload RSC servido** (dentro de `<script>`), não no shell HTML visível sem JavaScript; com JS habilitado, o React hidrata e renderiza a página acolhedora. Comportamento idêntico ao padrão já aprovado em `/blog`.
 
 **`/tratamentos/nao-existe` (corrigido):**
 
@@ -45,6 +47,8 @@ Esse artigo não está por aqui
 Voltar ao blog
 ```
 
+**Nota de conhecimento adquirido:** a mesma imprecisão de linguagem existia no registro do change `pagina-blog` ("404 do slug inválido verificada em runtime real"), que também confirmou presença no payload RSC, não renderização server-side visível no shell HTML. O change já arquivado não é alterado retroativamente; fica reconhecido aqui para que verificações futuras usem a formulação precisa.
+
 ## TDD (docs/07 §4)
 
 - **RED (task 1.1):** `Cannot find module '../not-found' imported from .../app/tratamentos/__tests__/not-found.test.ts` — módulo inexistente, precedente do change `pagina-blog`.
@@ -54,7 +58,7 @@ Voltar ao blog
 ## Aplicação da seção 13 (aplicados e dispensas)
 
 - **Aplicado — unitários/contrato:** módulo existe, export default é função e o corpo do componente executa retornando elemento.
-- **Aplicado — integração do fluxo crítico por runtime:** 404 acolhedora verificada no HTML servido em produção, com o blog como controle (mesma técnica dos changes `pagina-blog`, `corrigir-menu-resultados-depoimentos` e `corrigir-navegacao-footer`).
+- **Aplicado — integração do fluxo crítico por runtime:** 404 acolhedora **confirmada presente no payload RSC servido** em produção (renderização client-side via React; com JS a paciente vê a página acolhedora — mesmo comportamento do `/blog`), com o blog como controle (mesma técnica dos changes `pagina-blog`, `corrigir-menu-resultados-depoimentos` e `corrigir-navegacao-footer`).
 - **Dispensado — segurança OWASP / contrato de dados:** sem entrada de usuário e sem fronteira de dados.
 - **Dispensado — mutation:** página estática sem lógica ramificada.
 - **Dispensado — E2E e carga (parcimônia):** jornada de alto valor continua sendo o agendamento.
