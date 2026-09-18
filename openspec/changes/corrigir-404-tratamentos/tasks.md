@@ -5,5 +5,5 @@
 
 ## 2. Verificação e backlog
 
-- [ ] 2.1 Provar em runtime (`next build` + `next start` + `curl` em `/tratamentos/slug-inexistente`, com `/blog/slug-inexistente` como controle) que a 404 acolhedora renderiza com copy e CTA, rodar quality gates (`lint`, `format`, `typecheck`, `test` com cobertura, `build`) e revisar segurança contra `docs/security/03-seguranca.md` (página estática sem entrada de usuário/auth/dados de paciente/integração: registrar não-aplicabilidade dos gatilhos §7) e verificar que tudo passa
+- [x] 2.1 Provar em runtime (`next build` + `next start` + `curl` em `/tratamentos/slug-inexistente`, com `/blog/slug-inexistente` como controle) que a 404 acolhedora renderiza com copy e CTA, rodar quality gates (`lint`, `format`, `typecheck`, `test` com cobertura, `build`) e revisar segurança contra `docs/security/03-seguranca.md` (página estática sem entrada de usuário/auth/dados de paciente/integração: registrar não-aplicabilidade dos gatilhos §7) e verificar que tudo passa
 - [ ] 2.2 Avaliar `docs/product/08-backlog-produto.md` (atualizar somente se algum status estiver incorreto) e atualizar a linha de `docs/product/05-estado-atual.md` sobre a 404 do catálogo, que esta correção torna obsoleta, verificando consistência
