@@ -43,6 +43,10 @@ Revisão com `code-review-and-quality` e avaliação de gatilhos com `security-a
 - **Dispensado — mutation:** dado estático sem lógica ramificada.
 - **Dispensado — E2E e carga (parcimônia):** troca de destinos; jornada de alto valor continua sendo o agendamento.
 
+## Backlog (task 2.2)
+
+Avaliação de `docs/product/08-backlog-produto.md`: **sem alteração necessária**. Não existe Use Case/Feature de navegação de menu com status a corrigir — o menu é comportamento transversal do Header, sem entrada própria no backlog. Os status vizinhos permanecem corretos: UC 1.1.1 (Home) segue "Concluído (implementada com mocks...)"; UC 1.4.1 (`/antes-depois`) e UC 1.5.1 (`/depoimentos`) seguem "Em andamento... pendente validação com a Fabiana", sem relação com o destino do link do menu. Este change é correção de bug de navegação, não feature nova.
+
 ## Gates executados (task 2.1)
 
 - `pnpm lint` — passou (0 erros; 1 warning pré-existente em `stryker.config.mjs`, fora do escopo)
