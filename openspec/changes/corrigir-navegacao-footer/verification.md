@@ -47,6 +47,10 @@ Revisão com `code-review-and-quality` e avaliação de gatilhos com `security-a
 - **Dispensado — mutation:** dado estático sem lógica ramificada.
 - **Dispensado — E2E e carga (parcimônia):** troca de destinos; jornada de alto valor continua sendo o agendamento.
 
+## Backlog (task 2.2)
+
+Avaliação de `docs/product/08-backlog-produto.md`: **sem alteração necessária**. Não existe Use Case/Feature de navegação de rodapé com status a corrigir. UC 1.1.1 (Home) segue "Concluído (implementada com mocks...)" — a correção é de bug de navegação, não feature; UC 1.8.1 (WhatsApp) cita "header, CTA final e rodapé", mas seus links externos (`contact.whatsappHref`) não foram tocados e seguem corretos como `<a target="_blank">`; os demais status permanecem precisos.
+
 ## Gates executados (task 2.1)
 
 - `pnpm lint` — passou (0 erros; 1 warning pré-existente em `stryker.config.mjs`, fora do escopo)

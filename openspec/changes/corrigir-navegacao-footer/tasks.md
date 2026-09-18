@@ -6,4 +6,4 @@
 ## 2. Verificação e backlog
 
 - [x] 2.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test` com cobertura, `build`) e revisar segurança contra `docs/security/03-seguranca.md` (navegação pura, sem entrada de usuário/auth/dados de paciente/integração: registrar não-aplicabilidade dos gatilhos §7) e verificar que tudo passa
-- [ ] 2.2 Avaliar `docs/product/08-backlog-produto.md` e atualizar somente se algum status de navegação estiver incorreto, verificando consistência
+- [x] 2.2 Avaliar `docs/product/08-backlog-produto.md` e atualizar somente se algum status de navegação estiver incorreto, verificando consistência
