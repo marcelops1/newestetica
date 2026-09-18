@@ -1,8 +1,12 @@
-import { NAV_DESTINATIONS, type NavItem } from "./nav-items";
+import { NAV_DESTINATIONS, NAV_ITEMS, type NavItem } from "./nav-items";
 
-export const FOOTER_NAV_ITEMS: readonly NavItem[] = [
-  { href: NAV_DESTINATIONS.tratamentos, label: "Tratamentos" },
-  { href: NAV_DESTINATIONS.resultados, label: "Resultados" },
-  { href: NAV_DESTINATIONS.depoimentos, label: "Depoimentos" },
-  { href: NAV_DESTINATIONS.diferenciais, label: "Diferenciais" },
-];
+const FOOTER_DESTINATIONS = [
+  NAV_DESTINATIONS.tratamentos,
+  NAV_DESTINATIONS.resultados,
+  NAV_DESTINATIONS.depoimentos,
+  NAV_DESTINATIONS.diferenciais,
+] as const;
+
+export const FOOTER_NAV_ITEMS: readonly NavItem[] = FOOTER_DESTINATIONS.flatMap(
+  (href) => NAV_ITEMS.filter((item) => item.href === href),
+);
