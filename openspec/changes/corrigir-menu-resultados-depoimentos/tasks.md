@@ -1,6 +1,6 @@
 ## 1. Destinos do menu (test-first)
 
-- [ ] 1.1 Escrever o teste do mapa de destinos (Resultados→`/antes-depois`, Depoimentos→`/depoimentos`, Diferenciais→`/#diferenciais`, Tratamentos→`/tratamentos`, A Clínica→`/sobre`) e constatar que falha no `NAV_ITEMS` atual
+- [x] 1.1 Escrever o teste do mapa de destinos (Resultados→`/antes-depois`, Depoimentos→`/depoimentos`, Diferenciais→`/#diferenciais`, Tratamentos→`/tratamentos`, A Clínica→`/sobre`) e constatar que falha no `NAV_ITEMS` atual
 - [ ] 1.2 Extrair `NAV_ITEMS` para módulo puro co-localizado, atualizar os dois destinos e verificar que o teste da task 1.1 passa, com Header (desktop + drawer) consumindo a mesma fonte via `next/link`
 
 ## 2. Verificação e backlog
