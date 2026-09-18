@@ -58,7 +58,7 @@ O hero SHALL ter layout em duas colunas no desktop (conteúdo + card visual) emp
 
 ### Requirement: Header com navegação e drawer mobile
 
-O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), navegação desktop com links reais — Tratamentos para `/tratamentos`, A Clínica para `/sobre`, e Diferenciais/Resultados/Depoimentos como `/#secao` com prefixo de rota — ação WhatsApp fantasma + CTA primário, e no mobile um botão hamburger que abre/fecha um drawer com os mesmos links e ações; o drawer SHALL ser operável por teclado e expor estado via `aria-expanded`; links internos SHALL usar `next/link`.
+O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), navegação desktop com links reais — Tratamentos para `/tratamentos`, A Clínica para `/sobre`, Resultados para `/antes-depois`, Depoimentos para `/depoimentos`, e Diferenciais como `/#diferenciais` — ação WhatsApp fantasma + CTA primário, e no mobile um botão hamburger que abre/fecha um drawer com os mesmos links e ações; o drawer SHALL ser operável por teclado e expor estado via `aria-expanded`; links internos SHALL usar `next/link`.
 
 #### Scenario: Navegação mobile por teclado
 
@@ -72,8 +72,13 @@ O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), 
 
 #### Scenario: Rotas reais no menu
 
-- **WHEN** a visitante aciona Tratamentos ou A Clínica de qualquer página
-- **THEN** ela chega a `/tratamentos` ou `/sobre`, sem digitar URL
+- **WHEN** a visitante aciona Tratamentos, A Clínica, Resultados ou Depoimentos de qualquer página
+- **THEN** ela chega a `/tratamentos`, `/sobre`, `/antes-depois` ou `/depoimentos`, sem digitar URL
+
+#### Scenario: Diferenciais continua âncora da home
+
+- **WHEN** a visitante aciona Diferenciais de qualquer página
+- **THEN** ela chega à seção de diferenciais da home (`/#diferenciais`), não a uma rota própria
 
 ### Requirement: Quiz com objetivos e recomendação
 
