@@ -9,7 +9,7 @@
 
 ## 3. Backlog Feature 4.2
 
-- [ ] 3.1 Estender a linha de intro da Feature 4.2 com a regra de dependência de Clean Architecture (cobrindo os 7 UCs sem editá-los) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
+- [x] 3.1 Estender a linha de intro da Feature 4.2 com a regra de dependência de Clean Architecture (cobrindo os 7 UCs sem editá-los) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
 
 ## 4. Verificação e registro
 
