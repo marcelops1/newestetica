@@ -1,6 +1,6 @@
 ## 1. Registrar validação nos UCs do Épico 1
 
-- [ ] 1.1 Atualizar as 7 cláusulas "pendente validação com a Fabiana" (linhas 24, 39, 54, 96, 140, 169, 184 do backlog) para "validado com a Fabiana em 2026-09-19", promovendo "Em andamento"→"Concluído" onde a validação era a única pendência (1.2.1, 1.3.1, 1.5.1, 1.7.1, 1.8.2, 1.9.1), sem tocar nos demais UCs (exceção docs/07 §4: backlog sem comportamento executável; verificação por grep antes/depois contando ocorrências: 7→0)
+- [x] 1.1 Atualizar as 7 cláusulas "pendente validação com a Fabiana" (linhas 24, 39, 54, 96, 140, 169, 184 do backlog) para "validado com a Fabiana em 2026-09-19", promovendo "Em andamento"→"Concluído" onde a validação era a única pendência (1.2.1, 1.3.1, 1.5.1, 1.7.1, 1.8.2, 1.9.1), sem tocar nos demais UCs (exceção docs/07 §4: backlog sem comportamento executável; verificação por grep antes/depois contando ocorrências: 7→0)
 
 ## 2. Tabela-resumo + 05-estado-atual
 
