@@ -1,6 +1,6 @@
 ## 1. Nomear Clean Architecture (02 §7 + backend/AGENTS.md)
 
-- [ ] 1.1 Adicionar o nome "Clean Architecture" e a regra de dependência exata (`domain/` isolado; `application/` só de `domain/`; `infrastructure/` implementa interfaces do `domain/`; `presentation/` de `application/`) nos dois arquivos, sem alterar o restante (exceção docs/07 §4: documentação de padrão sem comportamento executável; verificação por releitura comparando com o texto aprovado no design)
+- [x] 1.1 Adicionar o nome "Clean Architecture" e a regra de dependência exata (`domain/` isolado; `application/` só de `domain/`; `infrastructure/` implementa interfaces do `domain/`; `presentation/` de `application/`) nos dois arquivos, sem alterar o restante (exceção docs/07 §4: documentação de padrão sem comportamento executável; verificação por releitura comparando com o texto aprovado no design)
 
 ## 2. Detalhar testes em 07 §13 + criar §14
 

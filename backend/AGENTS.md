@@ -52,6 +52,13 @@ Cada módulo deve seguir, preferencialmente:
 - `infrastructure/`
 - `presentation/`
 
+A organização segue **Clean Architecture** — a regra de dependência é obrigatória:
+
+- `domain/` não importa nada fora de `domain/` (sem framework, sem ORM, sem HTTP);
+- `application/` depende somente de `domain/`;
+- `infrastructure/` implementa interfaces definidas em `domain/`, nunca o inverso;
+- `presentation/` depende de `application/`.
+
 Bounded contexts principais:
 
 - Identidade e Acesso
@@ -65,6 +72,7 @@ Bounded contexts principais:
 
 ## 5. Regras técnicas obrigatórias
 
+- Clean Architecture: `domain/` não importa nada externo; `application/` só depende de `domain/`; `infrastructure/` implementa interfaces do `domain/`; `presentation/` depende de `application/`
 - Usar Repository Pattern
 - Usar Data Mapper (evitar Active Record)
 - Manter baixo acoplamento entre módulos
