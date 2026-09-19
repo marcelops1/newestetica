@@ -1,0 +1,76 @@
+name: newestetica
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-newestetica}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme-dev}
+      POSTGRES_DB: ${POSTGRES_DB:-newestetica}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - newestetica
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7.4
+    restart: unless-stopped
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-changeme-dev}
+      KC_HEALTH_ENABLED: "true"
+      KC_HTTP_MANAGEMENT_PORT: "9000"
+    ports:
+      - "127.0.0.1:${KEYCLOAK_PORT:-8080}:8080"
+    volumes:
+      - ./keycloak/realm-newestetica.json:/opt/keycloak/data/import/realm-newestetica.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "exec 3<>/dev/tcp/localhost/9000 && printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && head -n1 <&3 | grep -q '200 OK'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 30s
+    networks:
+      - newestetica
+
+  # backend:
+  #   Descomentar quando backend/Dockerfile existir (primeiro módulo do Épico 4).
+  #   Ver docs/architecture/04-decisoes-tecnicas.md §19.
+  #   build:
+  #     context: ../..
+  #     dockerfile: backend/Dockerfile
+  #   environment:
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-newestetica}:${POSTGRES_PASSWORD:-changeme-dev}@postgres:5432/${POSTGRES_DB:-newestetica}
+  #   ports:
+  #     - "${BACKEND_PORT:-3001}:3001"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     keycloak:
+  #       condition: service_healthy
+  #   networks:
+  #     - newestetica
+
+volumes:
+  postgres-data:
+
+networks:
+  newestetica:
