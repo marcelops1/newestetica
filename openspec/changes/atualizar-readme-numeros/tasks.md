@@ -6,7 +6,7 @@ Valores observados em 2026-09-19 (branch `docs/atualizar-readme-numeros`, base `
 
 ## 2. Atualizar README.md
 
-- [ ] 2.1 Atualizar a seção "O que existe hoje" (acesso de Blog/Contato/Orçamento pela navegação) e todos os números (testes, changes, PRs) usando somente os valores verificados na task 1.1, preservando o restante do arquivo (exceção docs/07 §4: sem comportamento executável; verificação por releitura comparando cada número ao registro da task 1.1)
+- [x] 2.1 Atualizar a seção "O que existe hoje" (acesso de Blog/Contato/Orçamento pela navegação) e todos os números (testes, changes, PRs) usando somente os valores verificados na task 1.1, preservando o restante do arquivo (exceção docs/07 §4: sem comportamento executável; verificação por releitura comparando cada número ao registro da task 1.1)
 
 ## 3. Verificação e registro
 
