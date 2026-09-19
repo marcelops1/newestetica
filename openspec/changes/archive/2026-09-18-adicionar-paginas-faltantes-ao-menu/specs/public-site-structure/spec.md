@@ -2,7 +2,7 @@
 
 ### Requirement: Header com navegação e drawer mobile
 
-O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), navegação desktop com links reais — Tratamentos para `/tratamentos`, A Clínica para `/sobre`, Resultados para `/antes-depois`, Depoimentos para `/depoimentos`, e Diferenciais como `/#diferenciais` — ação WhatsApp fantasma + CTA primário de Agendar + CTA fantasma "Pedir Orçamento" para `/orcamento`, e no mobile um botão hamburger que abre/fecha um drawer com os mesmos links e ações (incluindo o CTA de Orçamento); o drawer SHALL ser operável por teclado e expor estado via `aria-expanded`; links internos SHALL usar `next/link`.
+O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), navegação desktop com links reais — Tratamentos para `/tratamentos`, A Clínica para `/sobre`, Resultados para `/antes-depois`, Depoimentos para `/depoimentos`, e Diferenciais como `/#diferenciais` — ação WhatsApp fantasma + CTA primário de Agendar + CTA fantasma "Pedir Orçamento" para `/orcamento`, e no mobile um botão hamburger que abre/fecha um drawer com os mesmos links e ações (incluindo o CTA de Orçamento); o drawer SHALL ser operável por teclado e expor estado via `aria-expanded`; links de navegação (menu e rodapé) SHALL usar `next/link`. O CTA de Orçamento usa `<a>` nativo via `CTAButton` por design (reload intencional, ver `design.md` deste change) — não está sujeito a esta regra.
 
 #### Scenario: Navegação mobile por teclado
 
