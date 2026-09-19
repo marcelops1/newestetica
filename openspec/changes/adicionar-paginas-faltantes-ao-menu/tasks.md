@@ -11,7 +11,7 @@
 ## 3. CTA Pedir Orçamento no Header (test-first via runtime)
 
 - [x] 3.1 Escrever a verificação de runtime (o HTML servido deve conter `href="/orcamento"` no bloco do header, desktop e drawer) e constatar que falha (href ausente no header atual). RED executado em 2026-09-19: bloco `<header>` do HTML servido sem `href="/orcamento"` (contagem 0; presentes: `/`, `/tratamentos`, `/#diferenciais`, `/antes-depois`, `/depoimentos`, `/sobre`, WhatsApp). Nota de método: o drawer é renderizado condicionalmente (`open ? ... : null`) e não aparece no HTML inicial — a checagem de runtime cobre o CTA desktop do header servido; o CTA do drawer é verificado por leitura/typecheck (mesmo componente e mesma constante)
-- [ ] 3.2 Adicionar o CTA fantasma "Pedir Orçamento" (`CTAButton` com `href`, `variant="ghost"`, desktop + drawer) e verificar que a checagem de runtime passa, que o drawer segue operável e que lint/typecheck passam
+- [x] 3.2 Adicionar o CTA fantasma "Pedir Orçamento" (`CTAButton` com `href`, `variant="ghost"`, desktop + drawer) e verificar que a checagem de runtime passa, que o drawer segue operável e que lint/typecheck passam. GREEN executado em 2026-09-19: HTML servido do header contém `href="/orcamento"` (contagem 1) e o texto "Pedir Orçamento"; drawer recebe o mesmo CTA via a mesma constante (leitura + typecheck)
 
 ## 4. Verificação e backlog
 

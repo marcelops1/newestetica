@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CTAButton } from "@/components/CTAButton";
 import { getContactInfo } from "@/lib/data";
-import { NAV_ITEMS } from "./nav-items";
+import { NAV_DESTINATIONS, NAV_ITEMS } from "./nav-items";
 
 export function Header({ onBook }: { onBook: () => void }) {
   const [open, setOpen] = useState(false);
@@ -51,6 +51,9 @@ export function Header({ onBook }: { onBook: () => void }) {
             WhatsApp
           </a>
           <CTAButton onClick={onBook}>Agendar Avaliação</CTAButton>
+          <CTAButton href={NAV_DESTINATIONS.orcamento} variant="ghost">
+            Pedir Orçamento
+          </CTAButton>
         </div>
 
         <button
@@ -98,6 +101,13 @@ export function Header({ onBook }: { onBook: () => void }) {
               }}
             >
               Agendar Avaliação
+            </CTAButton>
+            <CTAButton
+              href={NAV_DESTINATIONS.orcamento}
+              variant="ghost"
+              onClick={() => setOpen(false)}
+            >
+              Pedir Orçamento
             </CTAButton>
             <a
               href={contact.whatsappHref}
