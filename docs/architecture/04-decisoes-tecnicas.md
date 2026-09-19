@@ -262,27 +262,34 @@ Toda nova decisão técnica relevante deve:
 
 ---
 
-## 19. Decisão: Orquestração do Ambiente do Backend (Docker)
+## 19. Decisão: Orquestração de Ambiente e Containerização (Docker)
 
-**Escolhido:** Docker como padrão de orquestração de ambiente para o backend futuro (Keycloak, PostgreSQL e NestJS), via `docker-compose` em `infra/`.
+**Escolhido:** Docker como padrão de orquestração de ambiente e de empacotamento das aplicações, via `docker-compose` em `infra/docker/`:
+
+- **Postgres e Keycloak** sobem em containers no ambiente local (base implementada em 2026-09-19, com healthchecks e versões pinadas);
+- **Frontend** tem Dockerfile multi-stage (standalone) — portabilidade de hospedagem para AWS/VPS, **sem substituir** a Vercel, que segue como plataforma de **demo** (decisão 18);
+- **Backend** (NestJS) entra no compose quando o primeiro módulo nascer (`backend/Dockerfile` ainda não existe; o serviço fica comentado no compose até lá).
 
 **Motivos:**
 
 - Paridade entre desenvolvimento e produção (mesmas versões de serviços para todos)
-- Isolamento do ambiente (PostgreSQL e Keycloak locais sem poluir a máquina)
+- Isolamento do ambiente (nada instalado na máquina do desenvolvedor)
 - Onboarding simples: subir o ambiente com um comando
+- Portabilidade de hosting: o destino final é AWS ou VPS — a Vercel cobre só a demo, sem virar dependência definitiva
 
 **Alternativas consideradas:**
 
 - **Serviços instalados na máquina** (PostgreSQL/Keycloak nativos): rejeitada — divergência de versões e configuração manual por pessoa
 - **Apenas serviços gerenciados em nuvem desde já**: rejeitada — custo e dependência externa antes de existir backend
 - **Kubernetes/orquestração mais complexa**: rejeitada — complexidade desproporcional ao escopo (mesmo racional do monolito modular)
+- **Manter a Vercel como destino final**: rejeitada — lock-in de plataforma; a containerização preserva a escolha de hospedagem
 
 **Implicações:**
 
-- `docker-compose` e configurações ficarão em `infra/` (hoje `infra/docker/` está vazio — **nada é implementado agora**)
-- A implementação acontece quando o backend começar (Épicos 2+ e contratos), dentro do change correspondente
-- Convenção de portas, volumes e variáveis de ambiente será definida nesse momento, seguindo `docs/security/03-seguranca.md` (segredos fora do repositório)
+- `docker-compose.yml`, realm de exemplo e `.env.example` vivem em `infra/docker/`; segredos fora do repositório (`.env` ignorado pelo git, conforme `docs/security/03-seguranca.md`)
+- Versões pinadas (séries estáveis) e healthchecks obrigatórios no compose
+- O serviço `backend` fica comentado no compose até `backend/Dockerfile` existir (primeiro módulo do Épico 4)
+- Testes de integração do backend usam o mesmo PostgreSQL real em container (ver `docs/engineering/07-workflow-de-engenharia.md` §13)
 
 ---
 

@@ -15,5 +15,5 @@
 
 ## 4. Decisão documentada + verificação
 
-- [ ] 4.1 Atualizar o §19 do 04 (frontend containerizado, Vercel-demo reconciliado como demo, sem tocar §18) — exceção docs/07 §4 (documentação de decisão; verificação por releitura)
+- [x] 4.1 Atualizar o §19 do 04 (frontend containerizado, Vercel-demo reconciliado como demo, sem tocar §18) — exceção docs/07 §4 (documentação de decisão; verificação por releitura). Execução: título passa a "Orquestração de Ambiente e Containerização (Docker)"; §18 intacto; referências ao §19 nos outros docs continuam válidas (número mantido)
 - [ ] 4.2 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança (`grep` de segredos/credenciais reais no compose/env/realm; pins exatos, sem `latest`; portas e volumes documentados) + `verification.md`, e avaliar backlog/05 (atualizar somente se incorreto — infra de tooling, sem UC) — exceção docs/07 §4 só para a escrita dos registros; gates são executáveis
