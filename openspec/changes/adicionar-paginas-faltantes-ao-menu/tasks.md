@@ -15,5 +15,5 @@
 
 ## 4. Verificação e backlog
 
-- [ ] 4.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test` com cobertura, `build`) e revisar segurança contra `docs/security/03-seguranca.md` (navegação pura: sem entrada de usuário/auth/dados de paciente/integração; copy nova só em labels/CTA sem promessas — registrar não-aplicabilidade dos gatilhos §7) e verificar que tudo passa
-- [ ] 4.2 Avaliar `docs/product/08-backlog-produto.md` e atualizar somente se algum status estiver incorreto, verificando consistência
+- [x] 4.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test` com cobertura, `build`) e revisar segurança contra `docs/security/03-seguranca.md` (navegação pura: sem entrada de usuário/auth/dados de paciente/integração; copy nova só em labels/CTA sem promessas — registrar não-aplicabilidade dos gatilhos §7) e verificar que tudo passa
+- [x] 4.2 Avaliar `docs/product/08-backlog-produto.md` e atualizar somente se algum status estiver incorreto, verificando consistência
