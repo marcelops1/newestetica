@@ -4,8 +4,8 @@
 
 ## 2. Detalhar testes em 07 §13 + criar §14
 
-- [ ] 2.1 Estender §13 (integração/contrato com o *como* do backend via Docker/Testcontainers; subcategoria adversarial explícita em segurança), preservando faixas e itens existentes (exceção docs/07 §4: sem comportamento executável; verificação por releitura + checar que nada do texto vigente foi removido)
-- [ ] 2.2 Criar a §14 ("Regressão de prompts de desenvolvimento") ao final do arquivo com a formalização agnóstica de modelo, seed de padrões observados e sinais de degradação — sem SHALL de enforcement e sem citar nomes de modelos como regra (exceção docs/07 §4: sem comportamento executável; verificação por releitura + grep de nomes de modelos na seção nova)
+- [x] 2.1 Estender §13 (integração/contrato com o *como* do backend via Docker/Testcontainers; subcategoria adversarial explícita em segurança), preservando faixas e itens existentes (exceção docs/07 §4: sem comportamento executável; verificação por releitura + checar que nada do texto vigente foi removido)
+- [x] 2.2 Criar a §14 ("Regressão de prompts de desenvolvimento") ao final do arquivo com a formalização agnóstica de modelo, seed de padrões observados e sinais de degradação — sem SHALL de enforcement e sem citar nomes de modelos como regra (exceção docs/07 §4: sem comportamento executável; verificação por releitura + grep de nomes de modelos na seção nova). Grep executado: `claude|glm|deepseek|gemini|gpt|muse|kimi|llama|mistral|grok|copilot|opencode|codex` na §14 → vazio
 
 ## 3. Backlog Feature 4.2
 
