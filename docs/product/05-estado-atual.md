@@ -20,10 +20,10 @@ Dar uma fotografia clara e atualizada do projeto, respondendo:
 
 **Fase atual: Site público do Épico 1 completo com mocks (pré-validação)**
 
-O projeto concluiu a documentação base e implementou as 9 features do site público com dados mockados — Home, Sobre, Catálogo, Antes/Depois, Depoimentos, Agendamento (modal), Orçamento, Contato e Blog (10 rotas) — com Header e rodapé na navegação canônica, 15 arquivos e 106 testes a 100% de cobertura, e 19 PRs mergeados em `main`.
+O projeto concluiu a documentação base e implementou as 9 features do site público com dados mockados — Home, Sobre, Catálogo, Antes/Depois, Depoimentos, Agendamento (modal), Orçamento, Contato e Blog (10 rotas) — com Header e rodapé na navegação canônica, 15 arquivos e 109 testes a 100% de cobertura, e 23 PRs mergeados em `main`.
 
 **Estamos na fase de validação visual com a Fabiana Rosa.**
-23 changes arquivados antes deste, com specs sincronizadas; o backend ainda não começou, conforme a estratégia frontend-first.
+27 changes arquivados (23 com specs sincronizadas e 4 com `skip_specs`, incluindo este); o backend ainda não começou, conforme a estratégia frontend-first.
 
 ---
 
@@ -35,7 +35,7 @@ A estrutura do monorepo já foi criada:
 
 - `AGENTS.md`
 - `docs/` (produto, arquitetura, segurança, engenharia, QA/dados/infra + protótipo visual aprovado)
-- `openspec/` (7 specs de domínio e 23 changes arquivados antes deste)
+- `openspec/` (7 specs de domínio e 27 changes arquivados)
 - `frontend/` (Next.js implementado — ver abaixo)
 - `backend/` (só `AGENTS.md`, sem código)
 - `shared/` (vazio, sem tipos compartilhados ainda)
@@ -102,8 +102,8 @@ A estrutura do monorepo já foi criada:
 - 10 rotas: `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog`, `/blog/[slug]`
 - Home completa alinhada ao protótipo nano banana: Header com drawer, Hero em duas colunas, Quiz, Tratamentos com filtros, Resultados com comparador acessível, Diferenciais, Depoimentos, CTA final, rodapé e modal de agendamento (envio 100% mockado, 4 estados)
 - Páginas com busca/filtro client-side (catálogo, blog), formulários mockados com 4 estados (orçamento, contato) e 404 acolhedora escopada por rota em `/blog/[slug]` (`app/blog/not-found.tsx`) e `/tratamentos/[slug]` (`app/tratamentos/not-found.tsx`)
-- Mocks tipados e fictícios (procedimentos, depoimentos, antes/depois com consentimento, slots, posts, quiz, contatos) + 15 arquivos e 106 testes a 100% de cobertura
-- Quality gates passando (lint, format, typecheck, testes, build); 19 PRs mergeados
+- Mocks tipados e fictícios (procedimentos, depoimentos, antes/depois com consentimento, slots, posts, quiz, contatos) + 15 arquivos e 109 testes a 100% de cobertura
+- Quality gates passando (lint, format, typecheck, testes, build); 23 PRs mergeados
 
 ### Workflow de engenharia e gates
 
@@ -132,12 +132,14 @@ A estrutura do monorepo já foi criada:
 ## 5. Estado do OpenSpec
 
 - Specs de domínio aprovadas em `openspec/specs/` (7 specs, 72 requirements): `architecture-docs` (4), `design-tokens` (7), `docs-organization` (3), `engineering-workflow` (15), `frontend-foundation` (4), `mock-data` (12), `public-site-structure` (27)
-- 23 changes arquivados antes deste, com specs sincronizadas:
+- 27 changes arquivados (23 com specs sincronizadas e 4 com `skip_specs`, incluindo este):
   - Fundação e docs (5): `frontend-foundation-mocks`, `reorganizacao-documentacao`, `documentacao-c4`, `sincronizar-c4-frontend`, `align-home-to-nano-banana-prototype`
   - Páginas do Épico 1 (7): `pagina-sobre`, `catalogo-procedimentos`, `pagina-antes-depois`, `pagina-depoimentos`, `pagina-orcamento`, `pagina-contato`, `pagina-blog`
   - Navegação (3): `corrigir-navegacao-header`, `corrigir-menu-resultados-depoimentos`, `corrigir-navegacao-footer`
   - Agendamento (1): `booking-flow-polish`
   - Qualidade e workflow (6): `engineering-workflow-hardening`, `template-pr-checklist-c4`, `instalar-skills-qualidade-e-stryker`, `padrao-testes-prioridade`, `instalar-husky-lint-staged`, `corrigir-dividas-lint-staged`
+  - Páginas e navegação — pós-sync (1): `adicionar-paginas-faltantes-ao-menu`
+  - Com `skip_specs` (4): `sincronizar-estado-atual-e-readme`, `corrigir-404-tratamentos`, `decisao-tecnica-vercel-docker`, `atualizar-readme-numeros`
 - Nenhum change ativo além de revisões de estado como esta
 - O processo OpenSpec é **inegociável** e deve ser usado antes de qualquer implementação
 
@@ -175,11 +177,11 @@ A estrutura do monorepo já foi criada:
 | Design System | Definido e aplicado nas 10 rotas |
 | Protótipo visual (nano banana) | Aprovado e aplicado no site público |
 | OpenSpec com specs de domínio | 7 specs / 72 requirements |
-| Changes arquivados | 22, com specs sincronizadas |
+| Changes arquivados | 27 (23 com specs sincronizadas; 4 com `skip_specs`, incluindo este) |
 | Workflow de engenharia unificado | Definido em docs/07 |
 | TDD obrigatório | Regra absoluta (AGENTS.md, docs/02, docs/04, docs/07) |
 | CI com gates automáticos | 3 camadas (pre-commit, CI, branch protection) |
-| Código frontend (Épico 1 + mocks) | Completo: 10 rotas, 106 testes, 100% cobertura, 19 PRs |
+| Código frontend (Épico 1 + mocks) | Completo: 10 rotas, 109 testes, 100% cobertura, 23 PRs |
 | Código backend | Não iniciado |
 | Contratos e tipos compartilhados | Não iniciados (`contracts/` e `shared/` vazios) |
 | Painel admin | Não iniciado |
