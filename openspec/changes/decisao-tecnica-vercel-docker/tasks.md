@@ -1,6 +1,6 @@
 ## 1. Registrar decisões em 04-decisoes-tecnicas.md
 
-- [ ] 1.1 Adicionar as linhas de Vercel e Docker na tabela de Stack (§2) e as duas seções de decisão (Escolhido/Motivos/Implicações + alternativas rejeitadas, conforme escopo aprovado) antes das Referências, renumerando Referências para §20, e checar por grep que nenhuma referência a números de seção quebrou (exceção docs/07 §4: documentação de decisão sem comportamento executável; verificação por releitura + grep)
+- [x] 1.1 Adicionar as linhas de Vercel e Docker na tabela de Stack (§2) e as duas seções de decisão (Escolhido/Motivos/Implicações + alternativas rejeitadas, conforme escopo aprovado) antes das Referências, renumerando Referências para §20, e checar por grep que nenhuma referência a números de seção quebrou (exceção docs/07 §4: documentação de decisão sem comportamento executável; verificação por releitura + grep)
 
 ## 2. Registrar no estado atual
 
