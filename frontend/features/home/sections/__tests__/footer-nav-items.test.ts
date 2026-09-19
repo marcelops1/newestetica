@@ -3,12 +3,14 @@ import { FOOTER_NAV_ITEMS } from "../footer-nav-items";
 import { hrefFor } from "./test-helpers";
 
 describe("navegação do rodapé", () => {
-  it("lista os quatro itens do rodapé na ordem própria do rodapé", () => {
+  it("lista os seis itens do rodapé na ordem própria do rodapé", () => {
     expect(FOOTER_NAV_ITEMS.map((item) => item.label)).toEqual([
       "Tratamentos",
       "Resultados",
       "Depoimentos",
       "Diferenciais",
+      "Blog",
+      "Contato",
     ]);
   });
 
