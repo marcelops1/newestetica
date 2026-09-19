@@ -5,7 +5,7 @@
 
 ## 2. Instalação limpa (GREEN em ambiente limpo)
 
-- [ ] 2.1 Remover `node_modules` (raiz + `frontend/`), rodar `pnpm install` do zero e re-verificar `pnpm exec openspec --version` → `1.12.0` com resolução local (sem tocar na instalação global — prova por caminho resolvido, conforme design)
+- [x] 2.1 Remover `node_modules` (raiz + `frontend/`), rodar `pnpm install` do zero e re-verificar `pnpm exec openspec --version` → `1.12.0` com resolução local (sem tocar na instalação global — prova por caminho resolvido, conforme design). Execução: `rm -rf node_modules frontend/node_modules` + `pnpm install` → 535 pacotes do lockfile (store warm), `unrs-resolver` postinstall (dependência pré-existente do eslint, não da nova dep), husky `prepare` ok. GREEN: bin local direto 1.12.0; `pnpm exec which openspec` → `./node_modules/.bin/openspec`; **prova sem o global**: `env PATH="/tmp/opencode/bin:/usr/bin:/bin" sh node_modules/.bin/openspec --version` → 1.12.0, com `which openspec` ausente nesse PATH
 
 ## 3. Documentação portátil (exceção docs/07 §4)
 
