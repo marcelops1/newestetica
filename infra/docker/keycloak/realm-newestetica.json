@@ -1,0 +1,23 @@
+{
+  "realm": "newestetica",
+  "enabled": true,
+  "displayName": "Newestetica (dev)",
+  "roles": {
+    "realm": [
+      { "name": "admin", "description": "Fabiana Rosa — acesso total (dev)" },
+      { "name": "reception", "description": "Equipe de recepção — acesso operacional (dev)" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "newestetica-frontend",
+      "name": "Newestetica frontend (dev)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"]
+    }
+  ]
+}

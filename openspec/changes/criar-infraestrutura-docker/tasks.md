@@ -1,7 +1,7 @@
 ## 1. Compose base (test-first)
 
-- [ ] 1.1 Executar `docker compose -f infra/docker/docker-compose.yml config` e constatar que falha (arquivo inexistente), com as portas-alvo livres — RED
-- [ ] 1.2 Criar `docker-compose.yml` (postgres com pin/volume/healthcheck, keycloak com pin/modo dev/realm/`depends_on` saudável, rede dedicada, backend só em bloco comentado) e verificar `config` com zero + `up -d --wait` com postgres saudável e keycloak respondendo — GREEN
+- [x] 1.1 Executar `docker compose -f infra/docker/docker-compose.yml config` e constatar que falha (arquivo inexistente), com as portas-alvo livres — RED. Execução 2026-09-19: `config` → "no such file or directory"; portas 5432/8080/9000 livres (`ss`); pins confirmados por pull (`postgres:16-alpine`; Keycloak `latest` → versão 26.7.4, pinada exata)
+- [x] 1.2 Criar `docker-compose.yml` (postgres com pin/volume/healthcheck, keycloak com pin/modo dev/realm/`depends_on` saudável, rede dedicada, backend só em bloco comentado) e verificar `config` com zero + `up -d --wait` com postgres saudável e keycloak respondendo — GREEN. Evidência: `config --quiet` OK; `up -d --wait` → ambos `Healthy`; `docker compose ps` com `(healthy)` nos dois; realm `200` e admin API confirma roles `admin`/`reception` + client `newestetica-frontend`; postgres `accepting connections` e `select 1` ok
 
 ## 2. Frontend containerizado (test-first)
 
