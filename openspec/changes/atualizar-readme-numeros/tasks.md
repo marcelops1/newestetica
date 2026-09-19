@@ -10,5 +10,5 @@ Valores observados em 2026-09-19 (branch `docs/atualizar-readme-numeros`, base `
 
 ## 3. Verificação e registro
 
-- [ ] 3.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança contra `docs/security/03-seguranca.md` (documentação pública sem segredos nem dados: registrar não-aplicabilidade dos gatilhos §7 e checar que nenhum segredo ou dado real entrou no texto) e verificar que tudo passa (exceção docs/07 §4: sem comportamento executável; verificação pelos próprios gates)
-- [ ] 3.2 Registrar `verification.md` e avaliar `docs/product/08-backlog-produto.md` (atualizar somente se algum status estiver incorreto) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
+- [x] 3.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança contra `docs/security/03-seguranca.md` (documentação pública sem segredos nem dados: registrar não-aplicabilidade dos gatilhos §7 e checar que nenhum segredo ou dado real entrou no texto) e verificar que tudo passa (exceção docs/07 §4: sem comportamento executável; verificação pelos próprios gates)
+- [x] 3.2 Registrar `verification.md` e avaliar `docs/product/08-backlog-produto.md` (atualizar somente se algum status estiver incorreto) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
