@@ -23,7 +23,7 @@ Dar uma fotografia clara e atualizada do projeto, respondendo:
 O projeto concluiu a documentação base e implementou as 9 features do site público com dados mockados — Home, Sobre, Catálogo, Antes/Depois, Depoimentos, Agendamento (modal), Orçamento, Contato e Blog (10 rotas) — com Header e rodapé na navegação canônica, 15 arquivos e 109 testes a 100% de cobertura, e 23 PRs mergeados em `main`.
 
 **Estamos na fase de validação visual com a Fabiana Rosa.**
-26 changes arquivados (23 com specs sincronizadas e 3 com `skip_specs`); o backend ainda não começou, conforme a estratégia frontend-first.
+27 changes arquivados (23 com specs sincronizadas e 4 com `skip_specs`, incluindo este); o backend ainda não começou, conforme a estratégia frontend-first.
 
 ---
 
@@ -35,7 +35,7 @@ A estrutura do monorepo já foi criada:
 
 - `AGENTS.md`
 - `docs/` (produto, arquitetura, segurança, engenharia, QA/dados/infra + protótipo visual aprovado)
-- `openspec/` (7 specs de domínio e 26 changes arquivados)
+- `openspec/` (7 specs de domínio e 27 changes arquivados)
 - `frontend/` (Next.js implementado — ver abaixo)
 - `backend/` (só `AGENTS.md`, sem código)
 - `shared/` (vazio, sem tipos compartilhados ainda)
@@ -132,14 +132,14 @@ A estrutura do monorepo já foi criada:
 ## 5. Estado do OpenSpec
 
 - Specs de domínio aprovadas em `openspec/specs/` (7 specs, 72 requirements): `architecture-docs` (4), `design-tokens` (7), `docs-organization` (3), `engineering-workflow` (15), `frontend-foundation` (4), `mock-data` (12), `public-site-structure` (27)
-- 26 changes arquivados (23 com specs sincronizadas e 3 com `skip_specs`):
+- 27 changes arquivados (23 com specs sincronizadas e 4 com `skip_specs`, incluindo este):
   - Fundação e docs (5): `frontend-foundation-mocks`, `reorganizacao-documentacao`, `documentacao-c4`, `sincronizar-c4-frontend`, `align-home-to-nano-banana-prototype`
   - Páginas do Épico 1 (7): `pagina-sobre`, `catalogo-procedimentos`, `pagina-antes-depois`, `pagina-depoimentos`, `pagina-orcamento`, `pagina-contato`, `pagina-blog`
   - Navegação (3): `corrigir-navegacao-header`, `corrigir-menu-resultados-depoimentos`, `corrigir-navegacao-footer`
   - Agendamento (1): `booking-flow-polish`
   - Qualidade e workflow (6): `engineering-workflow-hardening`, `template-pr-checklist-c4`, `instalar-skills-qualidade-e-stryker`, `padrao-testes-prioridade`, `instalar-husky-lint-staged`, `corrigir-dividas-lint-staged`
   - Páginas e navegação — pós-sync (1): `adicionar-paginas-faltantes-ao-menu`
-  - Com `skip_specs` (3): `sincronizar-estado-atual-e-readme`, `corrigir-404-tratamentos`, `decisao-tecnica-vercel-docker`
+  - Com `skip_specs` (4): `sincronizar-estado-atual-e-readme`, `corrigir-404-tratamentos`, `decisao-tecnica-vercel-docker`, `atualizar-readme-numeros`
 - Nenhum change ativo além de revisões de estado como esta
 - O processo OpenSpec é **inegociável** e deve ser usado antes de qualquer implementação
 
@@ -177,7 +177,7 @@ A estrutura do monorepo já foi criada:
 | Design System | Definido e aplicado nas 10 rotas |
 | Protótipo visual (nano banana) | Aprovado e aplicado no site público |
 | OpenSpec com specs de domínio | 7 specs / 72 requirements |
-| Changes arquivados | 26 (23 com specs sincronizadas; 3 com `skip_specs`) |
+| Changes arquivados | 27 (23 com specs sincronizadas; 4 com `skip_specs`, incluindo este) |
 | Workflow de engenharia unificado | Definido em docs/07 |
 | TDD obrigatório | Regra absoluta (AGENTS.md, docs/02, docs/04, docs/07) |
 | CI com gates automáticos | 3 camadas (pre-commit, CI, branch protection) |
