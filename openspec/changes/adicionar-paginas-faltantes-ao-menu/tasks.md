@@ -6,7 +6,7 @@
 ## 2. Blog e Contato no rodapé (test-first)
 
 - [x] 2.1 Atualizar o teste de ordem do rodapé para os 6 labels (Tratamentos, Resultados, Depoimentos, Diferenciais, Blog, Contato) e constatar que falha (só 4 itens, sem Blog/Contato)
-- [ ] 2.2 Adicionar as entradas de Blog e Contato ao módulo do rodapé (hrefs via constantes, labels próprios) e verificar que o teste passa e que o runtime do bloco do rodapé contém `href="/blog"` e `href="/contato"`
+- [x] 2.2 Adicionar as entradas de Blog e Contato ao módulo do rodapé (hrefs via constantes, labels próprios) e verificar que o teste passa e que o runtime do bloco do rodapé contém `href="/blog"` e `href="/contato"`
 
 ## 3. CTA Pedir Orçamento no Header (test-first via runtime)
 
