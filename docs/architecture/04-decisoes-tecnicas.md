@@ -291,6 +291,8 @@ Toda nova decisão técnica relevante deve:
 - O serviço `backend` fica comentado no compose até `backend/Dockerfile` existir (primeiro módulo do Épico 4)
 - Testes de integração do backend usam o mesmo PostgreSQL real em container (ver `docs/engineering/07-workflow-de-engenharia.md` §13)
 
+**Nota de roadmap:** a rejeição de Kubernetes acima é para o estágio atual do projeto, não permanente. O plano de longo prazo do usuário é hospedar o sistema em produção sobre Kubernetes rodando em cima de VPS (ex.: DigitalOcean), quando a escala e a maturidade operacional justificarem. Docker Compose continua sendo o padrão de desenvolvimento local e do estágio inicial de produção; a migração para Kubernetes será uma decisão técnica nova, proposta via OpenSpec quando esse momento chegar — não decida a favor ou contra Kubernetes sem essa proposta formal.
+
 ---
 
 ## 20. Referências cruzadas

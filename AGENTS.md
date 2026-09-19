@@ -120,7 +120,6 @@ newestetica/
 ├── backups/
 ├── pnpm-workspace.yaml
 ├── turbo.json
-├── Makefile
 └── package.json
 ```
 
