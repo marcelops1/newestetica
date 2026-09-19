@@ -9,6 +9,9 @@ export const NAV_DESTINATIONS = {
   resultados: "/antes-depois",
   depoimentos: "/depoimentos",
   sobre: "/sobre",
+  blog: "/blog",
+  contato: "/contato",
+  orcamento: "/orcamento",
 } as const;
 
 export const NAV_ITEMS: readonly NavItem[] = [

@@ -58,7 +58,7 @@ O hero SHALL ter layout em duas colunas no desktop (conteúdo + card visual) emp
 
 ### Requirement: Header com navegação e drawer mobile
 
-O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), navegação desktop com links reais — Tratamentos para `/tratamentos`, A Clínica para `/sobre`, Resultados para `/antes-depois`, Depoimentos para `/depoimentos`, e Diferenciais como `/#diferenciais` — ação WhatsApp fantasma + CTA primário, e no mobile um botão hamburger que abre/fecha um drawer com os mesmos links e ações; o drawer SHALL ser operável por teclado e expor estado via `aria-expanded`; links internos SHALL usar `next/link`.
+O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), navegação desktop com links reais — Tratamentos para `/tratamentos`, A Clínica para `/sobre`, Resultados para `/antes-depois`, Depoimentos para `/depoimentos`, e Diferenciais como `/#diferenciais` — ação WhatsApp fantasma + CTA primário de Agendar + CTA fantasma "Pedir Orçamento" para `/orcamento`, e no mobile um botão hamburger que abre/fecha um drawer com os mesmos links e ações (incluindo o CTA de Orçamento); o drawer SHALL ser operável por teclado e expor estado via `aria-expanded`; links de navegação (menu e rodapé) SHALL usar `next/link`. O CTA de Orçamento usa `<a>` nativo via `CTAButton` por design (reload intencional, ver `design.md` do change `adicionar-paginas-faltantes-ao-menu`, arquivado) — não está sujeito a esta regra.
 
 #### Scenario: Navegação mobile por teclado
 
@@ -79,6 +79,11 @@ O header SHALL ser sticky com blur, conter logo + tagline (logo liga para `/`), 
 
 - **WHEN** a visitante aciona Diferenciais de qualquer página
 - **THEN** ela chega à seção de diferenciais da home (`/#diferenciais`), não a uma rota própria
+
+#### Scenario: Orçamento acessível do menu
+
+- **WHEN** a visitante aciona Pedir Orçamento no header (desktop) ou no drawer (mobile), de qualquer página
+- **THEN** ela chega a `/orcamento`, sem digitar URL
 
 ### Requirement: Quiz com objetivos e recomendação
 
@@ -133,7 +138,7 @@ A rota `/antes-depois` SHALL listar todos os casos de antes/depois com consentim
 
 ### Requirement: Diferenciais, depoimentos, CTA final e rodapé no padrão do protótipo
 
-Os diferenciais SHALL ser 4 cards numerados; depoimentos SHALL trazer avaliação por estrelas, citação e avatar de iniciais (fictícios) — além de link "Ver todos os depoimentos" para `/depoimentos`; o CTA final SHALL ser um painel `primary-soft` com as duas ações; o rodapé SHALL ter 4 colunas (marca, navegação, horários, endereço fictício) + linha legal; a coluna de navegação do rodapé SHALL conter os mesmos destinos canônicos do menu do Header — Tratamentos para `/tratamentos`, Resultados para `/antes-depois`, Depoimentos para `/depoimentos` e Diferenciais como `/#diferenciais` — e os links internos do rodapé SHALL usar `next/link`.
+Os diferenciais SHALL ser 4 cards numerados; depoimentos SHALL trazer avaliação por estrelas, citação e avatar de iniciais (fictícios) — além de link "Ver todos os depoimentos" para `/depoimentos`; o CTA final SHALL ser um painel `primary-soft` com as duas ações; o rodapé SHALL ter 4 colunas (marca, navegação, horários, endereço fictício) + linha legal; a coluna de navegação do rodapé SHALL conter os destinos — Tratamentos para `/tratamentos`, Resultados para `/antes-depois`, Depoimentos para `/depoimentos`, Diferenciais como `/#diferenciais`, Blog para `/blog` e Contato para `/contato` — e os links internos do rodapé SHALL usar `next/link`.
 
 #### Scenario: Leitura do rodapé
 
@@ -154,6 +159,11 @@ Os diferenciais SHALL ser 4 cards numerados; depoimentos SHALL trazer avaliaçã
 
 - **WHEN** a visitante aciona Diferenciais no rodapé de qualquer página
 - **THEN** ela chega à seção de diferenciais da home (`/#diferenciais`), não a uma rota própria
+
+#### Scenario: Blog e Contato no rodapé
+
+- **WHEN** a visitante aciona Blog ou Contato no rodapé, de qualquer página
+- **THEN** ela chega a `/blog` ou `/contato`, sem digitar URL
 
 ### Requirement: Página Depoimentos
 
