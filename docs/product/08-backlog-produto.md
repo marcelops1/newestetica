@@ -516,6 +516,19 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   - Pipeline verde no estado atual do repositório.
 - **Status atual:** Concluído (workflow criado e executando).
 
+**Use Case 6.1.2 — Barrar erro de lint/format antes do commit local**
+
+- **Ator principal:** Desenvolvedor/IA (autor do commit).
+- **Pré-condição:** Hooks ativos (`pnpm install` executado).
+- **Fluxo principal:**
+  1. O autor commita arquivos `.ts`/`.tsx` em `frontend/`.
+  2. O hook pre-commit roda `eslint --fix` e `prettier --write` via lint-staged.
+  3. Erro corrigível é corrigido e entra no commit; erro não-corrigível barra o commit.
+- **Fluxos alternativos/exceção:** Autor usa `--no-verify` → commit passa sem o gate local (CI continua autoritativo).
+- **Critérios de aceite:**
+  - Erro corrigível entra corrigido; erro não-corrigível bloqueia o commit local.
+- **Status atual:** Concluído (change `instalar-husky-lint-staged` arquivado, com prova executável RED→GREEN).
+
 ### Feature 6.2 — Observabilidade básica
 
 **Use Case 6.2.1 — Logs e saúde essenciais**
@@ -534,14 +547,16 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 
 **Use Case 6.3.1 — Publicar a aplicação**
 
-- **Ator principal:** Pipeline/equipe.
+- **Ator principal:** Equipe (deploy manual).
 - **Pré-condição:** Build verde e segredos fora do código.
 - **Fluxo principal:**
-  1. O pipeline publica frontend e backend nos ambientes definidos.
-- **Fluxos alternativos/exceção:** Falha no deploy → rollback para a versão anterior estável.
+  1. A equipe publica o frontend via deploy manual (Vercel CLI); o site público fica disponível em produção.
+  2. Backend: nada implantado (aguarda Épicos 2+ e contratos).
+- **Fluxos alternativos/exceção:** Falha no deploy → nova tentativa manual; rollback via redeploy da versão anterior estável na plataforma.
 - **Critérios de aceite:**
-  - Deploy reproduzível; segredos via gestão segura, nunca no código.
-- **Status atual:** Não iniciado.
+  - Frontend acessível em produção a partir de build verde, sem segredos no código.
+  - Deploy automático/reproduzível por push: evolução futura, ainda não implementada.
+- **Status atual:** Em andamento (frontend em produção na Vercel; backend não implantado).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ---
@@ -555,8 +570,8 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 | 3. Autenticação e Acesso | 3 | 3 | Não iniciado |
 | 4. Backend e Contratos | 3 | 9 | Não iniciado |
 | 5. Integração Frontend-Backend | 1 | 1 | Não iniciado |
-| 6. Infraestrutura e Qualidade | 3 | 3 | Em andamento (CI concluído; observabilidade e deploy pendentes) |
-| **Total** | **26** | **37** | — |
+| 6. Infraestrutura e Qualidade | 3 | 4 | Em andamento (CI e pre-commit concluídos; frontend em produção manual; observabilidade e backend pendentes) |
+| **Total** | **26** | **38** | — |
 
 ---
 
