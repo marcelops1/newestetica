@@ -21,6 +21,8 @@ Registrar de forma explícita as decisões técnicas do projeto, evitando decis�
 | Monorepo | pnpm workspace | Com turbo |
 | Estilo de API | A definir nos contracts | Preferência por contratos claros (OpenAPI/Zod) |
 | UI/UX | UI/UX Pro Max + diretrizes 40+ | Obrigatório no frontend |
+| Deploy do frontend | Vercel | Preview deployments por PR |
+| Orquestração do backend | Docker + docker-compose | Ambiente futuro em `infra/` |
 
 ---
 
@@ -236,7 +238,55 @@ Toda nova decisão técnica relevante deve:
 
 ---
 
-## 18. Referências cruzadas
+## 18. Decisão: Deploy do Frontend (Vercel)
+
+**Escolhido:** Vercel como plataforma de deploy do frontend Next.js.
+
+**Motivos:**
+
+- Integração nativa com Next.js (build, otimizações e runtime suportados sem configuração própria)
+- Preview deployments automáticos por PR — permite validar visualmente com a Fabiana antes do merge
+- Simplicidade operacional no estágio atual: sem infraestrutura própria para manter
+
+**Alternativas consideradas:**
+
+- **Self-host** (VPS + Node/Docker): rejeitada — custo de operação e configuração desproporcional ao estágio atual
+- **Outras plataformas de deploy** (ex.: Netlify, Render): rejeitada — integração menos nativa com as otimizações do Next.js e sem ganho relevante para o caso
+
+**Implicações:**
+
+- Variáveis de ambiente do frontend configuradas na plataforma (segredos nunca no código, conforme `docs/security/03-seguranca.md`)
+- Domínio customizado será configurado quando a clínica definir o domínio final
+- Sem custo de infraestrutura própria neste momento (plano da plataforma)
+- O deploy não altera a arquitetura do monorepo nem o `frontend/` (projeto Next.js padrão)
+
+---
+
+## 19. Decisão: Orquestração do Ambiente do Backend (Docker)
+
+**Escolhido:** Docker como padrão de orquestração de ambiente para o backend futuro (Keycloak, PostgreSQL e NestJS), via `docker-compose` em `infra/`.
+
+**Motivos:**
+
+- Paridade entre desenvolvimento e produção (mesmas versões de serviços para todos)
+- Isolamento do ambiente (PostgreSQL e Keycloak locais sem poluir a máquina)
+- Onboarding simples: subir o ambiente com um comando
+
+**Alternativas consideradas:**
+
+- **Serviços instalados na máquina** (PostgreSQL/Keycloak nativos): rejeitada — divergência de versões e configuração manual por pessoa
+- **Apenas serviços gerenciados em nuvem desde já**: rejeitada — custo e dependência externa antes de existir backend
+- **Kubernetes/orquestração mais complexa**: rejeitada — complexidade desproporcional ao escopo (mesmo racional do monolito modular)
+
+**Implicações:**
+
+- `docker-compose` e configurações ficarão em `infra/` (hoje `infra/docker/` está vazio — **nada é implementado agora**)
+- A implementação acontece quando o backend começar (Épicos 2+ e contratos), dentro do change correspondente
+- Convenção de portas, volumes e variáveis de ambiente será definida nesse momento, seguindo `docs/security/03-seguranca.md` (segredos fora do repositório)
+
+---
+
+## 20. Referências cruzadas
 
 - Visão de produto: `docs/product/00-visao-do-produto.md`
 - Persona e UX: `docs/product/01-persona-e-ux-40+.md`

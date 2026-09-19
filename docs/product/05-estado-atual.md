@@ -84,6 +84,8 @@ A estrutura do monorepo já foi criada:
 - Quality gates obrigatórios em 3 camadas (pre-commit, CI, branch protection)
 - UI/UX Pro Max no frontend
 - Stryker instalado para mutation testing manual (fora do CI)
+- Deploy do frontend na Vercel (decisão registrada em `docs/architecture/04-decisoes-tecnicas.md` §18)
+- Orquestração do ambiente do backend com Docker + `docker-compose` em `infra/` (decisão registrada no §19; implementação quando o backend começar)
 
 ### Design System
 
