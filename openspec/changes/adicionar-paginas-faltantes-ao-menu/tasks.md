@@ -1,7 +1,7 @@
 ## 1. Destinos canônicos novos (test-first)
 
 - [x] 1.1 Escrever o teste das constantes (`blog`→`/blog`, `contato`→`/contato`, `orcamento`→`/orcamento`) e constatar que falha (`undefined` — constantes inexistentes em `NAV_DESTINATIONS`)
-- [ ] 1.2 Adicionar as 3 constantes a `NAV_DESTINATIONS` e verificar que o teste passa e os testes existentes de Header e rodapé seguem verdes
+- [x] 1.2 Adicionar as 3 constantes a `NAV_DESTINATIONS` e verificar que o teste passa e os testes existentes de Header e rodapé seguem verdes
 
 ## 2. Blog e Contato no rodapé (test-first)
 
