@@ -51,6 +51,16 @@ Antes de qualquer trabalho, leia nesta ordem (ver `AGENTS.md`):
 
 Backlog do produto: `docs/product/08-backlog-produto.md`.
 
+## Multi-IA por design
+
+O projeto foi desenhado para continuar com qualquer IA agentic (Claude Code, Gemini, Codex, opencode e afins) que tenha acesso a um terminal e leia o `AGENTS.md`:
+
+- o CLI do OpenSpec é **dependência do projeto** (`@fission-ai/openspec`, fixado no `package.json`) — basta `pnpm install` e usar `pnpm exec openspec` (nunca `npx openspec`: o pacote público com esse nome é outro);
+- specs e changes são **Markdown versionados** em `openspec/`, a fonte da verdade do produto;
+- as skills são **texto de referência** em `.opencode/skills/` e `.agents/skills/`, carregadas sob demanda pelas etapas do `docs/engineering/07-workflow-de-engenharia.md`.
+
+Qualquer máquina com Node >= 24 e pnpm 9.15.0 roda o fluxo completo sem instalação global prévia.
+
 ## Estrutura do monorepo
 
 ```text

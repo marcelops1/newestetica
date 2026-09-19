@@ -25,15 +25,17 @@ Definir o fluxo unificado de engenharia do projeto: quais etapas existem, qual s
 | Etapa OpenSpec | Skill obrigatória (carregar antes) | Artefato | Critério de saída |
 | ---------------- | ----------------------------------- | -------- | ------------------ |
 | Explore | `openspec-explore` | Entendimento registrado + nome do change | Escopo e nome definidos, sem ambiguidade material |
-| Propose | `openspec-propose` + `spec-driven-development` | `proposal.md` | `openspec validate` passa; capabilities declaradas |
+| Propose | `openspec-propose` + `spec-driven-development` | `proposal.md` | `pnpm exec openspec validate` passa; capabilities declaradas |
 | Specs | `spec-driven-development` | `specs/` (deltas) | Requisitos SHALL testáveis, cada um com cenário WHEN/THEN |
 | Design | `spec-driven-development` | `design.md` | Decisões com rationale e alternativas rejeitadas |
 | Tasks | `planning-and-task-breakdown` | `tasks.md` | Tasks no formato test-first (seção 5) |
 | Apply | `openspec-apply-change` + `incremental-implementation` + `test-driven-development` (+ `frontend-ui-engineering` se for UI) | Código + testes | Gates verdes + Definition of Done (seção 6) |
 | Verify | `code-review-and-quality` + `security-and-hardening` | Registros de revisão no change | Revisões registradas; archive bloqueado sem elas |
-| Archive | `openspec-archive-change` + `openspec-sync-specs` | Change arquivado + specs sincronizadas | `openspec validate --all` passa |
+| Archive | `openspec-archive-change` + `openspec-sync-specs` | Change arquivado + specs sincronizadas | `pnpm exec openspec validate --all` passa |
 
 Em dúvida sobre qual skill usar em qualquer etapa: `using-agent-skills`.
+
+> **CLI portável:** o CLI do OpenSpec é dependência do projeto (`@fission-ai/openspec`, fixado no `package.json` da raiz) — rode sempre `pnpm exec openspec` (ou `pnpm openspec`), nunca `npx openspec`: o pacote público com o nome `openspec` é outro e não tem relação com este projeto. As skills em `.opencode/skills/` e `.agents/skills/` são conteúdo de referência vendorizado e contêm exemplos com a forma curta `openspec ...`; a regra do `AGENTS.md` prevalece sobre esses exemplos.
 
 ---
 

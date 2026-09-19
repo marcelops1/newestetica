@@ -146,6 +146,7 @@ Obrigações da IA:
 - Toda nova capacidade ou alteração de comportamento deve ser proposta como change OpenSpec antes de qualquer código.
 - Manter openspec/specs/ sempre como a verdade do produto.
 - Uma mudança só é considerada pronta quando a implementação corresponde à spec aprovada.
+- Comandos do CLI OpenSpec devem rodar **sempre via `pnpm exec openspec`** (ou `pnpm openspec`), nunca `npx openspec`: o CLI é dependência do projeto (`@fission-ai/openspec`, fixado no `package.json` da raiz) e o pacote público chamado `openspec` no npm é outro, sem relação com este projeto.
 
 O que NÃO é permitido:
 
