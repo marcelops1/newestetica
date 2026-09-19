@@ -13,5 +13,5 @@
 
 ## 4. Verificação e registro
 
-- [ ] 4.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança contra `docs/security/03-seguranca.md` (documentação pública sem segredos nem dados: registrar não-aplicabilidade dos gatilhos §7 e checar que nenhum segredo ou dado real entrou nos textos) e verificar que tudo passa (exceção docs/07 §4: sem comportamento executável; verificação pelos próprios gates)
-- [ ] 4.2 Registrar `verification.md` e confirmar que nenhum outro backlog/UC foi tocado além da linha da Feature 4.2 (exceção docs/07 §4: sem comportamento executável; verificação por `git diff --stat` + releitura)
+- [x] 4.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança contra `docs/security/03-seguranca.md` (documentação pública sem segredos nem dados: registrar não-aplicabilidade dos gatilhos §7 e checar que nenhum segredo ou dado real entrou nos textos) e verificar que tudo passa (exceção docs/07 §4: sem comportamento executável; verificação pelos próprios gates)
+- [x] 4.2 Registrar `verification.md` e confirmar que nenhum outro backlog/UC foi tocado além da linha da Feature 4.2 (exceção docs/07 §4: sem comportamento executável; verificação por `git diff --stat` + releitura)
