@@ -208,7 +208,7 @@ A fonte oficial do estado é docs/product/05-estado-atual.md; esta seção apena
 - Home pública implementada com mocks e quality gates passando
 - Dois changes arquivados e quatro specs aprovadas
 - Backend não iniciado
-- Validação com a Fabiana pendente
+- Validação com a Fabiana concluída em 2026-09-19 (Épico 4 liberado)
 
 Consequência prática: a IA deve seguir o fluxo de docs/engineering/07-workflow-de-engenharia.md e só implementar mediante Change OpenSpec aprovado.
 
