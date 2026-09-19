@@ -10,8 +10,8 @@
 
 ## 3. Env, realm e scripts (test-first)
 
-- [ ] 3.1 Constatar ausências: `.env.example` inexistente em `infra/docker/` e scripts `infra:*` ausentes no `package.json` raiz (verificação por `ls`/`grep` que falha em encontrar) — RED
-- [ ] 3.2 Criar `infra/docker/.env.example` (toda variável do compose com valor fictício; `.env` já ignorado — checar), `infra/docker/keycloak/realm-newestetica.json` mínimo (realm + client + roles `admin`/`reception`, sem usuários) e scripts `infra:up`/`infra:down`; executar `pnpm infra:up` do zero até tudo saudável e `pnpm infra:down` limpando — GREEN
+- [x] 3.1 Constatar ausências: `.env.example` inexistente em `infra/docker/` e scripts `infra:*` ausentes no `package.json` raiz (verificação por `ls`/`grep` que falha em encontrar) — RED. Execução: `grep '"infra:' package.json` → nenhum script (RED real). Nota honesta: `.env.example` e o realm foram criados durante a task 1.2 (o compose monta o realm e referencia as variáveis — o stack não sobe sem eles); o RED de ausência deles ficou registrado no design e a criação está evidenciada aqui
+- [x] 3.2 Criar `infra/docker/.env.example` (toda variável do compose com valor fictício; `.env` já ignorado — checar), `infra/docker/keycloak/realm-newestetica.json` mínimo (realm + client + roles `admin`/`reception`, sem usuários) e scripts `infra:up`/`infra:down`; executar `pnpm infra:up` do zero até tudo saudável e `pnpm infra:down` limpando — GREEN. Evidência: `pnpm infra:up` do zero → postgres e keycloak `(healthy)`; `pnpm infra:down` → zero containers do projeto (`docker ps -a` filtrado = 0); `.gitignore` raiz já cobre `.env`/`.env.*` com exceção de `.env.example`
 
 ## 4. Decisão documentada + verificação
 
