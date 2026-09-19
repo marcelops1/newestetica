@@ -4,7 +4,7 @@
 
 ## 2. Registrar no estado atual
 
-- [ ] 2.1 Adicionar os 2 bullets em "Decisões técnicas já tomadas" de `docs/product/05-estado-atual.md` e confirmar por grep que não resta menção das decisões como pendentes (exceção docs/07 §4: sem comportamento executável; verificação por releitura + grep)
+- [x] 2.1 Adicionar os 2 bullets em "Decisões técnicas já tomadas" de `docs/product/05-estado-atual.md` e confirmar por grep que não resta menção das decisões como pendentes (exceção docs/07 §4: sem comportamento executável; verificação por releitura + grep)
 
 ## 3. Verificação e registro
 
