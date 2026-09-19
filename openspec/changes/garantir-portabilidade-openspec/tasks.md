@@ -14,5 +14,5 @@
 
 ## 4. Verificação e registro
 
-- [ ] 4.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança supply-chain contra `security-and-hardening` (mesmo código já executado globalmente; pin exato; lockfile revisado; checar que nenhum segredo entrou nos textos) e registrar em `verification.md`, e verificar que tudo passa
-- [ ] 4.2 Avaliar `docs/product/08-backlog-produto.md` (atualizar somente se algum status estiver incorreto — tooling sem Use Case correspondente, precedente do change do husky) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
+- [x] 4.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança supply-chain contra `security-and-hardening` (mesmo código já executado globalmente; pin exato; lockfile revisado; checar que nenhum segredo entrou nos textos) e registrar em `verification.md`, e verificar que tudo passa
+- [x] 4.2 Avaliar `docs/product/08-backlog-produto.md` (atualizar somente se algum status estiver incorreto — tooling sem Use Case correspondente, precedente do change do husky) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
