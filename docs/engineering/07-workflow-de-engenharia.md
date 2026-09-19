@@ -156,8 +156,9 @@ Sempre exigir (parte da Definition of Done, sem exceção):
 
 - Testes unitários completos: casos de sucesso, edge cases e propriedades relevantes da função
 - Testes de segurança orientados a OWASP (entrada maliciosa, injeção, escaping) quando o código lida com entrada de usuário ou dado sensível
-- Testes de contrato/schema quando há fronteira de dados (mock ↔ UI, futuro contrato de API) — cobertos via skill `api-and-interface-design` (instalada), a aplicar quando `contracts/` nascer
-- Testes de integração dos fluxos críticos (ex.: fluxo de agendamento, exibição condicional por consentimento)
+- **Testes adversariais** (subcategoria de segurança): quando a superfície de ataque existir, além do OWASP básico, exigir tentativas deliberadas de abuso — inputs maliciosos e malformados, fuzzing básico sobre parsers/entradas e tentativas de bypass de autorização/RBAC (ex.: papel inferior tentando operação restrita)
+- Testes de contrato/schema quando há fronteira de dados (mock ↔ UI, futuro contrato de API) — cobertos via skill `api-and-interface-design` (instalada), a aplicar quando `contracts/` nascer. No backend, cada contrato de API deve ser verificado nas duas pontas (consumidor/provedor) contra o schema de `contracts/`; divergência entre implementação e contrato reprova o teste
+- Testes de integração dos fluxos críticos (ex.: fluxo de agendamento, exibição condicional por consentimento). No backend, integração roda contra PostgreSQL real em container (Docker Compose, conforme `docs/architecture/04-decisoes-tecnicas.md` §19; Testcontainers quando o executor de testes suportar), com banco de teste isolado e migrations aplicadas; mock de banco só é aceito fora de regra de persistência
 
 Exigir com frequência (a critério do Verify, registrado em verification.md quando aplicado ou quando dispensado):
 
@@ -173,3 +174,31 @@ Exigir com parcimônia (só quando o valor justificar o custo):
 Cobertura mínima de testes unitários: 80% (linhas, funções, branches, statements), já configurado como threshold que reprova o build (seção 6 e vitest.config.ts). Cobertura acima de 80% não substitui os testes de segurança/contrato/integração acima — são dimensões diferentes, não intercambiáveis.
 
 Nota sobre princípios: KISS/YAGNI são formalizados via skill `code-simplification` (redução preservando comportamento exato, Cerca de Chesterton) — aplicar sempre antes de `code-review-and-quality` quando o diff parecer maior que o necessário. SOLID fica coberto pelo eixo Arquitetura de `code-review-and-quality` (fronteiras de módulo, direção de dependências, acoplamento) — sem checklist item-a-item dedicado, decisão consciente, não lacuna crítica.
+
+---
+
+## 14. Regressão de prompts de desenvolvimento
+
+Os prompts usados para orquestrar IAs agentic no desenvolvimento (propor, implementar, revisar) são ferramental do projeto e devem ser tratados como qualquer outro artefato: verificáveis, versionados e independentes de qual IA os executa. Esta seção é **prática recomendada**, não gate — não adiciona item à Definition of Done.
+
+### O que a pipeline já cobre
+
+A revisão em estágios já cumpre parcialmente o papel de regressão: toda decisão de IA materializa-se em um artefato revisado (proposal/specs/design/tasks) ou em um gate verde (testes, lint, typecheck, build) antes de tocar o repositório. Um prompt que degradou tende a produzir sinais observáveis **independentemente de qual modelo o executou**:
+
+- artefato vago, sem comandos verificáveis nem critério de saída;
+- teste que passa de primeira, sem RED comprovado;
+- gate pulado ou "verificado" sem saída colada;
+- assunção silenciosa sobre decisão já registrada em docs/spec.
+
+### Prática leve (sem automação agora)
+
+- Manter neste repositório, fora do código de produto, um registro curto dos padrões de prompt que funcionaram bem. Exemplos observados neste projeto (2–3, não exaustivo):
+  1. **Exigir o RED colado antes do GREEN** — o registro da falha real do teste antes da implementação reduziu GREEN prematuro.
+  2. **Releitura do disco antes de editar** — prompts que mandam ler os arquivos em vez de confiar no relato da sessão evitam edição sobre estado desatualizado.
+  3. **Exigir a saída do comando, não a conclusão** — colar saída bruta (grep, teste, curl) no registro do change em vez de "funcionou".
+- Registrar sinais de degradação no `verification.md` do change em que forem observados (mesma disciplina dos FYIs), para ajustar o padrão na iteração seguinte.
+- Reavaliar automação (ex.: lint de artefatos) quando o volume de changes justificar — sem antecipar.
+
+### Regra de forma
+
+Esta prática é agnóstica de modelo por desenho: nenhum nome de modelo, versão ou fornecedor deve aparecer como parte da regra — a escolha de modelo é livre (ver `AGENTS.md` §7) e a prática deve funcionar igual com qualquer IA agentic.

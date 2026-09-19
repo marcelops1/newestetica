@@ -385,7 +385,7 @@
 
 ### Feature 4.2 — Módulos NestJS por bounded context
 
-Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com status Não iniciado e arquitetura em monolito modular (Repository + Data Mapper).
+Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com status Não iniciado e arquitetura em monolito modular com **Clean Architecture** (regra de dependência: `domain/` não importa nada externo; `application/` só depende de `domain/`; `infrastructure/` implementa interfaces do `domain/`; `presentation/` depende de `application/`), Repository + Data Mapper.
 
 **Use Case 4.2.1 — Identidade e Acesso (API)**
 

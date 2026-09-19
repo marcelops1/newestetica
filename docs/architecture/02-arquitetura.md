@@ -153,8 +153,18 @@ modules/
 └── ...
 ```
 
+### Clean Architecture (regra de dependência)
+
+A organização em camadas segue **Clean Architecture**. A regra de dependência é obrigatória:
+
+- `domain/` não importa nada fora de `domain/` (sem framework, sem ORM, sem HTTP);
+- `application/` depende somente de `domain/`;
+- `infrastructure/` implementa interfaces definidas em `domain/`, nunca o inverso;
+- `presentation/` depende de `application/`.
+
 ### Padrões obrigatórios (resumo)
 
+- **Clean Architecture** com a regra de dependência acima
 - **Repository Pattern**
 - **Data Mapper** (evitar Active Record)
 - Preferência por **baixo acoplamento** entre camadas
