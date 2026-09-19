@@ -85,7 +85,7 @@ A estrutura do monorepo já foi criada:
 - UI/UX Pro Max no frontend
 - Stryker instalado para mutation testing manual (fora do CI)
 - Deploy do frontend na Vercel (decisão registrada em `docs/architecture/04-decisoes-tecnicas.md` §18)
-- Orquestração do ambiente do backend com Docker + `docker-compose` em `infra/` (decisão registrada no §19; implementação quando o backend começar)
+- Containerização e orquestração local com Docker (`infra/docker/`): Postgres e Keycloak sobem com `pnpm infra:up` (base implementada com pins/healthchecks; o serviço do backend entra no compose com o primeiro módulo) — decisão no §19
 
 ### Design System
 
