@@ -5,8 +5,8 @@
 
 ## 2. Frontend containerizado (test-first)
 
-- [ ] 2.1 Executar `docker build -f frontend/Dockerfile frontend` e constatar que falha (arquivo inexistente) — RED
-- [ ] 2.2 Habilitar `output: "standalone"` em `frontend/next.config.ts`, criar `frontend/Dockerfile` multi-stage (build + runtime não-root) e verificar build com zero + container servindo `/` com 200 — GREEN
+- [x] 2.1 Executar `docker build -f frontend/Dockerfile frontend` e constatar que falha (arquivo inexistente) — RED. Execução: `docker build -f frontend/Dockerfile -t newestetica-frontend-test .` → `failed to read dockerfile: no such file or directory`
+- [x] 2.2 Habilitar `output: "standalone"` em `frontend/next.config.ts`, criar `frontend/Dockerfile` multi-stage (build + runtime não-root) e verificar build com zero + container servindo `/` com 200 — GREEN. Evidência: build conclui (imagem 327MB); container `curl /` → 200 com "Newestetica"/"Pedir Orçamento"; processo roda como `uid=1000(node)` (não-root). Adição necessária além do design: `.dockerignore` na raiz (contexto de build é a raiz do monorepo com node_modules de ~709MB — sem ele o contexto seria enorme)
 
 ## 3. Env, realm e scripts (test-first)
 
