@@ -18,11 +18,11 @@ Dar uma fotografia clara e atualizada do projeto, respondendo:
 
 ## 2. Fase Atual
 
-**Fase atual: Site público do Épico 1 completo com mocks (pré-validação)**
+**Fase atual: Site público do Épico 1 validado com mocks — backend liberado**
 
 O projeto concluiu a documentação base e implementou as 9 features do site público com dados mockados — Home, Sobre, Catálogo, Antes/Depois, Depoimentos, Agendamento (modal), Orçamento, Contato e Blog (10 rotas) — com Header e rodapé na navegação canônica, 15 arquivos e 109 testes a 100% de cobertura, e 23 PRs mergeados em `main`.
 
-**Estamos na fase de validação visual com a Fabiana Rosa.**
+**Validação visual com a Fabiana Rosa concluída em 2026-09-19 — o Épico 4 (Backend) está liberado.**
 27 changes arquivados (23 com specs sincronizadas e 4 com `skip_specs`, incluindo este); o backend ainda não começou, conforme a estratégia frontend-first.
 
 ---
@@ -117,7 +117,6 @@ A estrutura do monorepo já foi criada:
 
 ## 4. O que ainda NÃO existe
 
-- Validação visual com a Fabiana Rosa (aceite pendente)
 - Backend real (`backend/` só tem `AGENTS.md`; NestJS + PostgreSQL não iniciados)
 - Integração com Keycloak / 2FA
 - Contratos de API (`contracts/` vazio)
@@ -147,9 +146,8 @@ A estrutura do monorepo já foi criada:
 
 ## 6. Próximos passos recomendados (ordem)
 
-1. Validar visualmente com a Fabiana Rosa (checklists em `openspec/changes/archive/2026-09-07-frontend-foundation-mocks/validation-checklist.md`), registrando aprovações e ajustes
+1. Iniciar o Épico 4 (contratos em `contracts/` + backend NestJS real) — liberado pela validação visual com a Fabiana Rosa em 2026-09-19
 2. Change `admin-shell-mocks` (shell do painel admin com mocks — Épico 2)
-3. Depois da validação e do shell: contratos em `contracts/` + backend real
 
 ---
 
@@ -185,7 +183,7 @@ A estrutura do monorepo já foi criada:
 | Código backend | Não iniciado |
 | Contratos e tipos compartilhados | Não iniciados (`contracts/` e `shared/` vazios) |
 | Painel admin | Não iniciado |
-| Validação com Fabiana | Pendente |
+| Validação com Fabiana | Concluída em 2026-09-19 |
 
 ---
 

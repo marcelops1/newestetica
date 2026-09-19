@@ -565,7 +565,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 
 | Épico | nº de Features | nº de Use Cases | Status geral |
 | ----- | -------------- | --------------- | ------------ |
-| 1. Site Público | 9 | 12 | Em andamento (Home e Catálogo implementados, pendentes validação; demais telas pendentes) |
+| 1. Site Público | 9 | 12 | Em andamento (9 features implementadas com mocks e validadas com a Fabiana em 2026-09-19; pendentes backend, fotos reais e número real) |
 | 2. Painel Administrativo | 7 | 9 | Não iniciado |
 | 3. Autenticação e Acesso | 3 | 3 | Não iniciado |
 | 4. Backend e Contratos | 3 | 9 | Não iniciado |

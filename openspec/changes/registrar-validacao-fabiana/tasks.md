@@ -4,7 +4,7 @@
 
 ## 2. Tabela-resumo + 05-estado-atual
 
-- [ ] 2.1 Atualizar a linha do Épico 1 na tabela-resumo (validação concluída, pendências restantes explícitas) e os 4 pontos do 05 (fase pós-validação com backend liberado; remover "aceite pendente" do §4; §6 com Épico 4 primeiro; tabela com validação concluída em 2026-09-19) (exceção docs/07 §4: sem comportamento executável; verificação por releitura + grep)
+- [x] 2.1 Atualizar a linha do Épico 1 na tabela-resumo (validação concluída, pendências restantes explícitas) e os 4 pontos do 05 (fase pós-validação com backend liberado; remover "aceite pendente" do §4; §6 com Épico 4 primeiro; tabela com validação concluída em 2026-09-19) (exceção docs/07 §4: sem comportamento executável; verificação por releitura + grep)
 
 ## 3. Verificação e registro
 
