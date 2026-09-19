@@ -21,7 +21,7 @@
   - As 9 seções aparecem na ordem aprovada no mobile e no desktop.
   - Textos em tom acolhedor, sem promessas milagrosas nem urgência artificial.
   - Áreas de toque com ao menos 44x44px.
-- **Status atual:** Concluído (implementada com mocks; pendente validação com a Fabiana).
+- **Status atual:** Concluído (implementada com mocks; validado com a Fabiana em 2026-09-19).
 
 ### Feature 1.2 — Sobre
 
@@ -36,7 +36,7 @@
 - **Critérios de aceite:**
   - Conteúdo transmite confiança e naturalidade.
   - Página mobile-first e legível (corpo mínimo 16px).
-- **Status atual:** Em andamento (página `/sobre` implementada com conteúdo fictício; pendente validação com a Fabiana).
+- **Status atual:** Concluído (página `/sobre` implementada com conteúdo fictício; validado com a Fabiana em 2026-09-19).
 
 ### Feature 1.3 — Catálogo de Procedimentos
 
@@ -51,7 +51,7 @@
 - **Critérios de aceite:**
   - Cada procedimento explica o que esperar (conforto, tempo, cuidados).
   - Linguagem acessível, sem jargão desnecessário.
-- **Status atual:** Em andamento (seção com filtros existe na home; página dedicada implementada neste change, pendente validação com a Fabiana).
+- **Status atual:** Concluído (seção com filtros existe na home; página dedicada implementada neste change; validado com a Fabiana em 2026-09-19).
 
 **Use Case 1.3.2 — Filtrar por categoria**
 
@@ -93,7 +93,7 @@
 - **Fluxos alternativos/exceção:** —
 - **Critérios de aceite:**
   - Depoimentos éticos, próximos e identificáveis com a faixa 40–60.
-- **Status atual:** Em andamento (página `/depoimentos` lista depoimentos fictícios com estrelas e iniciais; seção na home com link "Ver todos os depoimentos"; pendente validação com a Fabiana).
+- **Status atual:** Concluído (página `/depoimentos` lista depoimentos fictícios com estrelas e iniciais; seção na home com link "Ver todos os depoimentos"; validado com a Fabiana em 2026-09-19).
 
 ### Feature 1.6 — Agendamento Self-Service (paciente)
 
@@ -137,7 +137,7 @@
 - **Fluxos alternativos/exceção:** —
 - **Critérios de aceite:**
   - Solicitação clara, sem pressão comercial e sem valores enganosos.
-- **Status atual:** Em andamento (página `/orcamento` implementada com solicitação 100% mockada: formulário nome/WhatsApp/procedimento dos mocks/mensagem opcional, validação amigável, 4 estados com confirmação acolhedora sem valores fechados e revisão de segurança registrada; pendente validação com a Fabiana).
+- **Status atual:** Concluído (página `/orcamento` implementada com solicitação 100% mockada: formulário nome/WhatsApp/procedimento dos mocks/mensagem opcional, validação amigável, 4 estados com confirmação acolhedora sem valores fechados e revisão de segurança registrada; validado com a Fabiana em 2026-09-19).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ### Feature 1.8 — Contato
@@ -166,7 +166,7 @@
   - Envio 100% mockado até o backend existir; nenhum dado sai do navegador.
   - Contato flexível aceita e-mail válido OU WhatsApp com DDD, com orientação acolhedora quando nenhum formato serve.
   - Informações institucionais claramente fictícias, sem número ou endereço real.
-- **Status atual:** Em andamento (página `/contato` implementada com mensagem 100% mockada: validação amigável das duas faces do contato flexível, 4 estados com confirmação acolhedora e revisão de segurança registrada; pendente validação com a Fabiana).
+- **Status atual:** Concluído (página `/contato` implementada com mensagem 100% mockada: validação amigável das duas faces do contato flexível, 4 estados com confirmação acolhedora e revisão de segurança registrada; validado com a Fabiana em 2026-09-19).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ### Feature 1.9 — Blog
@@ -181,7 +181,7 @@
 - **Fluxos alternativos/exceção:** —
 - **Critérios de aceite:**
   - Artigos legíveis no mobile, tom acolhedor, sem promessas milagrosas.
-- **Status atual:** Em andamento (páginas `/blog` com busca e filtro por categoria e `/blog/[slug]` com conteúdo completo e 404 acolhedora implementadas sobre 4 posts fictícios; pendente validação com a Fabiana).
+- **Status atual:** Concluído (páginas `/blog` com busca e filtro por categoria e `/blog/[slug]` com conteúdo completo e 404 acolhedora implementadas sobre 4 posts fictícios; validado com a Fabiana em 2026-09-19).
 
 ---
 
@@ -565,7 +565,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 
 | Épico | nº de Features | nº de Use Cases | Status geral |
 | ----- | -------------- | --------------- | ------------ |
-| 1. Site Público | 9 | 12 | Em andamento (Home e Catálogo implementados, pendentes validação; demais telas pendentes) |
+| 1. Site Público | 9 | 12 | Em andamento (9 features implementadas com mocks e validadas com a Fabiana em 2026-09-19; pendentes backend, fotos reais e número real) |
 | 2. Painel Administrativo | 7 | 9 | Não iniciado |
 | 3. Autenticação e Acesso | 3 | 3 | Não iniciado |
 | 4. Backend e Contratos | 3 | 9 | Não iniciado |
