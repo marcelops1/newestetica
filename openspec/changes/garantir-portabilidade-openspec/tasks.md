@@ -9,8 +9,8 @@
 
 ## 3. Documentação portátil (exceção docs/07 §4)
 
-- [ ] 3.1 Adicionar a regra em `AGENTS.md` ("openspec sempre via `pnpm exec openspec`"), corrigir as 2 menções bare na tabela de `docs/engineering/07-workflow-de-engenharia.md` e registrar a nota sobre skills vendored intactas (exceção docs/07 §4: documentação sem comportamento executável; verificação por releitura + grep)
-- [ ] 3.2 Adicionar a seção multi-IA curta no `README.md` (qualquer IA agentic com terminal + `AGENTS.md` continua o trabalho; por quê: OpenSpec como dependência do projeto, specs em Markdown, skills como texto) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
+- [x] 3.1 Adicionar a regra em `AGENTS.md` ("openspec sempre via `pnpm exec openspec`"), corrigir as 2 menções bare na tabela de `docs/engineering/07-workflow-de-engenharia.md` e registrar a nota sobre skills vendored intactas (exceção docs/07 §4: documentação sem comportamento executável; verificação por releitura + grep)
+- [x] 3.2 Adicionar a seção multi-IA curta no `README.md` (qualquer IA agentic com terminal + `AGENTS.md` continua o trabalho; por quê: OpenSpec como dependência do projeto, specs em Markdown, skills como texto) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
 
 ## 4. Verificação e registro
 
