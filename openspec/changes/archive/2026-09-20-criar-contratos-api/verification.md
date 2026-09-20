@@ -54,8 +54,10 @@ Change de contratos (Feature 4.1): pacote `contracts/` com schemas Zod para Cat�
 
 ## FYIs e follow-ups (não bloqueiam)
 
+- **Números de estado (`05-estado-atual.md`/`README.md`):** após este archive, o projeto passa a 9 specs (86 requirements) e 28 changes arquivados (24 com specs sincronizadas; 4 com `skip_specs`) — os dois docs ainda mostram 8/76/27. Seguindo o padrão do projeto (changes dedicados de sincronização de estado), a atualização fica para um change curto de estado.
 - **lint-staged não cobre `contracts/`:** arquivos `.ts` do pacote não passam pelo pre-commit local (frontend-only hoje). Camadas 2/3 (CI + branch protection) cobrem; candidato a change curto de tooling se o incômodo aparecer.
 - **`qs` moderado (Stryker dev-only):** pré-existente, fora do CI; sem ação neste change.
+- **`validate --archived` com 1 falha pré-existente:** `2026-09-07-frontend-foundation-mocks` (12/13 tasks marcadas) — anterior a este change e sem relação com ele; `validate --all` passa 9/9 e o change novo passa no `--archived`.
 
 ## Gates executados (task 5.3)
 
