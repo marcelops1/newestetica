@@ -24,11 +24,7 @@ function makeSlot(id = "slot-1"): Slot {
   });
 }
 
-function makeConfirmedBooking(
-  id: string,
-  slot: Slot,
-  notes?: string,
-): Booking {
+function makeConfirmedBooking(id: string, slot: Slot, notes?: string): Booking {
   const booking = Booking.create({
     id,
     slotId: slot.id,

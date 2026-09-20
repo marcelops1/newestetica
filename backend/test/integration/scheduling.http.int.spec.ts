@@ -11,7 +11,11 @@ import {
   SchedulingModule,
   UNIT_OF_WORK,
 } from "../../src/scheduling/scheduling.module";
-import { createTestPrismaClient, resetDatabase, testDatabaseUrl } from "./database";
+import {
+  createTestPrismaClient,
+  resetDatabase,
+  testDatabaseUrl,
+} from "./database";
 
 const prisma = createTestPrismaClient();
 let app: INestApplication;
@@ -68,7 +72,9 @@ describe("Scheduling HTTP (contrato da Presentation)", () => {
     const body = (await response.json()) as { id: string; status: string };
     expect(body.id.length).toBeGreaterThan(0);
     expect(body.status).toBe("confirmed");
-    expect((await prisma.slot.findUnique({ where: { id: "slot-1" } }))?.available).toBe(false);
+    expect(
+      (await prisma.slot.findUnique({ where: { id: "slot-1" } }))?.available,
+    ).toBe(false);
     expect(await prisma.booking.count()).toBe(1);
   });
 

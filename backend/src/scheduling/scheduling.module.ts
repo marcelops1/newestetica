@@ -57,8 +57,7 @@ function createPrismaClient(): PrismaClient {
         bookings: PrismaBookingRepository,
         notifications: ConsoleNotificationAdapter,
         unitOfWork: PrismaUnitOfWork,
-      ) =>
-        new CreateBookingUseCase(slots, bookings, notifications, unitOfWork),
+      ) => new CreateBookingUseCase(slots, bookings, notifications, unitOfWork),
       inject: [
         SLOT_REPOSITORY,
         BOOKING_REPOSITORY,

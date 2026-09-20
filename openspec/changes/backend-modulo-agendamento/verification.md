@@ -1,6 +1,6 @@
-# Verificação — backend-modulo-agendamento (parcial: grupos 0–3)
+# Verificação — backend-modulo-agendamento
 
-Registro parcial (grupos 0–3 concluídos; grupo 4/Presentation e gates finais do grupo 5 pendentes). Data: 2026-09-20.
+Registro completo (grupos 0–5). Data: 2026-09-20.
 
 ## Veículo de integração
 
@@ -68,3 +68,95 @@ Suíte completa do backend (`pnpm --filter backend test`): **12 arquivos / 41 te
 
 - Driver adapter `@prisma/adapter-pg` obrigatório (Query Compiler); gerador `prisma-client` com output `src/generated/prisma` (gitignored; excluído de lint/format/coverage).
 - Índice único parcial expresso no schema via preview `partialIndexes` (`@@unique([slotId], where: { status: "confirmed" })`) — migration contém `CREATE UNIQUE INDEX "Booking_slotId_key" ON "Booking"("slotId") WHERE (status = 'confirmed')`.
+
+## Prova negativa 3 — canário de wiring do módulo (task 4.4)
+
+O `PrismaTransactionContext` precisa ser **singleton** no `SchedulingModule` (a propagação via AsyncLocalStorage depende de a UoW e os repositórios lerem o MESMO contexto). Prova negativa executada de propósito: a UoW foi apontada para um contexto isolado (provider próprio) e o canário rodou contra os providers reais do módulo:
+
+```text
+$ (wiring quebrado: UoW com contexto próprio ≠ contexto dos repos)
+$ pnpm exec vitest run --project integration test/integration/scheduling.http.int.spec.ts -t "canário"
+× canário de wiring: a UnitOfWork do módulo compartilha o contexto transacional com os repositórios
+AssertionError: expected 1 to be +0 // Object.is equality
+ Test Files  1 failed (1)   Tests  1 failed | 5 skipped (6)
+```
+
+Com o singleton restaurado:
+
+```text
+$ pnpm exec vitest run --project integration test/integration/scheduling.http.int.spec.ts -t "canário"
+ Test Files  1 passed (1)   Tests  1 passed | 5 skipped (6)
+```
+
+O canário (write-then-throw através do módulo) fica na suíte como guarda permanente do wiring.
+
+## Testes HTTP (grupo 4)
+
+`test/integration/scheduling.http.int.spec.ts` (6 testes): 201 com reserva confirmada; 422 estruturado sem internals; 409 `SLOT_ALREADY_BOOKED`; 404 `SLOT_NOT_FOUND`; 500 genérico (override do caso de uso em TestingModule — corpo não contém o detalhe interno); canário de wiring.
+`test/integration/scheduling.contract.int.spec.ts` (2 testes): disponibilidade e reserva validadas contra `SlotSchema` (duas pontas), com `BookingInputSchema` validando a entrada.
+
+## Teste manual real (backend + Postgres do compose)
+
+Backend buildado (`node dist/main.js`, `PORT=3011`, `DATABASE_URL` para o banco de dev) e slot semeado direto no Postgres:
+
+```text
+$ curl -i -X POST http://127.0.0.1:3011/slots/slot-manual-1/bookings -H "content-type: application/json" \
+    -d '{"name":"Maria Exemplo","phone":"(11) 98765-4321","treatment":"Limpeza de pele"}'
+HTTP/1.1 201 Created
+{"id":"4c0a327e-2af6-4961-bed2-1f9f0839e9de","status":"confirmed","treatment":"Limpeza de pele",
+ "slot":{"id":"slot-manual-1","start":"2026-10-15T10:00:00.000Z","durationMinutes":60,"available":false}}
+
+$ curl -i -X POST http://127.0.0.1:3011/slots/slot-manual-1/bookings -H "content-type: application/json" \
+    -d '{"name":"Joana Exemplo","phone":"(11) 98888-7777"}'
+HTTP/1.1 409 Conflict
+{"code":"SLOT_ALREADY_BOOKED","message":"Slot já reservado: slot-manual-1"}
+
+$ curl -i http://127.0.0.1:3011/slots/available
+HTTP/1.1 200 OK
+[]
+
+$ curl -o /dev/null -w "%{http_code}" -X POST .../bookings -d '{"name":"A","phone":"1"}'
+422
+```
+
+Log do adapter de console no servidor (sem PII): `[agendamento] confirmação 4c0a327e-...: 2026-10-15T10:00:00.000Z (60 min) · Limpeza de pele`.
+
+## Gates finais (task 5.1)
+
+- `pnpm lint` (frontend + contracts + backend) — verde (1 warning pré-existente do Stryker)
+- `pnpm format` — verde
+- `pnpm typecheck` — verde
+- `pnpm test` — contracts 50/50 (100%), frontend 109/109 (100%), backend 51/51 (99,21% stmts, 91,17% branches, 100% funcs, 99,21% lines)
+- `pnpm build` — verde (contracts → dist, frontend Next, backend tsc)
+- `pnpm audit --audit-level high` — sem high/critical (3 moderados pré-existentes dev-only do Stryker)
+- **Auditoria estática da regra de dependência:** `domain/` sem imports externos; `generated/prisma` e `@prisma` confinados a `infrastructure/` (e ao harness de teste `test/integration/database.ts`)
+- `pnpm exec openspec validate --all` — ver registro no archive
+
+## Segurança (task 5.2, contra docs/03)
+
+- **Threat model:** fronteira = HTTP público (formulários de agendamento) ↔ API; ativos = dados de contato da paciente (nome/telefone) e a integridade da agenda (overbooking); abuse cases = payload malformado/hostil, corrida no mesmo slot, vazamento de detalhes internos em erro, PII em log, SQL injection, ausência de auth (fora do escopo declarado).
+- [x] **Entrada validada na fronteira:** todo body passa por `BookingInputSchema` (Zod, `contracts/`); `slotId` vem do path e é tratado como string opaca (parametrizada pelo Prisma); payload inválido → 422 estruturado sem mensagens do validador.
+- [x] **Sem overbooking:** pré-checagem amigável + índice único parcial como executor final; corrida real provada contra Postgres (prova negativa com DROP INDEX → 5 vencedoras).
+- [x] **Erros sem internals:** filtro de domínio devolve só `{code, message}`; 500 genérico provado por teste (não vaza o detalhe interno).
+- [x] **PII:** não logada (adapter de console com teste que trava ausência de nome/telefone); resposta de reserva não ecoa nome/telefone (minimização).
+- [x] **SQL:** 100% via Prisma (parametrizado); nenhuma query concatenada.
+- [x] **Segredos:** `DATABASE_URL` só por ambiente; sem segredos no código; `.env` ignorado.
+- [x] **Supply-chain:** adapter/Prisma pinados; auditoria sem high/critical; lockfile versionado.
+- **Fora do escopo declarado (registrado):** autenticação/autorização (Feature 4.2 de Identidade), rate limiting e HTTPS de borda (infra/deploy), retenção/LGPD avançada — o módulo atual não expõe dado de paciente a terceiros e não tem área logada.
+- **Conclusão:** gatilhos acionados e revisados; sem achados Critical/Required.
+
+## Code review (task 5.3)
+
+- **Correção:** fluxo completo provado por testes em 4 níveis (domínio, aplicação com fakes, integração Postgres, HTTP real) + teste manual; nenhum teste de fachada.
+- **Legibilidade:** controller fino, pipe/filtro pequenos, módulo explícito com tokens de injeção.
+- **Arquitetura:** regra de dependência auditada; Data Mapper sem vazamento de tipo Prisma; UoW como porta do domínio com propagação por contexto; composição raiz no módulo.
+- **Segurança:** revisão acima.
+- **Performance:** operações pontuais indexadas; sem N+1; corrida de 5 requisições validada.
+- **Achados:** nenhum Critical/Required. *Notas honestas:* (1) o retorno do `CreateBookingUseCase` evoluiu para `{ booking, slot }` na Presentation (registrado nas tasks); (2) `contracts` virou pacote compilado para o backend consumir (ponto aberto do grupo 0 resolvido aqui); (3) `fileParallelism: false` na integração é dívida consciente (banco compartilhado) — revisitar quando a suíte crescer.
+- **Veredito:** Aprovado.
+
+## Backlog e docs (task 5.4)
+
+- `docs/product/08-backlog-produto.md`: UC 4.2.3 → **Em andamento** (reserva sem overbooking, disponibilidade e notificação-via-porta entregues; SMTP real, autenticação e consumo pelo frontend pendentes); tabela-resumo do Épico 4 atualizada.
+- `docs/architecture/c2-container.md`: Backend e PostgreSQL movidos para **Real**; Keycloak segue planejado; frontend ainda não consome a API (Épico 5).
+- `docs/architecture/c3-component.md`: seção do módulo Agendamento com as quatro camadas, portas/implementações e o wiring singleton do contexto transacional.

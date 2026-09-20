@@ -417,7 +417,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 - **Fluxos alternativos/exceção:** Concorrência no mesmo slot → só uma reserva vence, sem overbooking.
 - **Critérios de aceite:**
   - Regras 6.3 de `docs/00` cumpridas (self-service, slots da admin, confirmação por e-mail).
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (módulo `backend/src/scheduling` entrega reserva sem overbooking — índice único parcial no PostgreSQL como executor final —, listagem de disponibilidade e notificação via `NotificationPort` com adapter de console; pendentes: SMTP real, autenticação e consumo pelo frontend).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 **Use Case 4.2.4 — Pacientes (API)**
@@ -568,7 +568,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 | 1. Site Público | 9 | 12 | Em andamento (9 features implementadas com mocks e validadas com a Fabiana em 2026-09-19; pendentes backend, fotos reais e número real) |
 | 2. Painel Administrativo | 7 | 9 | Não iniciado |
 | 3. Autenticação e Acesso | 3 | 3 | Não iniciado |
-| 4. Backend e Contratos | 3 | 9 | Em andamento (Feature 4.1 — contratos em `contracts/` — iniciada; módulos do backend não iniciados) |
+| 4. Backend e Contratos | 3 | 9 | Em andamento (Feature 4.1 concluída; Feature 4.2 — módulo Agendamento — em andamento; demais módulos não iniciados) |
 | 5. Integração Frontend-Backend | 1 | 1 | Não iniciado |
 | 6. Infraestrutura e Qualidade | 3 | 4 | Em andamento (CI e pre-commit concluídos; frontend em produção manual; observabilidade e backend pendentes) |
 | **Total** | **26** | **38** | — |

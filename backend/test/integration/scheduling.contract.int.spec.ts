@@ -3,7 +3,11 @@ import type { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { BookingInputSchema, SlotSchema } from "@newestetica/contracts";
 import { SchedulingModule } from "../../src/scheduling/scheduling.module";
-import { createTestPrismaClient, resetDatabase, testDatabaseUrl } from "./database";
+import {
+  createTestPrismaClient,
+  resetDatabase,
+  testDatabaseUrl,
+} from "./database";
 
 const prisma = createTestPrismaClient();
 let app: INestApplication;

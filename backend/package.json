@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "pnpm --filter @newestetica/contracts run build && tsc --noEmit",
     "test": "pnpm --filter @newestetica/contracts run build && vitest run --coverage",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate deploy"

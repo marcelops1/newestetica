@@ -8,6 +8,20 @@ jobs:
   gates:
     name: quality gates
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: newestetica
+          POSTGRES_PASSWORD: changeme-dev
+          POSTGRES_DB: newestetica
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U newestetica -d newestetica"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - name: Checkout (histórico completo para o Gitleaks)
         uses: actions/checkout@v4
