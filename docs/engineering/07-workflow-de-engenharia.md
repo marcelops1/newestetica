@@ -92,6 +92,8 @@ Uma task SHALL ser considerada concluída somente quando atender a todos os iten
 
 > Esta Definition of Done é auto-verificável no momento da abertura do PR através do checklist em `.github/pull_request_template.md` — cada item acima tem um item correspondente no template.
 
+> Em módulos do backend, a ordem de construção TDD por camada (Domain → Application → Infrastructure → Presentation) é obrigatória — ver seção 15. A ordem define QUANDO cada teste exigido acima é escrito; não substitui nenhum item.
+
 ### Camadas de defesa do lint e da formatação (pre-commit, CI, branch protection)
 
 O lint e a formatação têm três camadas de defesa independentes, nesta ordem de ocorrência:
@@ -202,3 +204,20 @@ A revisão em estágios já cumpre parcialmente o papel de regressão: toda deci
 ### Regra de forma
 
 Esta prática é agnóstica de modelo por desenho: nenhum nome de modelo, versão ou fornecedor deve aparecer como parte da regra — a escolha de modelo é livre (ver `AGENTS.md` §7) e a prática deve funcionar igual com qualquer IA agentic.
+
+---
+
+## 15. Ordem de construção TDD por camada (Clean Architecture)
+
+**Princípio: o banco de dados é um detalhe.** A lógica de negócio deve nascer, ser testada e ficar estável ANTES de qualquer linha de código de persistência real. Nenhum módulo do backend nasce pelo banco.
+
+**Ordem obrigatória** — cada camada só começa quando a anterior está testada e verde, sempre no ciclo RED → GREEN → REFACTOR (seção 4):
+
+1. **Domain** — entidades, value objects, regras de negócio puras. Zero import de framework, zero import de ORM (`docs/architecture/02-arquitetura.md` §7). Testes unitários puros: sem banco, sem NestJS TestingModule.
+2. **Application** — casos de uso, dependendo somente de INTERFACES de repositório definidas no Domain (portas). Testes com repositório FAKE em memória — nunca banco real nesta camada.
+3. **Infrastructure** — implementação real das interfaces contra o banco (Repository Pattern + Data Mapper, nunca Active Record, conforme `docs/architecture/04-decisoes-tecnicas.md` §5). Testes de INTEGRAÇÃO real contra banco em container (Testcontainers/Docker, seção 13), confirmando que a implementação cumpre o contrato da interface do Domain.
+4. **Presentation** — controllers, DTOs e validação de entrada via contratos (`contracts/`): a camada mais fina.
+
+**Regra de bloqueio:** nenhuma task de Infrastructure começa antes de Domain e Application estarem com testes verdes. Isso é verificável no formato test-first das tasks de qualquer Change futuro de módulo de backend (seção 5): o RED da task de Infrastructure pressupõe as anteriores verdes; task que pule a ordem reprova no Verify.
+
+**Vínculo com a Definition of Done (seção 6):** a ordem acima não substitui nenhum item da DoD — ela define QUANDO cada teste exigido pela DoD é escrito. Módulos triviais seguem a mesma ordem; o volume de testes segue a seção 13 (proporcional ao risco).
