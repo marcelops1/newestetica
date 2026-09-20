@@ -42,8 +42,8 @@ flowchart TB
     F -->|login| K
 ```
 
-- **Real:** somente o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]`.
-- **Planejado:** Backend, PostgreSQL e Keycloak entram após a validação visual, via contratos em `contracts/`.
+- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` — e os contratos de API em `contracts/` (schemas dos contextos já mockados: Catálogo, Agendamento e Conteúdo Público), com testes de contrato contra os mocks.
+- **Planejado:** Backend, PostgreSQL e Keycloak entram no Épico 4 implementando os contratos de `contracts/`.
 - Nenhum outro contêiner existe ou está previsto no MVP (sem microserviços, sem app nativo).
 
 > Este diagrama deve ser atualizado como parte do Verify de qualquer Change que altere sua camada.

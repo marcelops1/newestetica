@@ -381,7 +381,7 @@
 - **Fluxos alternativos/exceção:** Divergência mock × contrato → mapeada explicitamente.
 - **Critérios de aceite:**
   - Mocks existentes compatíveis ou divergência documentada.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (contratos Zod em `contracts/` para Catálogo, Agendamento e Conteúdo Público, com testes de contrato contra os mocks e consentimento obrigatório em antes/depois; os módulos do backend — Feature 4.2 — e a troca dos mocks pela API — Épico 5 — ainda não consomem os contratos).
 
 ### Feature 4.2 — Módulos NestJS por bounded context
 
@@ -568,7 +568,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
 | 1. Site Público | 9 | 12 | Em andamento (9 features implementadas com mocks e validadas com a Fabiana em 2026-09-19; pendentes backend, fotos reais e número real) |
 | 2. Painel Administrativo | 7 | 9 | Não iniciado |
 | 3. Autenticação e Acesso | 3 | 3 | Não iniciado |
-| 4. Backend e Contratos | 3 | 9 | Não iniciado |
+| 4. Backend e Contratos | 3 | 9 | Em andamento (Feature 4.1 — contratos em `contracts/` — iniciada; módulos do backend não iniciados) |
 | 5. Integração Frontend-Backend | 1 | 1 | Não iniciado |
 | 6. Infraestrutura e Qualidade | 3 | 4 | Em andamento (CI e pre-commit concluídos; frontend em produção manual; observabilidade e backend pendentes) |
 | **Total** | **26** | **38** | — |
