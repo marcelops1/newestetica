@@ -8,5 +8,5 @@
 
 ## 3. Verificação e registro
 
-- [ ] 3.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança contra `docs/security/03-seguranca.md` (a regra nova é sobre dados futuros; checar que nenhum segredo ou dado real entrou nos textos e que a regra não contradiz o restante do 03) e registrar em `verification.md`, e verificar que tudo passa (exceção docs/07 §4: sem comportamento executável; verificação pelos próprios gates)
-- [ ] 3.2 Avaliar `docs/product/08-backlog-produto.md` (atualizar somente se algum status estiver incorreto — registro de decisão, sem UC) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
+- [x] 3.1 Rodar quality gates (`lint`, `format`, `typecheck`, `test`, `build`), revisar segurança contra `docs/security/03-seguranca.md` (a regra nova é sobre dados futuros; checar que nenhum segredo ou dado real entrou nos textos e que a regra não contradiz o restante do 03) e registrar em `verification.md`, e verificar que tudo passa (exceção docs/07 §4: sem comportamento executável; verificação pelos próprios gates)
+- [x] 3.2 Avaliar `docs/product/08-backlog-produto.md` (atualizar somente se algum status estiver incorreto — registro de decisão, sem UC) (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
