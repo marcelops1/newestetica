@@ -5,8 +5,8 @@
 
 ## 2. Catálogo (test-first)
 
-- [ ] 2.1 Escrever o teste de contrato de `Procedure` (cada item de `proceduresMock` aprovado; categoria inválida reprovada) e verificar que falha porque o schema não existe — RED. Verificação: teste falha com `Cannot find module` ou schema ausente
-- [ ] 2.2 Criar `src/catalog/procedure.ts` (`ProcedureSchema` + `type Procedure = z.infer`) e `src/catalog/index.ts`, e verificar que o teste da task 2.1 passa — GREEN. Verificação: `pnpm --filter contracts test` verde para o catálogo
+- [x] 2.1 Escrever o teste de contrato de `Procedure` (cada item de `proceduresMock` aprovado; categoria inválida reprovada) e verificar que falha porque o schema não existe — RED. Verificação: teste falha com `Cannot find module` ou schema ausente. Execução: `vitest run src/catalog/procedure.test.ts` → `Cannot find module './procedure'` (RED real)
+- [x] 2.2 Criar `src/catalog/procedure.ts` (`ProcedureSchema` + `type Procedure = z.infer`) e `src/catalog/index.ts`, e verificar que o teste da task 2.1 passa — GREEN. Verificação: `pnpm --filter contracts test` verde para o catálogo. Execução: 5/5 testes verdes no arquivo (6 mocks compatíveis + aceite com 2 categorias + categoria inválida + lista vazia/campos ausentes + id vazio); `TREATMENT_CATEGORIES` espelha `frontend/lib/types.ts`
 
 ## 3. Agendamento (test-first)
 
