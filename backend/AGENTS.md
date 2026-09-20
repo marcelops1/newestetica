@@ -28,7 +28,7 @@ O backend é responsável por:
 - Exposição de API para o frontend
 - Integridade e segurança dos dados
 
-No momento atual do projeto, **o backend ainda não deve ser implementado**. A prioridade é o frontend com mocks.
+O backend está em **desenvolvimento ativo** desde a liberação do Épico 4 (validação com a Fabiana em 2026-09-19): os contratos vivem em `contracts/` e o primeiro módulo real é o de **Agendamento** (`backend/src/scheduling/`). Cada módulo SHALL seguir Clean Architecture com TDD estrito por camada — Domain → Application → Infrastructure → Presentation, cada camada só começando com a anterior testada e verde (`docs/engineering/07-workflow-de-engenharia.md` §15).
 
 ---
 
@@ -97,7 +97,7 @@ Ver detalhes em `docs/security/03-seguranca.md`.
 
 ## 7. O que NÃO fazer
 
-- Não começar a implementação do backend antes da validação do frontend
+- Não implementar módulo do backend fora da ordem TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15)
 - Não criar microserviços
 - Não acoplar módulos entre si de forma forte
 - Não colocar regras de negócio na camada de infraestrutura
