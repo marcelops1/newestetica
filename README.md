@@ -16,7 +16,7 @@ O produto cobre o site público (apresentação, catálogo, agendamento, depoime
 
 - **Site público do Épico 1 completo com mocks** (10 rotas): Home (`/`), Catálogo (`/tratamentos` + detalhe por slug), Sobre (`/sobre`), Antes/Depois (`/antes-depois`), Depoimentos (`/depoimentos`), Orçamento (`/orcamento`), Contato (`/contato`) e Blog (`/blog` + artigo por slug) — com agendamento self-service via modal mockado, Header com drawer e navegação canônica única para Header e rodapé; Blog e Contato têm acesso no rodapé e Orçamento como CTA "Pedir Orçamento" no Header (desktop + drawer).
 - **Qualidade**: 15 arquivos e 109 testes a 100% de cobertura; gates (`lint`, `format`, `typecheck`, `test`, `build`) em 3 camadas — pre-commit local (husky + lint-staged), CI (`.github/workflows/quality.yml` com auditoria e Gitleaks) e branch protection exigindo o check "quality gates".
-- **OpenSpec**: 7 specs de domínio (72 requirements) e 27 changes arquivados (23 com specs sincronizadas; 4 com `skip_specs`, incluindo este); 23 PRs mergeados em `main`.
+- **OpenSpec**: 8 specs de domínio (76 requirements) e 27 changes arquivados (23 com specs sincronizadas; 4 com `skip_specs`, incluindo este); 23 PRs mergeados em `main`.
 - **Validação visual com a Fabiana**: concluída em 2026-09-19 — o Épico 4 (Backend) está liberado.
 - **Ainda não existe**: backend real, Keycloak/2FA, contratos (`contracts/` vazio), tipos compartilhados (`shared/` vazio) e painel admin.
 

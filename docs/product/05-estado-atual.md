@@ -35,7 +35,7 @@ A estrutura do monorepo já foi criada:
 
 - `AGENTS.md`
 - `docs/` (produto, arquitetura, segurança, engenharia, QA/dados/infra + protótipo visual aprovado)
-- `openspec/` (7 specs de domínio e 27 changes arquivados)
+- `openspec/` (8 specs de domínio e 27 changes arquivados)
 - `frontend/` (Next.js implementado — ver abaixo)
 - `backend/` (só `AGENTS.md`, sem código)
 - `shared/` (vazio, sem tipos compartilhados ainda)
@@ -130,7 +130,7 @@ A estrutura do monorepo já foi criada:
 
 ## 5. Estado do OpenSpec
 
-- Specs de domínio aprovadas em `openspec/specs/` (7 specs, 72 requirements): `architecture-docs` (4), `design-tokens` (7), `docs-organization` (3), `engineering-workflow` (15), `frontend-foundation` (4), `mock-data` (12), `public-site-structure` (27)
+- Specs de domínio aprovadas em `openspec/specs/` (8 specs, 76 requirements): `architecture-docs` (4), `design-tokens` (7), `docs-organization` (3), `engineering-workflow` (15), `frontend-foundation` (4), `infra-docker` (4), `mock-data` (12), `public-site-structure` (27)
 - 27 changes arquivados (23 com specs sincronizadas e 4 com `skip_specs`, incluindo este):
   - Fundação e docs (5): `frontend-foundation-mocks`, `reorganizacao-documentacao`, `documentacao-c4`, `sincronizar-c4-frontend`, `align-home-to-nano-banana-prototype`
   - Páginas do Épico 1 (7): `pagina-sobre`, `catalogo-procedimentos`, `pagina-antes-depois`, `pagina-depoimentos`, `pagina-orcamento`, `pagina-contato`, `pagina-blog`
@@ -174,7 +174,7 @@ A estrutura do monorepo já foi criada:
 | Decisões técnicas | Definidas |
 | Design System | Definido e aplicado nas 10 rotas |
 | Protótipo visual (nano banana) | Aprovado e aplicado no site público |
-| OpenSpec com specs de domínio | 7 specs / 72 requirements |
+| OpenSpec com specs de domínio | 8 specs / 76 requirements |
 | Changes arquivados | 27 (23 com specs sincronizadas; 4 com `skip_specs`, incluindo este) |
 | Workflow de engenharia unificado | Definido em docs/07 |
 | TDD obrigatório | Regra absoluta (AGENTS.md, docs/02, docs/04, docs/07) |
