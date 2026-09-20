@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import * as contracts from "@newestetica/contracts";
+import * as contracts from "./index";
 
 describe("ponto de entrada do pacote de contratos", () => {
-  it("resolve o pacote do workspace", () => {
+  it("carrega o barrel raiz do pacote", () => {
     expect(contracts).toBeTypeOf("object");
   });
 });

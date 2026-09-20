@@ -54,7 +54,7 @@ describe("CreateBookingUseCase", () => {
   it("confirma booking em slot livre, persiste e notifica uma vez", async () => {
     const { useCase, slots, bookings, notifications } = makeUseCase();
 
-    const booking = await useCase.execute({
+    const { booking, slot } = await useCase.execute({
       slotId: "slot-1",
       name: "Maria Exemplo",
       phone: "(11) 98765-4321",
@@ -64,6 +64,7 @@ describe("CreateBookingUseCase", () => {
     expect(booking.status).toBe("confirmed");
     expect(booking.id.length).toBeGreaterThan(0);
     expect(booking.slotId).toBe("slot-1");
+    expect(slot.available).toBe(false);
 
     expect(bookings.all()).toHaveLength(1);
     expect((await slots.findById("slot-1"))?.available).toBe(false);
@@ -80,7 +81,7 @@ describe("CreateBookingUseCase", () => {
   it("preserva os campos opcionais quando fornecidos", async () => {
     const { useCase, notifications } = makeUseCase();
 
-    const booking = await useCase.execute({
+    const { booking } = await useCase.execute({
       slotId: "slot-1",
       name: "Maria Exemplo",
       phone: "11999999999",

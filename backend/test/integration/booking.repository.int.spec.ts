@@ -1,4 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
+import { Prisma } from "../../src/generated/prisma/client";
 import { Booking } from "../../src/scheduling/domain/entities/booking.entity";
 import { Slot } from "../../src/scheduling/domain/entities/slot.entity";
 import { SlotAlreadyBooked } from "../../src/scheduling/domain/errors";
@@ -23,13 +24,18 @@ function makeSlot(id = "slot-1"): Slot {
   });
 }
 
-function makeConfirmedBooking(id: string, slot: Slot): Booking {
+function makeConfirmedBooking(
+  id: string,
+  slot: Slot,
+  notes?: string,
+): Booking {
   const booking = Booking.create({
     id,
     slotId: slot.id,
     patientName: "Maria Exemplo",
     patientPhone: "(11) 98765-4321",
     treatment: "Limpeza de pele",
+    ...(notes !== undefined ? { notes } : {}),
   });
   booking.confirm(slot);
   return booking;
@@ -47,7 +53,11 @@ describe("PrismaBookingRepository (integração com Postgres real)", () => {
   it("persiste booking confirmada e a ocupação do slot entre operações", async () => {
     const slot = makeSlot();
     await slotRepository.save(slot);
-    const booking = makeConfirmedBooking("booking-1", slot);
+    const booking = makeConfirmedBooking(
+      "booking-1",
+      slot,
+      "Prefere período da manhã",
+    );
     await slotRepository.save(slot);
 
     await bookingRepository.save(booking);
@@ -60,6 +70,7 @@ describe("PrismaBookingRepository (integração com Postgres real)", () => {
     expect(record?.patientName).toBe("Maria Exemplo");
     expect(record?.patientPhone).toBe("(11) 98765-4321");
     expect(record?.treatment).toBe("Limpeza de pele");
+    expect(record?.notes).toBe("Prefere período da manhã");
     expect((await slotRepository.findById("slot-1"))?.available).toBe(false);
   });
 
@@ -87,5 +98,23 @@ describe("PrismaBookingRepository (integração com Postgres real)", () => {
     await bookingRepository.save(second);
 
     expect(await prisma.booking.count()).toBe(2);
+  });
+
+  it("propaga erro não-único do Prisma cru (FK violada não vira conflito de slot)", async () => {
+    const booking = makeConfirmedBooking(
+      "booking-1",
+      makeSlot("slot-inexistente"),
+    );
+
+    let caught: unknown;
+    try {
+      await bookingRepository.save(booking);
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(caught).toBeInstanceOf(Prisma.PrismaClientKnownRequestError);
+    expect((caught as { code: string }).code).toBe("P2003");
+    expect(caught).not.toBeInstanceOf(SlotAlreadyBooked);
   });
 });

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { Booking } from "../../domain/entities/booking.entity";
+import type { Slot } from "../../domain/entities/slot.entity";
 import { SlotAlreadyBooked, SlotNotFound } from "../../domain/errors";
 import type { BookingRepository } from "../../domain/ports/booking.repository";
 import type { NotificationPort } from "../../domain/ports/notification.port";
@@ -14,6 +15,11 @@ export type CreateBookingInput = {
   notes?: string;
 };
 
+export type CreateBookingResult = {
+  booking: Booking;
+  slot: Slot;
+};
+
 export class CreateBookingUseCase {
   constructor(
     private readonly slots: SlotRepository,
@@ -22,7 +28,7 @@ export class CreateBookingUseCase {
     private readonly unitOfWork: UnitOfWork,
   ) {}
 
-  async execute(input: CreateBookingInput): Promise<Booking> {
+  async execute(input: CreateBookingInput): Promise<CreateBookingResult> {
     const slot = await this.slots.findById(input.slotId);
     if (!slot) {
       throw new SlotNotFound(input.slotId);
@@ -57,6 +63,6 @@ export class CreateBookingUseCase {
       durationMinutes: slot.durationMinutes,
     });
 
-    return booking;
+    return { booking, slot };
   }
 }
