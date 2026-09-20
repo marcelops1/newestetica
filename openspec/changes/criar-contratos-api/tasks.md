@@ -10,10 +10,10 @@
 
 ## 3. Agendamento (test-first)
 
-- [ ] 3.1 Escrever o teste de contrato de `Slot` (cada item de `slotsMock` aprovado; `durationMinutes` zero/negativo reprovado) e verificar que falha porque o schema não existe — RED. Verificação: teste falha com schema ausente
-- [ ] 3.2 Criar `src/scheduling/slot.ts` e exportar no índice do contexto, e verificar que o teste da task 3.1 passa — GREEN. Verificação: teste de slot verde
-- [ ] 3.3 Escrever o teste de contrato de `BookingInput` (nome/telefone válidos aprovados; nome curto/telefone curto reprovados; exemplos aceitos/rejeitados de `booking.ts`/`quote.ts` espelhados) e verificar que falha porque o schema não existe — RED. Verificação: teste falha com schema ausente
-- [ ] 3.4 Criar `src/scheduling/booking.ts` (inclui o formato de orçamento `QuoteInput` com procedimento restrito às opções vigentes) e verificar que o teste da task 3.3 passa — GREEN. Verificação: testes de booking/quote verdes
+- [x] 3.1 Escrever o teste de contrato de `Slot` (cada item de `slotsMock` aprovado; `durationMinutes` zero/negativo reprovado) e verificar que falha porque o schema não existe — RED. Verificação: teste falha com schema ausente. Execução: `Cannot find module './slot'` (RED real)
+- [x] 3.2 Criar `src/scheduling/slot.ts` e exportar no índice do contexto, e verificar que o teste da task 3.1 passa — GREEN. Verificação: teste de slot verde. Execução: 5/5 verdes (3 slots do mock + ISO com offset + duração zero/negativa + data inválida + `available` não-booleano)
+- [x] 3.3 Escrever o teste de contrato de `BookingInput` (nome/telefone válidos aprovados; nome curto/telefone curto reprovados; exemplos aceitos/rejeitados de `booking.ts`/`quote.ts` espelhados) e verificar que falha porque o schema não existe — RED. Verificação: teste falha com schema ausente. Execução: `Cannot find module './booking'` (RED real)
+- [x] 3.4 Criar `src/scheduling/booking.ts` (inclui o formato de orçamento `QuoteInput` com procedimento restrito às opções vigentes) e verificar que o teste da task 3.3 passa — GREEN. Verificação: testes de booking/quote verdes. Execução: 11/11 verdes no contexto (slot+booking); payload real do modal espelhado (inclui `notes: ""`); regras de nome/telefone idênticas às do mock de orçamento. Reconciliação com o design: `QuoteInput` ficou em `src/content/quote.ts` (o design lista `quote.ts` no contexto Conteúdo Público — orçamento é Feature 1.7 do site público; a task 4.4 já previa "se separado de booking — seguir o design"). O espelhamento dos exemplos de `quote.ts` é coberto na task 4.3/4.4
 
 ## 4. Conteúdo público (test-first)
 
