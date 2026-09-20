@@ -7,12 +7,9 @@ export class ConsoleNotificationAdapter implements NotificationPort {
   async sendBookingConfirmation(
     confirmation: BookingConfirmation,
   ): Promise<void> {
-    const treatment = confirmation.treatment
-      ? ` · ${confirmation.treatment}`
-      : "";
     console.log(
       `[agendamento] confirmação ${confirmation.bookingId}: ` +
-        `${confirmation.start.toISOString()} (${confirmation.durationMinutes} min)${treatment}`,
+        `${confirmation.start.toISOString()} (${confirmation.durationMinutes} min)`,
     );
   }
 }

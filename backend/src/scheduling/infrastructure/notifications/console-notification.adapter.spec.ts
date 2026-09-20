@@ -6,7 +6,7 @@ describe("ConsoleNotificationAdapter (dev, sem SMTP)", () => {
     vi.restoreAllMocks();
   });
 
-  it("registra a confirmação com dados operacionais sem vazar dados pessoais", async () => {
+  it("registra a confirmação com dados operacionais sem vazar dados pessoais nem o tratamento", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const adapter = new ConsoleNotificationAdapter();
 
@@ -23,12 +23,13 @@ describe("ConsoleNotificationAdapter (dev, sem SMTP)", () => {
     const message = String(log.mock.calls[0]?.[0]);
     expect(message).toContain("booking-1");
     expect(message).toContain("2026-10-01T13:00:00.000Z");
-    expect(message).toContain("Limpeza de pele");
+    expect(message).toContain("60 min)");
     expect(message).not.toContain("Maria Exemplo");
     expect(message).not.toContain("98765");
+    expect(message).not.toContain("Limpeza de pele");
   });
 
-  it("registra a confirmação sem tratamento, sem sufixo vazio", async () => {
+  it("registra a confirmação sem tratamento com o mesmo formato operacional", async () => {
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const adapter = new ConsoleNotificationAdapter();
 

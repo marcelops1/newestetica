@@ -159,6 +159,47 @@ Log do adapter de console no servidor (sem PII): `[agendamento] confirmação 4c
 - **Achados:** nenhum Critical/Required. *Notas honestas:* (1) o retorno do `CreateBookingUseCase` evoluiu para `{ booking, slot }` na Presentation (registrado nas tasks); (2) `contracts` virou pacote compilado para o backend consumir (ponto aberto do grupo 0 resolvido aqui); (3) `fileParallelism: false` na integração é dívida consciente (banco compartilhado) — revisitar quando a suíte crescer.
 - **Veredito:** Aprovado.
 
+## Revisão de segurança FORMAL (gatilho docs/07 §7 — PII de paciente)
+
+Gatilho acionado explicitamente depois do merge-candidate: o módulo persiste nome + telefone de paciente (dado pessoal, docs/03 §4) e as revisões anteriores cobriram apenas "log sem PII". Revisão dedicada, somente leitura, contra `docs/security/03-seguranca.md`.
+
+- **Threat model:** fronteira = HTTP público ↔ API (sem auth por design — self-service do UC 4.2.3); ativos = nome/telefone e integridade da agenda; abuse cases = payload hostil, corrida no slot, enumeração de reserva alheia, spam em massa, PII em log/resposta/erro, injeção SQL, segredos.
+- **Checagens com veredito:** entrada validada antes da persistência (Zod na fronteira, 422 sem eco de valores); SQL 100% parametrizado (zero concatenação/`$queryRaw`); resposta minimizada (nome/telefone **não** voltam; id é UUID não enumerável); erros sem internals (filtro devolve só `code`/`message`; 500 genérico testado); segredos só por ambiente; sem endpoint de cancelar/alterar/consultar reserva (logo não há acesso a dado alheio — confirmado por auditoria de controllers).
+- **Ressalvas levantadas:** R1 sem teto de tamanho no schema; R2 `treatment` (texto livre) aparecia no log; R3 `notes` livre pode carregar dado de saúde digitado; R4 sem rate limiting/CAPTCHA/idempotência (risco aceito com gatilho: resolver antes do Épico 5/SMTP real); R5/R6 sem criptografia em repouso e sem caminho de exclusão (previstos no docs/03 §12, reavaliar com dado real); R7 privilégio do banco na infra; R8 CORS/HTTPS/headers no deploy; R9 finalidade informada na UX (Épico 5); R10 exigir prova de posse quando existir leitura/alteração de reserva por paciente.
+- **Veredito na época:** aprovado com ressalva (R1–R10), sem violação de regra obrigatória para o estágio.
+
+### Adendo: R1 e R2 RESOLVIDAS (pós-revisão, test-first)
+
+**R1 — limites de tamanho no contrato** (`contracts/src/scheduling/booking.ts`): `name` máx 120, `phone` máx 20, `treatment` máx 200, `notes` máx 500.
+
+```text
+RED (antes dos limites):
+$ pnpm --filter contracts exec vitest run src/scheduling/booking.test.ts
+× rejeita textos acima dos limites de tamanho (defesa em profundidade)
+AssertionError: expected true to be false // Object.is equality
+ Test Files  1 failed (1)   Tests  1 failed | 7 passed (8)
+
+GREEN (com .max()):
+ Test Files  1 passed (1)   Tests  8 passed (8)
+```
+
+Cobertura: payload hostil (nome de 10.000 chars) rejeitado + limites exatos (120/20/200/500) aceitos — testado nas duas bordas.
+
+**R2 — `treatment` fora do log** (`console-notification.adapter.ts`): o adapter de console passou a registrar só `bookingId`, início e duração; o ramo de sufixo do tratamento foi eliminado (o adapter SMTP futuro usará o campo, que permanece na porta).
+
+```text
+RED (teste passa a exigir ausência):
+$ pnpm --filter backend exec vitest run --project unit src/scheduling/infrastructure/notifications
+× registra a confirmação com dados operacionais sem vazar dados pessoais nem o tratamento
+AssertionError: expected '[agendamento] confirmação booking-1: …' not to contain 'Limpeza de pele'
+ Test Files  1 failed (1)   Tests  1 failed | 1 passed (2)
+
+GREEN (log sem tratamento):
+ Test Files  1 passed (1)   Tests  2 passed (2)
+```
+
+Suítes após as correções: contracts **52/52 (100%)**; backend **51/51 (99,21% stmts, 90,90% branches, 100% funcs)** — a leve queda de branches (91,17→90,90) é a remoção do ramo de tratamento no log, coberto até então. R1/R2 deixam de ser ressalva; R3–R10 seguem com os gatilhos registrados acima.
+
 ## Backlog e docs (task 5.4)
 
 - `docs/product/08-backlog-produto.md`: UC 4.2.3 → **Em andamento** (reserva sem overbooking, disponibilidade e notificação-via-porta entregues; SMTP real, autenticação e consumo pelo frontend pendentes); tabela-resumo do Épico 4 atualizada.
