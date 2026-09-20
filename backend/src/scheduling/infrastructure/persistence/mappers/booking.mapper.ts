@@ -3,12 +3,13 @@ import {
   Booking,
   type BookingStatus,
 } from "../../../domain/entities/booking.entity";
+import { InvalidBooking } from "../../../domain/errors";
 
 function toStatus(value: string): BookingStatus {
   if (value === "pending" || value === "confirmed") {
     return value;
   }
-  throw new Error(`status de booking desconhecido: ${value}`);
+  throw new InvalidBooking(`status desconhecido vindo do banco: ${value}`);
 }
 
 export function toBookingDomain(record: BookingRecord): Booking {
