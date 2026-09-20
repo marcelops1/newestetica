@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { Client } from "pg";
 
-const require = createRequire(import.meta.url);
+const require = createRequire(__filename);
 
 const DEFAULT_TEST_DATABASE_URL =
   "postgresql://newestetica:changeme-dev@127.0.0.1:5432/newestetica_test";
