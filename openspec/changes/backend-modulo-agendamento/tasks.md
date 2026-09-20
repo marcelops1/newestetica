@@ -1,0 +1,51 @@
+## 0. Setup do backend (test-first de wire-up)
+
+- [x] 0.1 Executar `pnpm --filter backend test` e constatar que falha (pacote inexistente) — RED. Verificação: `No projects matched the filters`. Execução 2026-09-20: saída `No projects matched the filters in "/home/marcelo/Projetos/newestetica"` (RED real)
+- [x] 0.2 Criar `backend/package.json` (NestJS core/common/platform-express, reflect-metadata, rxjs, prisma + @prisma/client, pg, zod, `@newestetica/contracts` via workspace, vitest + coverage, typescript, eslint + typescript-eslint, prettier), `tsconfig.json` (strict + decorators), `tsconfig.build.json`, `vitest.config.ts` (thresholds 80%), `eslint.config.mjs` mínimo e `.prettierignore`; rodar `pnpm install` — GREEN parcial. Verificação: `pnpm install` sem erro e `pnpm --filter backend` resolve o pacote. Execução: `pnpm install` ok (NestJS 12.0.3; prisma/@prisma/client pinados em ^7.10.0 — a dist-tag `latest` do prisma CLI aponta para 8.0.0-rc.15, RC evitado de propósito; postinstall dos engines ok). Notas: (a) `vitest.config.ts` exclui do coverage só bootstrap/wiring (`main.ts`, `app.controller.ts`, `*.module.ts`) — sem regra de negócio, cobertos pelo smoke da task 0.3; (b) `pg` ficou em devDependencies (driver de teste de integração, grupo 3); (c) ponto aberto para o grupo 4: o build por `tsc` não transpila o TS de `@newestetica/contracts` fora do `rootDir` — resolver no grupo 4 (paths/build do pacote) quando a Presentation importar os contratos
+- [x] 0.3 Criar `src/main.ts` + `src/app.module.ts` (módulo raiz vazio, sem regra) e verificar que o app sobe e responde ao healthcheck — GREEN. Verificação: `curl localhost:PORTA/health` (ou endpoint equivalente) retorna 200 com o módulo raiz carregado. Execução: `pnpm --filter backend build` (tsc) ok; `PORT=3011 node dist/main.js` → `curl 127.0.0.1:3011/health` = `{"status":"ok"}` HTTP 200; processo encerrado em seguida. `app.controller.ts` (health) é wiring do root module, sem regra de negócio. Estrutura por camada criada (`scheduling/{domain/{entities,ports},application/use-cases,infrastructure/{persistence,notifications},presentation/controllers}` + `test/`); `infrastructure/` e `presentation/` ficam com `.gitkeep` até os grupos 3/4
+
+## 1. Domain — Slot, Booking e regra sem overbooking (unitários puros)
+
+- [ ] 1.1 Escrever o teste da entidade `Slot` (criação com id/início/duração válidos; início inválido e duração não-positiva rejeitados) e verificar que falha (entidade inexistente) — RED. Verificação: `Cannot find module`
+- [ ] 1.2 Criar `domain/entities/slot.entity.ts` (classe pura, sem decorators, sem imports externos) e verificar o teste verde — GREEN. Verificação: teste da task 1.1 passa
+- [ ] 1.3 Escrever o teste da entidade `Booking` (criação vinculada a um slot + dados da paciente; confirmação muda o estado para confirmada) e verificar que falha — RED. Verificação: `Cannot find module`
+- [ ] 1.4 Criar `domain/entities/booking.entity.ts` e verificar o teste verde — GREEN. Verificação: teste da task 1.3 passa
+- [ ] 1.5 Escrever o teste da regra sem overbooking no Domain (confirmar segunda booking no mesmo slot lança erro de domínio `SlotAlreadyBooked`; slot sem booking confirma normalmente) e verificar que falha — RED. Verificação: teste falha (regra inexistente)
+- [ ] 1.6 Implementar a regra na entidade/caso puro do Domain e verificar o teste verde — GREEN. Verificação: teste da task 1.5 passa, sem nenhum import fora de `domain/`
+- [ ] 1.7 Escrever o teste das portas (interfaces `SlotRepository`, `BookingRepository`, `NotificationPort` com tipos de erro de domínio) compilando contra um fake manual e verificar que falha (portas inexistentes) — RED. Verificação: `Cannot find module`
+- [ ] 1.8 Criar `domain/ports/*.ts` (só interfaces + tipos, zero implementação) e verificar verde + auditoria de imports (`domain/` sem imports externos) — GREEN. Verificação: teste passa e `grep` de imports externos em `domain/` retorna vazio
+
+## 2. Application — casos de uso contra portas com fake em memória
+
+- [ ] 2.1 Escrever o teste do `CreateBookingUseCase` (slot livre + payload válido → booking confirmada + notificação invocada 1 vez via `NotificationPort` fake) com fakes em memória e verificar que falha — RED. Verificação: `Cannot find module`
+- [ ] 2.2 Implementar `CreateBookingUseCase` dependendo só das portas e verificar verde — GREEN. Verificação: teste da task 2.1 passa, sem importar `infrastructure/`
+- [ ] 2.3 Escrever o teste de recusa (slot ocupado → erro `SlotAlreadyBooked`, sem booking criada, sem notificação) e verificar que falha — RED. Verificação: teste falha (ramo inexistente)
+- [ ] 2.4 Implementar o ramo de recusa e verificar verde — GREEN. Verificação: teste da task 2.3 passa
+- [ ] 2.5 Escrever o teste do `ListAvailabilityUseCase` (retorna só slots disponíveis; vazio quando nenhum livre) com fake e verificar que falha — RED. Verificação: `Cannot find module`
+- [ ] 2.6 Implementar `ListAvailabilityUseCase` e verificar verde — GREEN. Verificação: teste da task 2.5 passa
+- [ ] 2.7 Escrever o teste de concorrência no caso de uso (N chamadas paralelas ao mesmo slot no fake com trava → exatamente 1 vencedora) e verificar que falha — RED. Verificação: teste falha (mais de 1 vencedora ou deadlock)
+- [ ] 2.8 Implementar a serialização no caso de uso e verificar verde — GREEN. Verificação: teste da task 2.7 passa de forma determinística
+
+## 3. Infrastructure — Prisma + Postgres real em container
+
+- [ ] 3.1 Escrever o teste de integração do `SlotRepository` (round-trip: salva e lê slot íntegro) contra banco de teste e verificar que falha (sem schema, sem implementação) — RED. Verificação: falha de conexão/schema ausente
+- [ ] 3.2 Criar `prisma/schema.prisma` (modelos Slot/Booking + índice único parcial de uma confirmada por slot), rodar migrations no banco de teste e implementar `slot.repository.impl.ts` + mapper Prisma↔domínio — GREEN. Verificação: teste da task 3.1 passa contra Postgres real em container
+- [ ] 3.3 Escrever o teste de integração do `BookingRepository` (round-trip + ocupação do slot persistida entre operações) e verificar que falha — RED. Verificação: teste falha (implementação ausente)
+- [ ] 3.4 Implementar `booking.repository.impl.ts` + mapper e verificar verde — GREEN. Verificação: teste da task 3.3 passa
+- [ ] 3.5 Escrever o teste de integração da concorrência real (N reservas paralelas no Postgres → exatamente 1 confirmada, demais recusadas com o erro de domínio, sem overbooking) e verificar que falha — RED. Verificação: teste falha (overbooking ou erro não-mapeado)
+- [ ] 3.6 Confirmar o índice único parcial como executor final (violação do constraint mapeada para `SlotAlreadyBooked`) e verificar verde e determinístico em repetidas execuções — GREEN. Verificação: teste da task 3.5 passa 3 vezes seguidas
+- [ ] 3.7 Criar os adapters fake (testes) e console (dev) da `NotificationPort` e verificar que o caso de uso os consome sem mudar — GREEN. Verificação: testes de Application passam com o fake; logs em dev sem SMTP
+
+## 4. Presentation — controllers com validação Zod
+
+- [ ] 4.1 Escrever o teste de contrato da Presentation (POST /bookings com payload válido dos contratos → 201 com corpo compatível com os schemas; payload inválido → 422 estruturado sem internals; slot ocupado → 409; slot inexistente → 404) e verificar que falha (controller inexistente) — RED. Verificação: 404 de rota ou `Cannot find module`
+- [ ] 4.2 Criar `scheduling.controller.ts` (POST /bookings, GET /slots/available) com validação de entrada e saída via `BookingInputSchema`/`SlotSchema` de `@newestetica/contracts` e mapeamento de erros de domínio para HTTP — GREEN. Verificação: teste da task 4.1 passa de ponta a ponta contra o app com banco de teste
+- [ ] 4.3 Escrever o teste de saída conforme o contrato (corpo de reserva e de disponibilidade validados contra os schemas Zod nas duas pontas, conforme 07 §13) e verificar que falha antes do ajuste — RED. Verificação: divergência implementação↔contrato reprova
+- [ ] 4.4 Ajustar o formato de saída até a divergência zerar — GREEN. Verificação: teste da task 4.3 passa; nenhuma divergência mock↔contrato nova
+
+## 5. Gates, segurança, registros e backlog
+
+- [ ] 5.1 Rodar os gates do backend (`lint`, `format`, `typecheck`, `test` com cobertura ≥80%, `build` por tsc) + auditoria estática da regra de dependência (`domain/` sem imports externos) — exceção docs/07 §4 só para a escrita dos registros; gates são executáveis. Verificação: gates verdes + evidência da auditoria
+- [ ] 5.2 Revisar segurança com `security-and-hardening` contra `docs/security/03-seguranca.md` (gatilhos: entrada de usuário, dados de paciente, integração futura de e-mail) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: `verification.md` com revisão registrada
+- [ ] 5.3 Revisar com `code-review-and-quality` e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada
+- [ ] 5.4 Atualizar `docs/product/08-backlog-produto.md` (UC 4.2.3 → Em andamento: reserva e notificação-via-porta entregues; SMTP real e consumo pelo frontend pendentes) — exceção docs/07 §4 (documentação sem comportamento; verificação por releitura). Verificação: releitura confirma o status
