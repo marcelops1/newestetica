@@ -1,0 +1,31 @@
+{
+  "name": "@newestetica/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog/index.ts",
+    "./scheduling": "./src/scheduling/index.ts",
+    "./content": "./src/content/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.0",
+    "eslint": "^9",
+    "prettier": "^3.9.6",
+    "typescript": "^5",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
