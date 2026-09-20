@@ -1,6 +1,9 @@
 import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { Client } from "pg";
+
+const require = createRequire(import.meta.url);
 
 const DEFAULT_TEST_DATABASE_URL =
   "postgresql://newestetica:changeme-dev@127.0.0.1:5432/newestetica_test";
@@ -33,7 +36,8 @@ async function ensureDatabaseExists(url: string): Promise<void> {
 
 function applyMigrations(url: string): void {
   const backendRoot = path.resolve(__dirname, "../..");
-  execFileSync("pnpm", ["exec", "prisma", "migrate", "deploy"], {
+  const prismaCli = require.resolve("prisma/build/index.js");
+  execFileSync(process.execPath, [prismaCli, "migrate", "deploy"], {
     cwd: backendRoot,
     env: { ...process.env, DATABASE_URL: url },
     stdio: "pipe",
