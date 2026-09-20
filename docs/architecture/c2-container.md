@@ -18,10 +18,11 @@ flowchart TB
         R8[/contato<br/>mensagem para a clínica/]
         R9[/blog<br/>conteúdo educativo/]
         R10[/blog/[slug]<br/>artigo/]
+        CONTRACTS[contracts/<br/>schemas Zod]
+        BE[Backend NestJS<br/>módulo Agendamento<br/>Clean Architecture]
+        DB[(PostgreSQL)]
     end
     subgraph Planejado
-        BE[Backend NestJS<br/>monolito modular]
-        DB[(PostgreSQL)]
         K[Keycloak + 2FA]
     end
     P -->|HTTPS| FE
@@ -36,14 +37,15 @@ flowchart TB
     FE --- R8
     FE --- R9
     FE --- R10
-    FE -->|API REST futura| BE
+    FE -.->|API REST futura — Épico 5| BE
+    BE -->|valida entrada/saída| CONTRACTS
     BE -->|Repository + Data Mapper| DB
-    BE -->|OIDC| K
+    BE -.->|OIDC futuro| K
     F -->|login| K
 ```
 
-- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` — e os contratos de API em `contracts/` (schemas dos contextos já mockados: Catálogo, Agendamento e Conteúdo Público), com testes de contrato contra os mocks.
-- **Planejado:** Backend, PostgreSQL e Keycloak entram no Épico 4 implementando os contratos de `contracts/`.
+- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` —, os contratos de API em `contracts/` (schemas Zod dos contextos já mockados), o **Backend NestJS** com o primeiro módulo real (Agendamento: `POST /slots/:slotId/bookings` e `GET /slots/available`, Clean Architecture com TDD por camada) e o **PostgreSQL** (persistência do módulo, com índice único parcial anti-overbooking).
+- **Planejado:** Keycloak + 2FA e os demais módulos do backend; o frontend ainda não consome a API (troca dos mocks — Épico 5).
 - Nenhum outro contêiner existe ou está previsto no MVP (sem microserviços, sem app nativo).
 
 > Este diagrama deve ser atualizado como parte do Verify de qualquer Change que altere sua camada.

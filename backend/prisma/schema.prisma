@@ -1,0 +1,31 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  moduleFormat    = "cjs"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Slot {
+  id              String    @id
+  start           DateTime
+  durationMinutes Int
+  available       Boolean
+  bookings        Booking[]
+}
+
+model Booking {
+  id           String   @id
+  slotId       String
+  patientName  String
+  patientPhone String
+  treatment    String?
+  notes        String?
+  status       String
+  slot         Slot     @relation(fields: [slotId], references: [id])
+
+  @@unique([slotId], where: { status: "confirmed" })
+}

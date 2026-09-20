@@ -7,11 +7,11 @@
   "scripts": {
     "prepare": "husky",
     "dev": "pnpm --filter frontend dev",
-    "lint": "node --check lint-staged.config.mjs && pnpm --filter frontend --filter contracts lint",
-    "format": "pnpm --filter frontend exec prettier --check ../lint-staged.config.mjs && pnpm --filter frontend --filter contracts format",
-    "typecheck": "pnpm --filter frontend --filter contracts typecheck",
-    "test": "pnpm --filter frontend --filter contracts test",
-    "build": "pnpm --filter frontend build",
+    "lint": "node --check lint-staged.config.mjs && pnpm --filter frontend --filter contracts --filter backend lint",
+    "format": "pnpm --filter frontend exec prettier --check ../lint-staged.config.mjs && pnpm --filter frontend --filter contracts --filter backend format",
+    "typecheck": "pnpm --filter frontend --filter contracts --filter backend typecheck",
+    "test": "pnpm --filter frontend --filter contracts --filter backend test",
+    "build": "pnpm --filter contracts build && pnpm --filter frontend build && pnpm --filter backend build",
     "openspec": "openspec",
     "infra:up": "docker compose -f infra/docker/docker-compose.yml up -d --wait",
     "infra:down": "docker compose -f infra/docker/docker-compose.yml down --remove-orphans"
@@ -23,5 +23,11 @@
     "@fission-ai/openspec": "1.12.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "deepmerge-ts": "^8.0.0",
+      "mysql2": "^3.22.0"
+    }
   }
 }
