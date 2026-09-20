@@ -64,6 +64,10 @@ Suíte completa do backend (`pnpm --filter backend test`): **12 arquivos / 41 te
 - **Sem segredos:** `DATABASE_URL` nunca versionada; `prisma.config.ts` usa placeholder apenas para `generate` (migrate falha com erro de conexão claro se a URL real faltar); banco de teste com credenciais fictícias do `.env.example` do compose.
 - **Modelo Prisma nunca cruza para o domínio:** mapeamento manual nos mappers; status validado na leitura (valor desconhecido → `InvalidBooking`).
 
+## Adendo pós-CI — advisories high do Prisma CLI
+
+O primeiro run do CI reprovou na auditoria (`pnpm audit --audit-level high`) com **2 HIGH** introduzidos pelo toolchain do Prisma 7.10.0: `deepmerge-ts@7.1.5` (via `@prisma/config`, stack exhaustion) e `mysql2@3.15.3` (pin exato do CLI; auth downgrade). Triage: ambos são dependências do **CLI** (config do Prisma e conector MySQL), não do runtime do app (que usa `@prisma/adapter-pg` sobre Postgres) — mas o gate do CI é autoritativo e reprova high. Correção aplicada no workspace (`pnpm.overrides`): `deepmerge-ts@^8.0.0` e `mysql2@^3.22.0` (versões corrigidas). Verificado que o CLI segue funcional com o major forçado: `prisma validate` ok, `prisma generate` ok no postinstall, `migrate deploy` ok no globalSetup e suíte 51/51 verde; `pnpm audit --audit-level high` volta a passar (só os 3 moderados pré-existentes dev-only).
+
 ## Notas de implementação (Prisma 7)
 
 - Driver adapter `@prisma/adapter-pg` obrigatório (Query Compiler); gerador `prisma-client` com output `src/generated/prisma` (gitignored; excluído de lint/format/coverage).
