@@ -1,6 +1,6 @@
 ## 1. Registrar decisão em 04 (§20)
 
-- [ ] 1.1 Adicionar a §20 ("ai-memory como ferramenta experimental de continuidade entre agentes", Escolhido/Motivos/Alternativas/Implicações conforme escopo aprovado — experimental, dev-only, separada do compose, sem substituir AGENTS/OpenSpec) antes das Referências, renumerando Referências para §21, e checar por grep que nenhuma referência a números de seção quebrou (exceção docs/07 §4: documentação de decisão sem comportamento executável; verificação por releitura + grep)
+- [x] 1.1 Adicionar a §20 ("ai-memory como ferramenta experimental de continuidade entre agentes", Escolhido/Motivos/Alternativas/Implicações conforme escopo aprovado — experimental, dev-only, separada do compose, sem substituir AGENTS/OpenSpec) antes das Referências, renumerando Referências para §21, e checar por grep que nenhuma referência a números de seção quebrou (exceção docs/07 §4: documentação de decisão sem comportamento executável; verificação por releitura + grep). Execução: §20 criada; Referências → §21; grep de refs a números de seção do 04 → vazio (nenhuma quebrada)
 
 ## 2. Regra de segurança + nota AGENTS
 
