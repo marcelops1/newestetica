@@ -39,7 +39,9 @@ describe("consentimento nos casos de antes/depois (regra de domínio)", () => {
       recovery: "Imediato",
       goal: "Firmeza",
     };
-    expect(BeforeAfterSchema.safeParse(withoutConsentField).success).toBe(false);
+    expect(BeforeAfterSchema.safeParse(withoutConsentField).success).toBe(
+      false,
+    );
     expect(
       BeforeAfterSchema.safeParse({
         ...withoutConsentField,

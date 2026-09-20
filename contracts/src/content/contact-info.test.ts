@@ -9,9 +9,9 @@ describe("contrato de ContactInfo (informações institucionais fictícias)", ()
   });
 
   it("rejeita horários ou endereço vazios", () => {
-    expect(ContactInfoSchema.safeParse({ ...contactMock, hours: [] }).success).toBe(
-      false,
-    );
+    expect(
+      ContactInfoSchema.safeParse({ ...contactMock, hours: [] }).success,
+    ).toBe(false);
     expect(
       ContactInfoSchema.safeParse({ ...contactMock, address: [] }).success,
     ).toBe(false);

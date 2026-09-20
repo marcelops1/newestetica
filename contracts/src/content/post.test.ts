@@ -18,9 +18,9 @@ describe("contrato de Post (blog)", () => {
       PostSchema.safeParse({ ...postsMock[0], content: ["", "Parágrafo."] })
         .success,
     ).toBe(false);
-    expect(PostSchema.safeParse({ ...postsMock[0], category: "" }).success).toBe(
-      false,
-    );
+    expect(
+      PostSchema.safeParse({ ...postsMock[0], category: "" }).success,
+    ).toBe(false);
   });
 
   it("rejeita data de publicação fora do formato ISO (AAAA-MM-DD)", () => {

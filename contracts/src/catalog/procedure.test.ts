@@ -31,7 +31,8 @@ describe("contrato de Procedure (catálogo)", () => {
 
   it("rejeita lista de categorias vazia e campos obrigatórios ausentes", () => {
     expect(
-      ProcedureSchema.safeParse({ ...proceduresMock[0], categories: [] }).success,
+      ProcedureSchema.safeParse({ ...proceduresMock[0], categories: [] })
+        .success,
     ).toBe(false);
     expect(
       ProcedureSchema.safeParse({

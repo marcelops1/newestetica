@@ -17,11 +17,7 @@ export {
   TreatmentOptionSchema,
   TreatmentOptionsSchema,
 } from "./quiz";
-export type {
-  QuizGoal,
-  QuizRecommendation,
-  TreatmentOption,
-} from "./quiz";
+export type { QuizGoal, QuizRecommendation, TreatmentOption } from "./quiz";
 export { createQuoteInputSchema } from "./quote";
 export type { QuoteInput } from "./quote";
 export { TestimonialSchema } from "./testimonial";
