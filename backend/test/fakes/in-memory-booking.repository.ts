@@ -34,6 +34,20 @@ export class InMemoryBookingRepository implements BookingRepository {
   }
 
   all(): Booking[] {
-    return [...this.bookings.values()].map((record) => Booking.restore(record));
+    return [...this.bookings.values()].map((record) =>
+      Booking.restore({ ...record }),
+    );
+  }
+
+  snapshot(): BookingSnapshot[] {
+    return [...this.bookings.values()].map((record) => ({ ...record }));
+  }
+
+  restore(snapshot: unknown): void {
+    const records = snapshot as BookingSnapshot[];
+    this.bookings.clear();
+    for (const record of records) {
+      this.bookings.set(record.id, { ...record });
+    }
   }
 }

@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { CreateBookingUseCase } from "./create-booking.use-case";
+import { Booking } from "../../domain/entities/booking.entity";
 import { Slot } from "../../domain/entities/slot.entity";
 import { SlotAlreadyBooked, SlotNotFound } from "../../domain/errors";
 import { InMemorySlotRepository } from "../../../../test/fakes/in-memory-slot.repository";
 import { InMemoryBookingRepository } from "../../../../test/fakes/in-memory-booking.repository";
 import { FakeNotificationPort } from "../../../../test/fakes/fake-notification.port";
+import { FakeUnitOfWork } from "../../../../test/fakes/fake-unit-of-work";
 
 function makeSlot(id = "slot-1"): Slot {
   return Slot.create({
@@ -14,12 +16,38 @@ function makeSlot(id = "slot-1"): Slot {
   });
 }
 
-function makeUseCase(options?: { slots?: Slot[] }) {
-  const slots = new InMemorySlotRepository(options?.slots ?? [makeSlot()]);
+class FailingSlotRepository extends InMemorySlotRepository {
+  failNextSave = false;
+
+  override async save(slot: Slot): Promise<void> {
+    if (this.failNextSave) {
+      this.failNextSave = false;
+      throw new Error("falha simulada na persistência do slot");
+    }
+    return super.save(slot);
+  }
+}
+
+function makeUseCase(options?: {
+  slots?: Slot[];
+  slotRepository?: InMemorySlotRepository;
+  transactional?: boolean;
+}) {
+  const slots =
+    options?.slotRepository ??
+    new InMemorySlotRepository(options?.slots ?? [makeSlot()]);
   const bookings = new InMemoryBookingRepository();
   const notifications = new FakeNotificationPort();
-  const useCase = new CreateBookingUseCase(slots, bookings, notifications);
-  return { useCase, slots, bookings, notifications };
+  const unitOfWork = new FakeUnitOfWork(
+    options?.transactional === false ? [] : [slots, bookings],
+  );
+  const useCase = new CreateBookingUseCase(
+    slots,
+    bookings,
+    notifications,
+    unitOfWork,
+  );
+  return { useCase, slots, bookings, notifications, unitOfWork };
 }
 
 describe("CreateBookingUseCase", () => {
@@ -106,7 +134,9 @@ describe("CreateBookingUseCase", () => {
   });
 
   it("N reservas paralelas no mesmo slot: exatamente uma vence, sem overbooking", async () => {
-    const { useCase, slots, bookings, notifications } = makeUseCase();
+    const { useCase, slots, bookings, notifications } = makeUseCase({
+      transactional: false,
+    });
 
     const attempts = Array.from({ length: 5 }, (_, index) =>
       useCase.execute({
@@ -131,5 +161,54 @@ describe("CreateBookingUseCase", () => {
     expect(bookings.all()[0]?.status).toBe("confirmed");
     expect((await slots.findById("slot-1"))?.available).toBe(false);
     expect(notifications.confirmations).toHaveLength(1);
+  });
+
+  it("falha na segunda persistência faz rollback total, sem save parcial nem notificação", async () => {
+    const slots = new FailingSlotRepository([makeSlot()]);
+    const { useCase, bookings, notifications, unitOfWork } = makeUseCase({
+      slotRepository: slots,
+    });
+    slots.failNextSave = true;
+
+    await expect(
+      useCase.execute({
+        slotId: "slot-1",
+        name: "Maria Exemplo",
+        phone: "11999999999",
+      }),
+    ).rejects.toThrow("falha simulada na persistência do slot");
+
+    expect(unitOfWork.executions).toBe(1);
+    expect(bookings.all()).toHaveLength(0);
+    expect((await slots.findById("slot-1"))?.available).toBe(true);
+    expect(notifications.confirmations).toHaveLength(0);
+  });
+
+  it("conflito de constraint dentro da unidade de trabalho não deixa estado parcial", async () => {
+    const { useCase, slots, bookings, notifications, unitOfWork } =
+      makeUseCase();
+
+    const existing = Booking.create({
+      id: "booking-existente",
+      slotId: "slot-1",
+      patientName: "Joana Exemplo",
+      patientPhone: "11988888888",
+    });
+    existing.confirm(makeSlot());
+    await bookings.save(existing);
+
+    await expect(
+      useCase.execute({
+        slotId: "slot-1",
+        name: "Maria Exemplo",
+        phone: "11999999999",
+      }),
+    ).rejects.toThrow(SlotAlreadyBooked);
+
+    expect(unitOfWork.executions).toBe(1);
+    expect(bookings.all()).toHaveLength(1);
+    expect(bookings.all()[0]?.id).toBe("booking-existente");
+    expect((await slots.findById("slot-1"))?.available).toBe(true);
+    expect(notifications.confirmations).toHaveLength(0);
   });
 });

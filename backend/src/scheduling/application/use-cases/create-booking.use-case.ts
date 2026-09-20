@@ -4,6 +4,7 @@ import { SlotAlreadyBooked, SlotNotFound } from "../../domain/errors";
 import type { BookingRepository } from "../../domain/ports/booking.repository";
 import type { NotificationPort } from "../../domain/ports/notification.port";
 import type { SlotRepository } from "../../domain/ports/slot.repository";
+import type { UnitOfWork } from "../../domain/ports/unit-of-work.port";
 
 export type CreateBookingInput = {
   slotId: string;
@@ -18,6 +19,7 @@ export class CreateBookingUseCase {
     private readonly slots: SlotRepository,
     private readonly bookings: BookingRepository,
     private readonly notifications: NotificationPort,
+    private readonly unitOfWork: UnitOfWork,
   ) {}
 
   async execute(input: CreateBookingInput): Promise<Booking> {
@@ -39,8 +41,11 @@ export class CreateBookingUseCase {
     });
     booking.confirm(slot);
 
-    await this.bookings.save(booking);
-    await this.slots.save(slot);
+    await this.unitOfWork.execute(async () => {
+      await this.bookings.save(booking);
+      await this.slots.save(slot);
+    });
+
     await this.notifications.sendBookingConfirmation({
       bookingId: booking.id,
       patientName: booking.patientName,

@@ -39,7 +39,8 @@ backend/
 │       ├── domain/
 │       │   ├── entities/   → slot.entity.ts, booking.entity.ts (classes puras, sem decorators)
 │       │   └── ports/      → slot.repository.ts, booking.repository.ts,
-│       │                       notification.port.ts (interfaces + tipos de erro de domínio)
+│       │                       notification.port.ts, unit-of-work.port.ts
+│       │                       (interfaces + tipos de erro de domínio)
 │       ├── application/
 │       │   └── use-cases/  → create-booking.use-case.ts, list-availability.use-case.ts
 │       ├── infrastructure/
@@ -72,6 +73,10 @@ Rationale: decisão do usuário na proposta — UC 4.2.3 exige confirmação por
 ### 7. Superfície HTTP mínima e mapeamento de erros
 
 Rationale: só o que o UC exige — `POST /bookings` (cria reserva) e `GET /slots/available` (lista disponibilidade); sem prefixo de versão (mesma regra dos contratos: sem tráfego real versionado, sem `/v1`). Mapeamento: payload inválido (Zod) → 422 estruturado; slot inexistente → 404; slot ocupado/conflito de concorrência → 409; erro inesperado → 500 genérico sem internals. Alternativa considerada: expor CRUD de slots para a admin (rejeitada — Feature 2.3, outro change).
+
+### 8. Fronteira transacional: UnitOfWork como porta do Domain
+
+Rationale: `CreateBookingUseCase` persiste em dois repositórios (`bookings.save` + `slots.save`); sem fronteira transacional, uma falha entre os dois deixa booking confirmada com slot disponível (a constraint anti-overbooking continua valendo, mas a listagem mente). A atomicidade é invariante de negócio — pertence ao Domain como porta `UnitOfWork` com `execute<T>(work: () => Promise<T>): Promise<T>`, implementada na Infrastructure via `prisma.$transaction`; o caso de uso envolve os dois saves nela e a notificação segue DEPOIS do commit (nunca notificar rollback). Alternativa considerada: `$transaction` direto na implementação de Infrastructure sem porta (rejeitada — a atomicidade ficaria invisível e não testável na camada de Application; o teste de rollback do grupo 2 não teria onde se apoiar).
 
 ## Risks / Trade-offs
 
