@@ -75,6 +75,14 @@ Garantir que qualquer IA ou desenvolvedor entenda e aplique:
 
 No MVP **não** armazenamos prontuário médico completo nem dados clínicos sensíveis aprofundados. O histórico é simples e operacional.
 
+### Captura de sessão por ferramentas de IA (ai-memory)
+
+Ferramentas de memória/captura de sessão usadas no desenvolvimento (ex.: ai-memory — decisão §20 de `docs/architecture/04-decisoes-tecnicas.md`) **NUNCA** devem capturar dado real de paciente — nomes, contatos, fotos, histórico ou qualquer informação identificável.
+
+- Hoje o projeto usa apenas mocks (risco baixo), mas a regra vale desde já para o conteúdo das sessões.
+- **Antes de qualquer dado real de paciente existir no projeto** (quando o backend for implementado), a ferramenta deve ser revisada e reforçada com exclusão de path/allowlist explícita, garantindo que diretórios, bancos e volumes com dados reais fiquem fora da captura.
+- Em conflito entre a conveniência da ferramenta e esta regra, esta regra vence.
+
 ---
 
 ## 5. Consentimento de Fotos (Antes e Depois)

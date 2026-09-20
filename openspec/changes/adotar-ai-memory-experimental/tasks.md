@@ -4,7 +4,7 @@
 
 ## 2. Regra de segurança + nota AGENTS
 
-- [ ] 2.1 Adicionar a subseção de captura de sessão em 03 §4 (NUNCA dado real de paciente; reforço via path-exclusion/allowlist antes de dado real existir no backend) + nota opcional/experimental em AGENTS §12 com cláusula de prevalência (exceção docs/07 §4: sem comportamento executável; verificação por releitura)
+- [x] 2.1 Adicionar a subseção de captura de sessão em 03 §4 (NUNCA dado real de paciente; reforço via path-exclusion/allowlist antes de dado real existir no backend) + nota opcional/experimental em AGENTS §12 com cláusula de prevalência (exceção docs/07 §4: sem comportamento executável; verificação por releitura). Execução: subseção "Captura de sessão por ferramentas de IA (ai-memory)" no 03 §4 e "Ferramentas de memória de sessão (opcional)" no AGENTS §12, ambas com a regra e a prevalência
 
 ## 3. Verificação e registro
 
