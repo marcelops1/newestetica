@@ -247,3 +247,7 @@ Skills instaladas em `.opencode/skills/` e `.agents/skills/` (ver `docs/opencode
 - Dúvida sobre qual skill usar → `using-agent-skills`
 
 A amarração obrigatória entre cada skill e a etapa do OpenSpec está em docs/engineering/07-workflow-de-engenharia.md.
+
+### Ferramentas de memória de sessão (opcional)
+
+O uso de ferramentas de memória de sessão (ex.: ai-memory — ver `docs/architecture/04-decisoes-tecnicas.md` §20) é **opcional e experimental**: serve para continuidade informal entre sessões/IAs, **não é fonte de verdade** e **nunca captura dado real de paciente** (`docs/security/03-seguranca.md` §4). Em caso de conflito com este AGENTS.md, este arquivo vence.

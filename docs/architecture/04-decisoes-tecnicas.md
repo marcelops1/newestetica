@@ -295,7 +295,34 @@ Toda nova decisão técnica relevante deve:
 
 ---
 
-## 20. Referências cruzadas
+## 20. Decisão: ai-memory como ferramenta experimental de continuidade entre agentes
+
+**Escolhido:** adoção **experimental e não obrigatória** do ai-memory (servidor de memória de longo prazo cross-agent, Markdown versionado em Git, modo zero-LLM, self-hosted) como memória **informal** de continuidade entre sessões e IAs.
+
+**Motivos:**
+
+- Portabilidade informal complementar ao OpenSpec: contexto de conversa e decisões de passagem que **não** viram artefato formal ganham um lugar comum entre agentes diferentes
+- Armazenamento em Markdown versionado em Git — auditável e sem lock-in de banco proprietário
+- Modo zero-LLM disponível e self-hosted — sem custo de API e sem enviar conteúdo para terceiros
+- Suporte multi-agente (Claude Code, Codex, Gemini CLI, OpenCode, entre outros) — alinhado ao princípio multi-IA do projeto
+
+**Alternativas consideradas:**
+
+- **Nenhuma ferramenta equivalente com o mesmo suporte multi-agente**: rejeitada — as alternativas avaliadas não cobriam o conjunto (cross-agent + Markdown em Git + zero-LLM + self-hosted)
+- **Manter a continuidade só informal na cabeça do desenvolvedor**: rejeitada — perde-se contexto entre sessões e entre IAs, sem registro nenhum
+- **Formalizar tudo no OpenSpec**: rejeitada — artefatos formais são para decisão/escopo; nem todo contexto de passagem merece proposal
+
+**Implicações:**
+
+- Ferramenta de **DESENVOLVIMENTO**: nunca faz parte do deploy de produção (VPS/AWS/Kubernetes) nem do `infra/docker/docker-compose.yml` — roda separada, instalada na máquina do usuário (fora deste repositório)
+- **Não substitui** o `AGENTS.md` nem o OpenSpec como fonte de verdade autoritativa; em conflito, eles vencem
+- **Nunca captura dado real de paciente** (regra explícita em `docs/security/03-seguranca.md` §4), com reforço técnico (exclusão de path/allowlist) obrigatório antes de existir dado real no projeto
+- Adoção não obrigatória: qualquer IA ou pessoa pode trabalhar sem a ferramenta; o fluxo OpenSpec não muda
+- Arquivo de roteamento do monorepo (`.ai-memory.toml`) nasce com a instalação real, em change próprio
+
+---
+
+## 21. Referências cruzadas
 
 - Visão de produto: `docs/product/00-visao-do-produto.md`
 - Persona e UX: `docs/product/01-persona-e-ux-40+.md`
