@@ -34,8 +34,6 @@ export class InMemoryBookingRepository implements BookingRepository {
   }
 
   all(): Booking[] {
-    return [...this.bookings.values()].map((record) =>
-      Booking.restore(record),
-    );
+    return [...this.bookings.values()].map((record) => Booking.restore(record));
   }
 }

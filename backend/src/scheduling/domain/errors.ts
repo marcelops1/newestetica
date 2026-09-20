@@ -1,8 +1,5 @@
 export type DomainErrorCode =
-  | "INVALID_SLOT"
-  | "INVALID_BOOKING"
-  | "SLOT_NOT_FOUND"
-  | "SLOT_ALREADY_BOOKED";
+  "INVALID_SLOT" | "INVALID_BOOKING" | "SLOT_NOT_FOUND" | "SLOT_ALREADY_BOOKED";
 
 export class DomainError extends Error {
   constructor(

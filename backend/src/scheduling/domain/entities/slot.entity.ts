@@ -31,7 +31,10 @@ export class Slot {
     if (!(props.start instanceof Date) || Number.isNaN(props.start.getTime())) {
       throw new InvalidSlot("início precisa ser uma data válida");
     }
-    if (!Number.isInteger(props.durationMinutes) || props.durationMinutes <= 0) {
+    if (
+      !Number.isInteger(props.durationMinutes) ||
+      props.durationMinutes <= 0
+    ) {
       throw new InvalidSlot("duração precisa ser um inteiro positivo");
     }
   }
