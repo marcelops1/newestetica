@@ -26,6 +26,16 @@ describe("Slot (entidade de domínio)", () => {
     ).toThrow(InvalidSlot);
   });
 
+  it("rejeita id só com espaços em branco (trim antes da validação)", () => {
+    expect(() =>
+      Slot.create({
+        id: "   ",
+        start: new Date("2026-10-01T10:00:00-03:00"),
+        durationMinutes: 60,
+      }),
+    ).toThrow(InvalidSlot);
+  });
+
   it("rejeita início inválido", () => {
     expect(() =>
       Slot.create({
