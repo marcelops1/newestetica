@@ -75,24 +75,21 @@ describe("Booking (entidade de domínio)", () => {
     );
   });
 
-  it("rejeita campos só com espaços em branco (trim antes da validação)", () => {
-    const base = {
-      id: "booking-1",
-      slotId: "slot-1",
-      patientName: "Maria Exemplo",
-      patientPhone: "11999999999",
-    };
+  it.each(["id", "slotId", "patientPhone"] as const)(
+    "rejeita %s só com espaços em branco (trim antes da validação)",
+    (field) => {
+      const base = {
+        id: "booking-1",
+        slotId: "slot-1",
+        patientName: "Maria Exemplo",
+        patientPhone: "11999999999",
+      };
 
-    expect(() => Booking.create({ ...base, id: "   " })).toThrow(
-      InvalidBooking,
-    );
-    expect(() => Booking.create({ ...base, slotId: "   " })).toThrow(
-      InvalidBooking,
-    );
-    expect(() => Booking.create({ ...base, patientPhone: "   " })).toThrow(
-      InvalidBooking,
-    );
-  });
+      expect(() => Booking.create({ ...base, [field]: "   " })).toThrow(
+        InvalidBooking,
+      );
+    },
+  );
 
   it("rejeita confirmar booking já confirmada", () => {
     const slot = Slot.create({
