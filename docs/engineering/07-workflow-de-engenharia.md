@@ -198,6 +198,11 @@ A revisão em estágios já cumpre parcialmente o papel de regressão: toda deci
   1. **Exigir o RED colado antes do GREEN** — o registro da falha real do teste antes da implementação reduziu GREEN prematuro.
   2. **Releitura do disco antes de editar** — prompts que mandam ler os arquivos em vez de confiar no relato da sessão evitam edição sobre estado desatualizado.
   3. **Exigir a saída do comando, não a conclusão** — colar saída bruta (grep, teste, curl) no registro do change em vez de "funcionou".
+- Padrões adicionais observados na construção do primeiro módulo de backend (Agendamento), a sessão mais longa do projeto até aqui — quatro que reduziram retrabalho:
+  4. **Dividir o Apply em grupos por camada, com revisão entre eles** — Domain, Application, Infrastructure e Presentation executados e revisados em blocos separados, cada grupo verde antes do próximo, localizaram erro de escopo cedo (antes de empilhar a pilha inteira).
+  5. **Prova negativa real em vez de confiar no teste que passa** — para cada garantia crítica (constraint anti-overbooking, atomicidade da unidade de trabalho, wiring do contexto transacional), quebrar de propósito a proteção e colar a falha resultante provou que o teste distingue certo de errado; teste que passa de primeira por construção foi registrado como tal, não como sucesso.
+  6. **Revisão de segurança formal mesmo quando a cobertura "parece" suficiente** — acionar o gatilho de segurança dedicado depois do código pronto rendeu achados reais (limites de tamanho ausentes, campo livre em log) e correções test-first; "já cobrimos o log sem PII" não substitui revisar a fronteira inteira.
+  7. **Emenda de design em voo quando a revisão acha lacuna estrutural** — achado que exige mudança de plano vira emenda registrada nos artefatos (design + tasks) antes de continuar, em vez de dívida silenciosa para depois.
 - Registrar sinais de degradação no `verification.md` do change em que forem observados (mesma disciplina dos FYIs), para ajustar o padrão na iteração seguinte.
 - Reavaliar automação (ex.: lint de artefatos) quando o volume de changes justificar — sem antecipar.
 
@@ -221,3 +226,17 @@ Esta prática é agnóstica de modelo por desenho: nenhum nome de modelo, versã
 **Regra de bloqueio:** nenhuma task de Infrastructure começa antes de Domain e Application estarem com testes verdes. Isso é verificável no formato test-first das tasks de qualquer Change futuro de módulo de backend (seção 5): o RED da task de Infrastructure pressupõe as anteriores verdes; task que pule a ordem reprova no Verify.
 
 **Vínculo com a Definition of Done (seção 6):** a ordem acima não substitui nenhum item da DoD — ela define QUANDO cada teste exigido pela DoD é escrito. Módulos triviais seguem a mesma ordem; o volume de testes segue a seção 13 (proporcional ao risco).
+
+---
+
+## 16. Checklist obrigatório para módulo de backend novo
+
+Todo Change que cria um módulo de backend novo SHALL satisfazer, antes do Archive, os itens abaixo — cada um com evidência nomeada, não intenção:
+
+1. **Contrato sob a skill de interface** — se o módulo define ou consome contrato de API, a skill `api-and-interface-design` foi carregada e citada no `design.md` (decisão de formato e alternativas).
+2. **Segurança no planejamento, não só no Verify** — a skill `security-and-hardening` foi carregada DURANTE o Propose/Design/Tasks (citada em `design.md` ou `tasks.md`), com o threat model da fronteira; a revisão do Verify continua obrigatória (seção 7).
+3. **Mutation testing medido** — Stryker rodou ao menos uma vez contra o módulo (`pnpm --filter backend mutation`, com o banco de teste no ar), com o score real e a triagem de sobreviventes registrados em `verification.md` (meta da seção 13).
+4. **Teste adversarial explícito** — existe task (e teste) de payload hostil/malformado real contra a fronteira do módulo, não apenas raciocínio de revisão: entradas malformadas, limites de tamanho e tentativas de bypass do que o módulo garante.
+5. **Aprendizado registrado** — se a sessão teve múltiplas emendas ou grupos, a seção 14 recebeu o padrão observado (agnóstico de modelo, como manda a regra de forma).
+
+> Qualquer prompt futuro que proponha um módulo de backend novo SHALL citar esta seção como parte do escopo da proposta — o lembrete vive no processo, não na memória de quem escreve o prompt.

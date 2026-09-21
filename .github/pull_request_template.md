@@ -15,3 +15,13 @@
 - [ ] `docs/product/08-backlog-produto.md` atualizado, se aplicável
 - [ ] Este change alterou containers ou componentes (frontend/backend)? Se sim, `docs/architecture/c2-container.md` e/ou `c3-component.md` foram atualizados
 - [ ] Change arquivado via `openspec-archive-change` com specs sincronizadas
+
+## Checklist de módulo de backend novo (só se este PR cria um módulo de backend)
+
+> Itens da seção 16 do `docs/engineering/07-workflow-de-engenharia.md`. Se o PR não cria um módulo de backend novo, apague este bloco.
+
+- [ ] Skill `api-and-interface-design` carregada e citada no `design.md` (quando o módulo define ou consome contrato)
+- [ ] Skill `security-and-hardening` carregada durante o planejamento (`design.md`/`tasks.md`), não só no Verify
+- [ ] Mutation testing rodado ao menos uma vez contra o módulo, com score real e triagem em `verification.md`
+- [ ] Task explícita de teste adversarial com payload hostil real contra a fronteira
+- [ ] Seção 14 alimentada quando a sessão foi complexa (múltiplas emendas ou grupos)
