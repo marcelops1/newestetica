@@ -5,10 +5,10 @@
 
 ## 1. Domain — entidades e a invariante "nada sem consentimento" (unitários puros)
 
-- [ ] 1.1 Escrever o teste das entidades (`Testimonial`/`Post`/`BeforeAfterCase`: criação com campos válidos; campos vazios rejeitados; `hasConsent` default fechado `false`; `restore` preserva e valida) e verificar que falha porque as entidades não existem — RED. Verificação: `Cannot find module`
-- [ ] 1.2 Criar `domain/entities/*.ts` (classes puras, sem decorators, sem imports externos; vocabulário próprio só onde o contrato não é fonte) e verificar que o teste passa — GREEN. Verificação: teste da task 1.1 passa
-- [ ] 1.3 Escrever o teste das portas (`TestimonialRepository.findAll`, `PostRepository.findAll`/`findBySlug`, `BeforeAfterCaseRepository.findConsented`, compilando contra fakes manuais) e verificar que falha — RED. Verificação: falha de compilação/tipo (precedente do Catálogo)
-- [ ] 1.4 Criar `domain/ports/*.ts` (só interfaces + tipos, zero implementação; sem `UnitOfWork` — só leitura de entidade única, design decisão 3) e verificar verde + auditoria de imports (`domain/` sem imports externos) — GREEN. Verificação: typecheck limpo e `grep` de imports externos vazio
+- [x] 1.1 Escrever o teste das entidades (`Testimonial`/`Post`/`BeforeAfterCase`: criação com campos válidos; campos vazios rejeitados; `hasConsent` default fechado `false`; `restore` preserva e valida) e verificar que falha porque as entidades não existem — RED. Verificação: `Cannot find module`. Execução: RED real (`Cannot find module '../errors/errors'` nos 3 specs)
+- [x] 1.2 Criar `domain/entities/*.ts` (classes puras, sem decorators, sem imports externos; vocabulário próprio só onde o contrato não é fonte) e verificar que o teste passa — GREEN. Verificação: teste da task 1.1 passa. Execução: 3 entidades + erros locais (`InvalidContent`/`PostNotFound`); 14/14 verdes; `hasConsent` nasce `false` no `create` (fail-closed) e `restore` preserva; `Post` valida data AAAA-MM-DD e parágrafos
+- [x] 1.3 Escrever o teste das portas (`TestimonialRepository.findAll`, `PostRepository.findAll`/`findBySlug`, `BeforeAfterCaseRepository.findConsented`, compilando contra fakes manuais) e verificar que falha — RED. Verificação: falha de compilação/tipo (precedente do Catálogo). Execução: RED de tipo real (3× `TS2307` nos fakes ao implementar as portas ausentes); em runtime o import de tipo é apagado (mesmo precedente do Catálogo)
+- [x] 1.4 Criar `domain/ports/*.ts` (só interfaces + tipos, zero implementação; sem `UnitOfWork` — só leitura de entidade única, design decisão 3) e verificar verde + auditoria de imports (`domain/` sem imports externos) — GREEN. Verificação: typecheck limpo e `grep` de imports externos vazio. Execução: typecheck 0; 17/17 no módulo; auditoria por script (pega import multilinha) → nenhum import externo no `domain/` fora dos specs (`vitest`)
 
 ## 2. Application — casos de uso contra portas com fake em memória
 
