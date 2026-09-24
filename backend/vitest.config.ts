@@ -9,7 +9,7 @@ export default defineConfig({
       include: ["src/**/*.ts"],
       exclude: [
         "src/main.ts",
-        "src/app.controller.ts",
+        "src/health/health.controller.ts",
         "src/**/*.module.ts",
         "src/**/*.spec.ts",
         "src/generated/**",
