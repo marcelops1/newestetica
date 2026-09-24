@@ -24,10 +24,10 @@
 
 ## 4. Presentation — controller com validação Zod
 
-- [ ] 4.1 Escrever o teste de contrato da Presentation (`GET /procedures` e `GET /procedures/:slug` com corpo validado contra `ProcedureSchema`; categoria inválida → 422; slug inexistente/inativo → 404 idêntico) e verificar que falha — RED. Verificação: 404 de rota ou `Cannot find module`
-- [ ] 4.2 Criar controller + `CatalogModule` (mesmo padrão de wiring do `SchedulingModule`, sem `UnitOfWork`) e verificar verde de ponta a ponta — GREEN. Verificação: testes passam contra o app com banco de teste
-- [ ] 4.3 Escrever o teste de saída conforme o contrato (corpos validados contra os schemas nas duas pontas, 07 §13) e verificar que falha antes do ajuste — RED. Verificação: divergência reprova
-- [ ] 4.4 Ajustar o formato de saída até zerar a divergência — GREEN. Verificação: teste passa; nenhuma divergência nova
+- [x] 4.1 Escrever o teste de contrato da Presentation (`GET /procedures` e `GET /procedures/:slug` com corpo validado contra `ProcedureSchema`; categoria inválida → 422; slug inexistente/inativo → 404 idêntico) e verificar que falha — RED. Verificação: 404 de rota ou `Cannot find module`. Execução: RED real (`Cannot find module '.../catalog.module'`)
+- [x] 4.2 Criar controller + `CatalogModule` (mesmo padrão de wiring do `SchedulingModule`, sem `UnitOfWork`) e verificar verde de ponta a ponta — GREEN. Verificação: testes passam contra o app com banco de teste. Execução: HTTP 4/4 + unit 16/16; pipe/filtro locais do módulo (bounded contexts não compartilham apresentação); `CatalogModule` com cliente próprio (trade-off dos dois pools registrado no módulo, candidato a provider compartilhado no AppModule com o 3º módulo). Achado do teste: a mensagem do `ProcedureNotFound` ecoava o slug e os 404 de inexistente/inativo ficavam diferentes — a spec exige resposta **idêntica**, então o erro passou a ter mensagem genérica (anti-enumeração)
+- [x] 4.3 Escrever o teste de saída conforme o contrato (corpos validados contra os schemas nas duas pontas, 07 §13) e verificar que falha antes do ajuste — RED. Verificação: divergência reprova. Execução: RED real após corrigir um bug do próprio teste (faltava `resetDatabase` no `beforeEach` — colisão de id com o arquivo anterior): `AssertionError: expected {...} to not have property "isActive"` nos dois endpoints
+- [x] 4.4 Ajustar o formato de saída até zerar a divergência — GREEN. Verificação: teste passa; nenhuma divergência nova. Execução: allowlist explícita do contrato no controller (tipo de retorno = `Procedure` do próprio `@newestetica/contracts`); `isActive` **não cruza o wire** (confirmado por `not.toHaveProperty` + conjunto exato de chaves); 6/6 HTTP, suíte completa 23 arquivos/86 testes, cobertura 98,55% stmts
 
 ## 5. Mutation, segurança, registros e backlog
 

@@ -1,0 +1,29 @@
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from "@nestjs/common";
+import { DomainError, ProcedureNotFound } from "../../domain/errors/errors";
+
+type HttpResponse = {
+  status(code: number): { json(body: unknown): void };
+};
+
+function statusFor(error: DomainError): number {
+  if (error instanceof ProcedureNotFound) {
+    return HttpStatus.NOT_FOUND;
+  }
+  return HttpStatus.UNPROCESSABLE_ENTITY;
+}
+
+@Catch(DomainError)
+export class DomainExceptionFilter implements ExceptionFilter {
+  catch(error: DomainError, host: ArgumentsHost): void {
+    const response = host.switchToHttp().getResponse<HttpResponse>();
+    response.status(statusFor(error)).json({
+      code: error.code,
+      message: error.message,
+    });
+  }
+}

@@ -8,7 +8,7 @@ export class GetProcedureBySlugUseCase {
   async execute(slug: string): Promise<Procedure> {
     const procedure = await this.procedures.findActiveBySlug(slug);
     if (!procedure) {
-      throw new ProcedureNotFound(slug);
+      throw new ProcedureNotFound();
     }
     return procedure;
   }

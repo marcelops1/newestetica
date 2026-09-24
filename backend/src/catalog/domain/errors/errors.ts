@@ -20,7 +20,9 @@ export class InvalidProcedure extends DomainError {
 }
 
 export class ProcedureNotFound extends DomainError {
-  constructor(slug: string) {
-    super("PROCEDURE_NOT_FOUND", `Procedimento não encontrado: ${slug}`);
+  /* Mensagem genérica por decisão de domínio: inexistente e inativo respondem
+     exatamente igual (anti-enumeração — spec backend-catalog). */
+  constructor() {
+    super("PROCEDURE_NOT_FOUND", "Procedimento não encontrado.");
   }
 }
