@@ -24,9 +24,9 @@
 
 ## 5. Escopo do Sonar + docs de arquitetura
 
-- [ ] 5.1 Criar `.sonarcloud.properties` na raiz com `sonar.cpd.exclusions=backend/test/**,**/*.spec.ts` — exceção docs/07 §4 (configuração pura). Verificação: arquivo com o conteúdo exato da decisão 7 (a eficácia é medida no aceite 6.3, não aqui)
-- [ ] 5.2 Emendar `docs/architecture/02-arquitetura.md` §3 (exceção do kernel técnico com regra de filiação), registrar a decisão em `docs/architecture/04-decisoes-tecnicas.md` e adicionar a subseção do kernel em `docs/architecture/c3-component.md` — exceção docs/07 §4 (docs). Verificação: releitura confirma os três registros
-- [ ] 5.3 Dar baixa na pendência em `docs/product/05-estado-atual.md` (remover a linha, apontando este change) e estender `backend/stryker.config.mjs` (`src/shared/**` no `mutate`, para o código movido continuar medido) — exceção docs/07 §4 (docs + config pura). Verificação: releitura + `grep` do padrão no config
+- [x] 5.1 Criar `.sonarcloud.properties` na raiz com `sonar.cpd.exclusions=backend/test/**,**/*.spec.ts` — exceção docs/07 §4 (configuração pura). Verificação: arquivo com o conteúdo exato da decisão 7 (a eficácia é medida no aceite 6.3, não aqui). Execução: arquivo criado na raiz, com comentário explicando por que não é `sonar-project.properties` (Automatic Analysis ignora o outro)
+- [x] 5.2 Emendar `docs/architecture/02-arquitetura.md` §3 (exceção do kernel técnico com regra de filiação), registrar a decisão em `docs/architecture/04-decisoes-tecnicas.md` e adicionar a subseção do kernel em `docs/architecture/c3-component.md` — exceção docs/07 §4 (docs). Verificação: releitura confirma os três registros. Execução: 02 §3 ganhou a exceção ("infraestrutura técnica pura pode ser compartilhada; modelo de domínio/lógica nunca"); 04 §22 com decisão + alternativas + implicações (referências renumeradas para §23); c3 com seção do kernel (diagrama + mapeamentos locais + instâncias por módulo)
+- [x] 5.3 Dar baixa na pendência em `docs/product/05-estado-atual.md` (remover a linha, apontando este change) e estender `backend/stryker.config.mjs` (`src/shared/**` no `mutate`, para o código movido continuar medido) — exceção docs/07 §4 (docs + config pura). Verificação: releitura + `grep` do padrão no config. Execução: pendência baixada apontando o change (04 §22); `src/shared/**/*.ts` adicionado ao `mutate` do Stryker
 
 ## 6. Gates, aceite Sonar e registros
 
