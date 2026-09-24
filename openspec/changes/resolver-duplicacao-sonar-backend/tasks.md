@@ -9,8 +9,8 @@
 
 ## 2. Base DomainError compartilhada
 
-- [ ] 2.1 Escrever o spec da base genérica (`backend/src/shared/errors/domain-error.spec.ts`: constrói com código arbitrário, preserva `code`/`message`, `name` é o da subclasse concreta) e constatar que falha — RED. Verificação: `Cannot find module`
-- [ ] 2.2 Criar `backend/src/shared/errors/domain-error.ts` (`DomainError<Code extends string>`), migrar os 3 `errors.ts` (union local + subclasse fina herdando o construtor, classes concretas intocadas) — GREEN. Verificação: suíte backend verde + typecheck limpo + `grep` confirma nenhum `extends Error` direto fora do compartilhado
+- [x] 2.1 Escrever o spec da base genérica (`backend/src/shared/errors/domain-error.spec.ts`: constrói com código arbitrário, preserva `code`/`message`, `name` é o da subclasse concreta) e constatar que falha — RED. Verificação: `Cannot find module`. Execução: RED real (`Cannot find module './domain-error'`)
+- [x] 2.2 Criar `backend/src/shared/errors/domain-error.ts` (`DomainError<Code extends string>`), migrar os 3 `errors.ts` (union local + subclasse fina herdando o construtor, classes concretas intocadas) — GREEN. Verificação: suíte backend verde + typecheck limpo + `grep` confirma nenhum `extends Error` direto fora do compartilhado. Execução: base genérica + 3 subclasses finas locais (`extends SharedDomainError<DomainErrorCode>`), classes concretas e imports internos intocados; suite **38 arquivos / 151 testes verdes**; typecheck 0; `extends Error` só no kernel
 
 ## 3. Base DomainExceptionFilter compartilhada
 

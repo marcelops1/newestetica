@@ -1,17 +1,11 @@
+import { DomainError as SharedDomainError } from "../../../shared/errors/domain-error";
+
 export type DomainErrorCode = "INVALID_PROCEDURE" | "PROCEDURE_NOT_FOUND";
 
-/* Base local do módulo Catálogo: módulos são bounded contexts independentes e não
-   importam o domínio um do outro (docs/architecture/02-arquitetura.md §3) — o formato
-   do erro é o mesmo do módulo Agendamento, a classe não é compartilhada. */
-export class DomainError extends Error {
-  constructor(
-    readonly code: DomainErrorCode,
-    message: string,
-  ) {
-    super(message);
-    this.name = new.target.name;
-  }
-}
+/* Subclasse fina local sobre o kernel compartilhado (docs/architecture/02-arquitetura.md
+   §3, exceção do kernel): plumbing técnico é compartilhado; o union de códigos e as
+   classes concretas continuam do módulo. */
+export class DomainError extends SharedDomainError<DomainErrorCode> {}
 
 export class InvalidProcedure extends DomainError {
   constructor(reason: string) {
