@@ -111,3 +111,13 @@ Escopo: quatro rotas públicas de leitura, sem autenticação por desenho (UC 4.
 - [x] **(c)** Mutation real medida e registrada (seção 2), com triagem completa, histórico das rodadas e FYI de ferramenta.
 - [x] **(d)** Testes adversariais: slug hostil no núcleo e na fronteira HTTP, sonda de bypass com caso semeado, tripwire estrutural e exclusão de consentimento provada por write-then-throw.
 - [x] **(e)** §14 avaliada (task 5.5): **atualizada** — refinamento do padrão 5 (prova negativa por camada), não dispensa.
+
+## 8. SonarCloud no PR #40 (registro posterior — 2026-09-24)
+
+O check `SonarCloud Code Analysis` falha por **8,5% de duplicação em New Code** (limite ≤ 3%); os quality gates do Actions (check obrigatório da branch protection) estão verdes e não há novos bugs, vulnerabilidades ou hotspots. Investigação sem dashboard, via Checks API + comparação normalizada do diff (blocos ≥4 linhas, entre arquivos): medição independente **8,5% (145/1699 linhas normalizadas)**, confirmando o número do Sonar.
+
+- **~39% da duplicação é estrutural entre módulos, por decisão arquitetural:** `ZodValidationPipe` (15 linhas, arquivo quase inteiro), `DomainExceptionFilter` (20), classe base `DomainError` (7) e `createPrismaClient` (8) replicam Catálogo/Agendamento — `docs/architecture/02-arquitetura.md` §3 (bounded contexts não compartilham apresentação) + design decisão 8 (cliente próprio com unificação adiada). Entidades, repositórios, mappers, casos de uso e portas têm **zero** sobreposição textual entre módulos.
+- **~61% é DAMP intencional em testes:** scaffolds de integração (imports/`beforeAll`/`afterAll`/helpers) e builders locais por spec (`makePost` ×4, `makeCase` ×5) — testes autocontidos por desenho.
+- **Nenhuma extração razoável alcança ≤3% neste PR:** remover só os testes ou só os clones de produção deixa ~5,6%; zerar exigiria violar a 02 §3 e acoplar testes. "Classe base genérica para repositórios Prisma" não ajudaria (zero duplicação textual em repositórios/mappers/use-cases).
+- **Precedente:** PRs #35 (Agendamento) e #38 (Catálogo) mesclados com o Sonar vermelho na mesma situação; o merge é governado pelos quality gates do Actions.
+- **Follow-up formal** em `docs/product/05-estado-atual.md` (Pendências registradas): decidir sobre presentation/erros compartilhados (emenda OpenSpec à 02 §3) **ou** exclusão de duplicação para testes no SonarCloud — antes do 4º módulo (Identidade e Acesso).

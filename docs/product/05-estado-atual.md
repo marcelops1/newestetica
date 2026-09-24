@@ -149,6 +149,10 @@ A estrutura do monorepo já foi criada:
 1. Iniciar o Épico 4 (contratos em `contracts/` + backend NestJS real) — liberado pela validação visual com a Fabiana Rosa em 2026-09-19
 2. Change `admin-shell-mocks` (shell do painel admin com mocks — Épico 2)
 
+### Pendências registradas
+
+- **Dívida técnica:** decidir sobre presentation/erros compartilhados entre módulos de backend (pipe/filter duplicados) OU configurar exclusão de duplicação no SonarCloud para testes — avaliar antes do 4º módulo (Identidade e Acesso). Registro original: `verification.md` do change arquivado `2026-09-24-backend-modulo-conteudo-publico` (§8) e comentário no PR #40.
+
 ---
 
 ## 7. Regras práticas para qualquer IA neste momento
