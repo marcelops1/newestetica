@@ -34,13 +34,22 @@ describe("contrato de BookingInput (solicitação de agendamento)", () => {
     ).toBe(false);
   });
 
-  it("rejeita telefone sem DDD (menos de 10 dígitos)", () => {
+  it.each(["123456789", "(11) 1234"])(
+    "rejeita telefone sem DDD (%s — conta dígitos, não o texto bruto)",
+    (phone) => {
+      expect(
+        BookingInputSchema.safeParse({ name: "Maria Exemplo", phone }).success,
+      ).toBe(false);
+    },
+  );
+
+  it("aceita telefone com exatamente 10 dígitos (limite inferior do DDD)", () => {
     expect(
       BookingInputSchema.safeParse({
         name: "Maria Exemplo",
-        phone: "123456789",
+        phone: "1234567890",
       }).success,
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it("rejeita tipos errados e payload nulo", () => {

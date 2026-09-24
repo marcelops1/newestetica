@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import { integrationTestSettings } from "./vitest.shared";
 
 export default defineConfig({
   test: {
@@ -31,12 +32,8 @@ export default defineConfig({
       {
         test: {
           name: "integration",
-          environment: "node",
           include: ["test/integration/**/*.int.spec.ts"],
-          globalSetup: ["test/integration/global-setup.ts"],
-          fileParallelism: false,
-          testTimeout: 30_000,
-          hookTimeout: 30_000,
+          ...integrationTestSettings,
         },
       },
     ],

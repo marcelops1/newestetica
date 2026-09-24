@@ -70,12 +70,35 @@ describe("Scheduling HTTP (contrato da Presentation)", () => {
 
     expect(response.status).toBe(201);
     const body = (await response.json()) as { id: string; status: string };
-    expect(body.id.length).toBeGreaterThan(0);
-    expect(body.status).toBe("confirmed");
+    expect(body).toEqual({
+      id: expect.any(String),
+      status: "confirmed",
+      treatment: "Limpeza de pele",
+      slot: {
+        id: "slot-1",
+        start: "2026-10-01T13:00:00.000Z",
+        durationMinutes: 60,
+        available: false,
+      },
+    });
     expect(
       (await prisma.slot.findUnique({ where: { id: "slot-1" } }))?.available,
     ).toBe(false);
     expect(await prisma.booking.count()).toBe(1);
+  });
+
+  it("reserva sem tratamento responde sem a chave treatment (minimização)", async () => {
+    await seedSlot();
+
+    const response = await postBooking("slot-1", {
+      name: "Maria Exemplo",
+      phone: "(11) 98765-4321",
+    });
+
+    expect(response.status).toBe(201);
+    const body = (await response.json()) as Record<string, unknown>;
+    expect(body).not.toHaveProperty("treatment");
+    expect(body.status).toBe("confirmed");
   });
 
   it("payload inválido responde 422 estruturado, sem detalhes internos", async () => {

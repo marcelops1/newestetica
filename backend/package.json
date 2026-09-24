@@ -10,6 +10,7 @@
     "format:write": "prettier --write .",
     "typecheck": "pnpm --filter @newestetica/contracts run build && tsc --noEmit",
     "test": "pnpm --filter @newestetica/contracts run build && vitest run --coverage",
+    "mutation": "stryker run",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate deploy"
   },
@@ -26,6 +27,8 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^12.0.3",
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/vitest-runner": "^10.0.0",
     "@types/node": "^24.13.3",
     "@types/pg": "^8.23.1",
     "@vitest/coverage-v8": "^5.0.0",
