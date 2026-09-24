@@ -19,8 +19,8 @@
 
 ## 3. Infrastructure — Prisma + Postgres real em container
 
-- [ ] 3.1 Escrever o teste de integração dos repositórios (round-trip; `findConsented` exclui sem-consentimento mesmo com o registro existindo; `findBySlug` ignora inexistente; ordenação determinística) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente
-- [ ] 3.2 Criar os modelos Prisma + mappers manuais (Data Mapper, nunca Active Record; modelo do ORM nunca cruza para o domínio; validação do vocabulário/consentimento pela entidade como fonte única) e implementar os repositórios — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado
+- [x] 3.1 Escrever o teste de integração dos repositórios (round-trip; `findConsented` exclui sem-consentimento mesmo com o registro existindo; `findBySlug` ignora inexistente; ordenação determinística) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente. Execução: RED real (`Cannot find module '.../before-after-case.repository.impl'`); helper `resetDatabase` atualizado com as 3 tabelas novas
+- [x] 3.2 Criar os modelos Prisma + mappers manuais (Data Mapper, nunca Active Record; modelo do ORM nunca cruza para o domínio; validação do vocabulário/consentimento pela entidade como fonte única) e implementar os repositórios — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado. Execução: 3 mappers + 3 repositórios Prisma; 8/8 verdes contra Postgres real (round-trip, ordem determinística, `findBySlug` null, `findConsented` exclui sem-consentimento); `publishedAt` DATE→AAAA-MM-DD convertido no mapper
 
 ## 4. Presentation — controller com validação Zod
 
