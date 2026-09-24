@@ -16,4 +16,5 @@ export function createTestPrismaClient(): PrismaClient {
 export async function resetDatabase(prisma: PrismaClient): Promise<void> {
   await prisma.booking.deleteMany();
   await prisma.slot.deleteMany();
+  await prisma.procedure.deleteMany();
 }

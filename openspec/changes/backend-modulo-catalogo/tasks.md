@@ -19,8 +19,8 @@
 
 ## 3. Infrastructure — Prisma + Postgres real em container
 
-- [ ] 3.1 Escrever o teste de integração do repositório (round-trip; `findActive` exclui inativos; `findActiveByCategory` filtra; `findActiveBySlug` ignora inativo) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente
-- [ ] 3.2 Criar o modelo Prisma + mapper manual (Data Mapper, nunca Active Record; modelo do ORM nunca cruza para o domínio) e implementar o repositório — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado
+- [x] 3.1 Escrever o teste de integração do repositório (round-trip; `findActive` exclui inativos; `findActiveByCategory` filtra; `findActiveBySlug` ignora inativo) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente. Execução: RED real (`Cannot find module '.../procedure.repository.impl'`); helper `resetDatabase` atualizado com `procedure.deleteMany()` (nova tabela)
+- [x] 3.2 Criar o modelo Prisma + mapper manual (Data Mapper, nunca Active Record; modelo do ORM nunca cruza para o domínio) e implementar o repositório — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado. Execução: 4/4 verdes contra Postgres real; **achado**: o cliente Prisma gerado estava stale (modelo `Procedure` adicionado depois do último `generate`) — `prisma generate` resolveu e o postinstall cobre clones novos; ordenação `name asc` adicionada para a listagem pública ser determinística (decisão registrada); mapper valida as categorias vindas do banco contra o vocabulário do domínio
 
 ## 4. Presentation — controller com validação Zod
 
