@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { PrismaClient } from "../generated/prisma/client";
+import type { PrismaClient } from "../generated/prisma/client";
 import { createPrismaClientFromEnv } from "../shared/prisma/client-factory";
 import { GetPostBySlugUseCase } from "./application/use-cases/get-post-by-slug.use-case";
 import { ListBeforeAfterUseCase } from "./application/use-cases/list-before-after.use-case";

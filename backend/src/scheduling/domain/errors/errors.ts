@@ -1,10 +1,7 @@
 import { DomainError as SharedDomainError } from "../../../shared/errors/domain-error";
 
 export type DomainErrorCode =
-  | "INVALID_SLOT"
-  | "INVALID_BOOKING"
-  | "SLOT_NOT_FOUND"
-  | "SLOT_ALREADY_BOOKED";
+  "INVALID_SLOT" | "INVALID_BOOKING" | "SLOT_NOT_FOUND" | "SLOT_ALREADY_BOOKED";
 
 /* Subclasse fina local sobre o kernel compartilhado (docs/architecture/02-arquitetura.md
    §3, exceção do kernel): plumbing técnico é compartilhado; o union de códigos e as

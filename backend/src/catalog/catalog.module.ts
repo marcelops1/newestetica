@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { PrismaClient } from "../generated/prisma/client";
+import type { PrismaClient } from "../generated/prisma/client";
 import { createPrismaClientFromEnv } from "../shared/prisma/client-factory";
 import { GetProcedureBySlugUseCase } from "./application/use-cases/get-procedure-by-slug.use-case";
 import { ListProceduresUseCase } from "./application/use-cases/list-procedures.use-case";

@@ -16,7 +16,7 @@ type HttpResponse = {
    nunca importa de módulos. */
 @Catch(DomainError)
 export abstract class DomainExceptionFilter implements ExceptionFilter {
-  protected statusFor(error: DomainError<string>): number {
+  protected statusFor(_error: DomainError<string>): number {
     return HttpStatus.UNPROCESSABLE_ENTITY;
   }
 

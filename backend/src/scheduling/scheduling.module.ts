@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { PrismaClient } from "../generated/prisma/client";
+import type { PrismaClient } from "../generated/prisma/client";
 import { createPrismaClientFromEnv } from "../shared/prisma/client-factory";
 import { CreateBookingUseCase } from "./application/use-cases/create-booking.use-case";
 import { ListAvailabilityUseCase } from "./application/use-cases/list-availability.use-case";
