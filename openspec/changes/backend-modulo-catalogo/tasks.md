@@ -5,10 +5,10 @@
 
 ## 1. Domain — Procedure e a invariante "só ativos" (unitários puros)
 
-- [ ] 1.1 Escrever o teste da entidade `Procedure` (criação com campos válidos; `id`/campos vazios rejeitados; `isActive` default verdadeiro) e verificar que falha porque a entidade não existe — RED. Verificação: `Cannot find module`
-- [ ] 1.2 Criar `domain/entities/procedure.entity.ts` (classe pura, sem decorators, sem imports externos) e verificar que o teste passa — GREEN. Verificação: teste da task 1.1 passa
-- [ ] 1.3 Escrever o teste das portas (`ProcedureRepository` com `findActive`/`findActiveByCategory`/`findActiveBySlug`, compilando contra fake manual) e verificar que falha — RED. Verificação: falha de compilação/tipo (precedente da task equivalente no scheduling)
-- [ ] 1.4 Criar `domain/ports/*.ts` (só interfaces + tipos, zero implementação) e verificar verde + auditoria de imports (`domain/` sem imports externos) — GREEN. Verificação: typecheck limpo e `grep` de imports externos vazio
+- [x] 1.1 Escrever o teste da entidade `Procedure` (criação com campos válidos; `id`/campos vazios rejeitados; `isActive` default verdadeiro) e verificar que falha porque a entidade não existe — RED. Verificação: `Cannot find module`. Execução: `Cannot find module '../errors/errors'` (RED real)
+- [x] 1.2 Criar `domain/entities/procedure.entity.ts` (classe pura, sem decorators, sem imports externos) e verificar que o teste passa — GREEN. Verificação: teste da task 1.1 passa. Execução: 6/6 verdes; vocabulário de categorias próprio do domínio (`TREATMENT_CATEGORIES`) — o domínio não importa o contrato (02 §7); base `DomainError` local do módulo (mesmo formato do scheduling, classe não compartilhada — bounded contexts independentes, 02 §3)
+- [x] 1.3 Escrever o teste das portas (`ProcedureRepository` com `findActive`/`findActiveByCategory`/`findActiveBySlug`, compilando contra fake manual) e verificar que falha — RED. Verificação: falha de compilação/tipo (precedente da task equivalente no scheduling). Execução: RED de tipo `TS2307` na porta ausente; runtime passa por import de tipo apagado (mesmo precedente) — fakes em `test/fakes/in-memory-procedure.repository.ts`
+- [x] 1.4 Criar `domain/ports/*.ts` (só interfaces + tipos, zero implementação) e verificar verde + auditoria de imports (`domain/` sem imports externos) — GREEN. Verificação: typecheck limpo e `grep` de imports externos vazio. Execução: typecheck 0, 9/9 no módulo; auditoria por script (pega import multilinha) → nenhum import externo no domain
 
 ## 2. Application — casos de uso contra portas com fake em memória
 
