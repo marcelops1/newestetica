@@ -10,8 +10,8 @@
 
 ## 3. Invariante para `domain/invariants/`
 
-- [ ] 3.1 Mover `domain/overbooking.spec.ts` → `domain/invariants/overbooking.spec.ts` via `git mv`, sem tocar mais nada, e constatar que a suite falha (RED). Verificação: saída do teste/vitest com erro de módulo não encontrado
-- [ ] 3.2 Atualizar os imports `./entities/*` → `../entities/*` e `./errors` → `../errors` dentro do spec movido, e constatar suite verde (GREEN). Verificação: teste `overbooking.spec.ts` passando no novo caminho + suite verde. Exceção docs/07 §4 registrada
+- [x] 3.1 Mover `domain/overbooking.spec.ts` → `domain/invariants/overbooking.spec.ts` via `git mv`, sem tocar mais nada, e constatar que a suite falha (RED). Verificação: saída do teste/vitest com erro de módulo não encontrado. Execução: RED real — `Cannot find module './entities/booking.entity'` no vitest + 3 erros `TS2307` no typecheck
+- [x] 3.2 Atualizar os imports `./entities/*` → `../entities/*` e `./errors` → `../errors` dentro do spec movido, e constatar suite verde (GREEN). Verificação: teste `overbooking.spec.ts` passando no novo caminho + suite verde. Exceção docs/07 §4 registrada. Execução: typecheck exit=0, 60/60 testes, cobertura **idêntica ao baseline**
 
 ## 4. Transação para `persistence/unit-of-work/`
 
