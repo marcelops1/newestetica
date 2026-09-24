@@ -51,7 +51,7 @@ A suíte completa foi rodada **antes** e **depois de cada migração** — não 
 
 O Stryker foi estendido a `src/shared/**` e rodado contra o kernel para provar que o código movido continua medido:
 
-- **Resultado: `pnpm --filter backend exec stryker run --mutate 'src/shared/**/*.ts,!src/shared/**/*.spec.ts'` — 4 arquivos, 17 mutantes, score final 100,00% (17 mortos / 0 sobreviventes, 0 sem cobertura, 0 timeout)**, ~2,5 min, banco de teste no ar. `http` 9/9 (pipe 6 + base do filtro 3), `prisma` 6/6, `errors` 2/2.
+- **Resultado: `pnpm --filter backend exec stryker run --mutate 'src/shared/**/*.ts,!src/shared/**/*.spec.ts'` — 4 arquivos, 17 mutantes, score final 100,00% (17 mortos / 0 sobreviventes, 0 sem cobertura, 0 timeout)**, ~2,5 min, banco de teste no ar. `http` 9/9 (pipe 6 + base do filtro 3), `prisma` (factory) 8/8, `errors/domain-error.ts` 0 mutantes (arquivo trivial demais para o instrumentador gerar mutantes — confirmado no `mutation.json`).
 
 ## 4. Revisão de segurança (`security-and-hardening`)
 
