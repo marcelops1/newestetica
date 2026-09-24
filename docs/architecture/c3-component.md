@@ -182,6 +182,63 @@ flowchart LR
 - **Wiring:** `CatalogModule` cria o próprio `PrismaClient` (trade-off dos dois pools registrado no módulo; candidato a provider compartilhado quando o 3º módulo chegar). Sem `UnitOfWork`: leitura de entidade única não precisa de transação.
 - **Sem Keycloak ainda:** leitura pública por desenho (UC 4.2.2); a escrita nasce com Identidade e Acesso.
 
+## Backend (real — módulo Conteúdo Público)
+
+Terceiro módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **leitura pública** (o CRUD administrativo e a gestão de consentimento do UC 4.2.7 nascem com Identidade e Acesso). Invariante central: **nada sem consentimento é servido publicamente** (`docs/security/03-seguranca.md` §5), garantida em três camadas independentes. Regra de dependência verificada: `domain/` não importa nada de fora; `application/` só depende de `domain/`; `infrastructure/` implementa as portas do `domain/`; `presentation/` depende de `application/`.
+
+```mermaid
+flowchart LR
+    subgraph Presentation
+        CTRL[content.controller.ts<br/>GET /testimonials<br/>GET /posts<br/>GET /posts/:slug<br/>GET /before-after]
+        PIPE[ZodValidationPipe<br/>422 estruturado]
+        FILTER[DomainExceptionFilter<br/>404]
+    end
+    subgraph Application
+        UC1[ListTestimonialsUseCase]
+        UC2[ListPostsUseCase]
+        UC3[GetPostBySlugUseCase]
+        UC4[ListBeforeAfterUseCase]
+    end
+    subgraph Domain
+        E1[Testimonial]
+        E2[Post]
+        E3[BeforeAfterCase<br/>hasConsent fail-closed]
+        P1[TestimonialRepository<br/>findAll]
+        P2[PostRepository<br/>findAll / findBySlug]
+        P3[BeforeAfterCaseRepository<br/>findConsented]
+    end
+    subgraph Infrastructure
+        R1[PrismaTestimonialRepository<br/>ordenação id asc]
+        R2[PrismaPostRepository<br/>publishedAt desc]
+        R3[PrismaBeforeAfterCaseRepository<br/>where hasConsent true]
+        MAP[mappers + Prisma Client<br/>PostgreSQL]
+    end
+    CONTRACTS[contracts/<br/>TestimonialSchema / PostSchema<br/>PublicBeforeAfterListSchema]
+    CTRL --> PIPE
+    CTRL --> FILTER
+    CTRL --> UC1
+    CTRL --> UC2
+    CTRL --> UC3
+    CTRL --> UC4
+    PIPE -.->|valida entrada| CONTRACTS
+    CTRL -.->|saída validada contra o contrato<br/>hasConsent literal true (fail-closed)| CONTRACTS
+    UC1 --> P1
+    UC2 --> P2
+    UC3 --> P2
+    UC4 --> P3
+    R1 -.->|implementa| P1
+    R2 -.->|implementa| P2
+    R3 -.->|implementa| P3
+    R1 --> MAP
+    R2 --> MAP
+    R3 --> MAP
+```
+
+- Pastas verificadas: `backend/src/content/` com `domain/` (entidades `Testimonial`/`Post`/`BeforeAfterCase`, erros locais, três portas de leitura), `application/use-cases/` (quatro casos de uso), `infrastructure/persistence/` (três repositórios Prisma + mappers) e `presentation/` (controller, pipe Zod e filtro de domínio **locais do módulo**).
+- **Invariante de consentimento em três camadas:** (1) banco — `hasConsent Boolean @default(false)` (fail-closed); (2) query — `findConsented` usa `where: { hasConsent: true }`; (3) saída — `PublicBeforeAfterListSchema.parse` com `hasConsent: z.literal(true)` no controller. Provada por teste HTTP dedicado com negação deliberada (write-then-throw): sem o filtro, o caso sem consentimento aparece na resposta e o teste reprova; a camada 3 sozinha falha fechada (500, sem vazar).
+- **Wiring:** `ContentModule` cria o próprio `PrismaClient` (terceiro pool conscientemente adiado — design decisão 8; provider compartilhado vira change próprio no 4º módulo ou sob pressão observada). Sem `UnitOfWork`: leitura de entidade única não precisa de transação.
+- **Sem Keycloak ainda:** leitura pública por desenho (UC 4.2.7); escrita/CRUD e gestão de consentimento nascem com Identidade e Acesso. O contrato vigente não tem campos de imagem nem PII (fotos binárias são escopo futuro explícito).
+
 ## Backend (placeholder normatizado)
 
 Quando cada módulo for implementado, detalhar aqui suas camadas — Domain, Application, Infrastructure, Presentation (`docs/02-arquitetura.md` §7) — módulo a módulo, não antes.

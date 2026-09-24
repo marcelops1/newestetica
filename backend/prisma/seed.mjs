@@ -68,6 +68,134 @@ const procedures = [
   },
 ];
 
+/* Conteúdo público fictício, alinhado nominalmente aos mocks do frontend:
+   `frontend/lib/mocks/testimonials.ts`, `frontend/lib/mocks/schedule.ts` (posts) e
+   `frontend/lib/mocks/results.ts`. O caso SEM consentimento é intencional: existe para
+   provar a exclusão na leitura pública ("nada sem consentimento é servido"). */
+const testimonials = [
+  {
+    id: "depoimento-1",
+    quote:
+      "Eu tinha muito medo de ficar com o rosto artificial. Me explicaram tudo com paciência e o resultado ficou super delicado!",
+    author: "Mariana S.",
+    context: "Paciente ilustrativa",
+  },
+  {
+    id: "depoimento-2",
+    quote:
+      "O atendimento é humano e sem aquela pressão para comprar pacotes desnecessários. Sinto total confiança no trabalho da equipe.",
+    author: "Camila R.",
+    context: "Paciente ilustrativa",
+  },
+  {
+    id: "depoimento-3",
+    quote:
+      "Clínica impecável, pontual e muito profissional. O resultado ficou descansado, como eu queria.",
+    author: "Patricia B.",
+    context: "Paciente ilustrativa",
+  },
+  {
+    id: "depoimento-4",
+    quote:
+      "Nunca me senti pressionada a fazer nada além do que eu queria. Acolhimento de verdade, do início ao fim.",
+    author: "Cristina M.",
+    context: "Paciente ilustrativa",
+  },
+  {
+    id: "depoimento-5",
+    quote:
+      "A clínica explica cada etapa com carinho e sem pressa. Cheguei insegura e saí confiante.",
+    author: "Helena D.",
+    context: "Paciente ilustrativa",
+  },
+];
+
+const posts = [
+  {
+    id: "cuidados-com-a-pele-aos-40",
+    title: "Cuidados com a pele a partir dos 40",
+    excerpt: "O que muda na pele com o tempo e como cuidar com suavidade.",
+    category: "Cuidados diários",
+    content: [
+      "A partir dos 40, é natural que a pele produza menos colágeno e demore um pouco mais para se renovar. Nada disso é motivo para alarme — é um processo tranquilo e que responde muito bem a cuidados consistentes.",
+      "Os pilares continuam os mesmos de sempre: limpeza suave, hidratação diária e proteção solar. O que muda é a atenção aos detalhes, como áreas mais finas ao redor dos olhos e da boca.",
+      "O mais importante é lembrar que não existe pressa: pequenos gestos repetidos com carinho valem mais do que rotinas intensas e difíceis de manter.",
+      "Na próxima avaliação, vale conversar sobre o que já funciona para você — cada rotina nasce do que você já tem, nunca do zero.",
+    ],
+    publishedAt: "2026-08-20",
+  },
+  {
+    id: "o-que-esperar-da-primeira-avaliacao",
+    title: "O que esperar da primeira avaliação",
+    excerpt: "Como funciona a conversa inicial, sem compromisso e sem pressão.",
+    category: "Primeira visita",
+    content: [
+      "A primeira avaliação é uma conversa. Antes de qualquer procedimento, entendemos o que você gostaria de cuidar, seu histórico e o seu ritmo — no papel de quem escuta, não de quem vende.",
+      "Você sai da conversa com um plano claro por escrito: o que indicamos, por quê, quantas sessões costumam levar e qual o investimento. Sem letras miúdas e sem obrigações.",
+      "Se preferir pensar com calma antes de decidir, tudo bem. Boas decisões nascem de tempo e informação — e a porta fica aberta.",
+      "Dúvidas antes da visita? Elas são bem-vindas e podem ser enviadas pelo contato do site.",
+    ],
+    publishedAt: "2026-08-27",
+  },
+  {
+    id: "hidratacao-alem-do-verao",
+    title: "Hidratação que vai além do verão",
+    excerpt: "Por que a pele pede água em todas as estações, com leveza.",
+    category: "Cuidados diários",
+    content: [
+      "É comum associar hidratação ao calor, mas a pele perde água em todas as estações — inclusive no ar-condicionado do dia a dia.",
+      "O segredo está na constância: um bom hidratante usado todos os dias vale mais do que intenções de fim de semana.",
+      "Ativos como ácido hialurônico ajudam a reter água na pele com suavidade. Seu uso pode ser combinado em uma avaliação rápida e sem mistério.",
+    ],
+    publishedAt: "2026-09-03",
+  },
+  {
+    id: "o-que-e-um-protocolo-personalizado",
+    title: "O que é um protocolo personalizado",
+    excerpt:
+      "Entenda por que cada plano nasce de uma conversa, nunca de uma prateleira.",
+    category: "Primeira visita",
+    content: [
+      "Protocolo personalizado é o nome do cuidado que considera a sua pele, o seu momento de vida e o que você espera — e não uma lista pronta que vale para todo mundo.",
+      "Na prática, ele combina etapas simples em um calendário realista, com intervalos respeitosos e expectativas honestas sobre o resultado.",
+      "Nada de promessas de transformação radical: o objetivo é você se reconhecer no espelho, com a sua essência intacta.",
+      "Quer saber como um protocolo seria para você? A avaliação inicial é o melhor caminho — e é sem compromisso.",
+    ],
+    publishedAt: "2026-09-10",
+  },
+];
+
+const beforeAfterCases = [
+  {
+    id: "resultado-1",
+    title: "Bioestimulação com Rejuvenescimento Natural",
+    summary:
+      "Paciente ilustrativa com queixa de perda de firmeza e viço. Protocolo fictício de 2 sessões associado à hidratação profunda.",
+    sessions: "2 sessões (intervalo de 30 dias)",
+    recovery: "Imediato (sem downtime)",
+    goal: "Firmeza e contorno sutil",
+    hasConsent: true,
+  },
+  {
+    id: "resultado-2",
+    title: "Resultado ilustrativo 2",
+    summary: "Caso fictício para composição da seção.",
+    sessions: "1 sessão",
+    recovery: "Imediato (sem downtime)",
+    goal: "Viço e hidratação",
+    hasConsent: true,
+  },
+  {
+    id: "resultado-3",
+    title: "Resultado ilustrativo 3",
+    summary: "Caso fictício sem consentimento.",
+    sessions: "—",
+    recovery: "—",
+    goal: "—",
+    hasConsent: false,
+  },
+];
+
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   throw new Error("DATABASE_URL não configurada para o seed");
@@ -99,6 +227,75 @@ try {
   const inactive = procedures.filter((p) => !p.isActive).length;
   console.log(
     `Seed do catálogo aplicado: ${procedures.length} procedimentos fictícios (${inactive} inativo).`,
+  );
+
+  for (const testimonial of testimonials) {
+    await client.query(
+      `INSERT INTO "Testimonial" (id, quote, author, context)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (id) DO UPDATE SET
+         quote = EXCLUDED.quote,
+         author = EXCLUDED.author,
+         context = EXCLUDED.context`,
+      [
+        testimonial.id,
+        testimonial.quote,
+        testimonial.author,
+        testimonial.context,
+      ],
+    );
+  }
+  console.log(
+    `Seed de depoimentos aplicado: ${testimonials.length} fictícios.`,
+  );
+
+  for (const post of posts) {
+    await client.query(
+      `INSERT INTO "Post" (id, title, excerpt, category, content, "publishedAt")
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (id) DO UPDATE SET
+         title = EXCLUDED.title,
+         excerpt = EXCLUDED.excerpt,
+         category = EXCLUDED.category,
+         content = EXCLUDED.content,
+         "publishedAt" = EXCLUDED."publishedAt"`,
+      [
+        post.id,
+        post.title,
+        post.excerpt,
+        post.category,
+        post.content,
+        post.publishedAt,
+      ],
+    );
+  }
+  console.log(`Seed de posts aplicado: ${posts.length} fictícios.`);
+
+  for (const beforeAfter of beforeAfterCases) {
+    await client.query(
+      `INSERT INTO "BeforeAfterCase" (id, title, summary, sessions, recovery, goal, "hasConsent")
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (id) DO UPDATE SET
+         title = EXCLUDED.title,
+         summary = EXCLUDED.summary,
+         sessions = EXCLUDED.sessions,
+         recovery = EXCLUDED.recovery,
+         goal = EXCLUDED.goal,
+         "hasConsent" = EXCLUDED."hasConsent"`,
+      [
+        beforeAfter.id,
+        beforeAfter.title,
+        beforeAfter.summary,
+        beforeAfter.sessions,
+        beforeAfter.recovery,
+        beforeAfter.goal,
+        beforeAfter.hasConsent,
+      ],
+    );
+  }
+  const withoutConsent = beforeAfterCases.filter((c) => !c.hasConsent).length;
+  console.log(
+    `Seed de antes/depois aplicado: ${beforeAfterCases.length} casos fictícios (${withoutConsent} sem consentimento — nunca servido publicamente).`,
   );
 } finally {
   await client.end();

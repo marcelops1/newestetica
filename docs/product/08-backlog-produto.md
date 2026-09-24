@@ -460,7 +460,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API serve catálogo, depoimentos, antes/depois (só com consentimento) e posts.
 - **Critérios de aceite:**
   - Nada sem consentimento é servido publicamente.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (leitura pública entregue no módulo `backend/src/content` — depoimentos, posts (lista + detalhe por slug) e antes/depois somente com consentimento explícito, com a invariante em três camadas: default `false` no banco, filtro `hasConsent: true` na query e validação de saída contra `PublicBeforeAfterListSchema`, provada por teste dedicado RED→GREEN; pendentes: CRUD administrativo, gestão de consentimento e autenticação, que nascem com o Épico 2/Identidade).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ### Feature 4.3 — Persistência PostgreSQL com migrations
