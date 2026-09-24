@@ -5,7 +5,7 @@ import { SlotAlreadyBooked } from "../../src/scheduling/domain/errors/errors";
 import type { UnitOfWork } from "../../src/scheduling/domain/ports/unit-of-work.port";
 import { PrismaBookingRepository } from "../../src/scheduling/infrastructure/persistence/booking.repository.impl";
 import { PrismaSlotRepository } from "../../src/scheduling/infrastructure/persistence/slot.repository.impl";
-import { PrismaTransactionContext } from "../../src/scheduling/infrastructure/persistence/transaction-context";
+import { PrismaTransactionContext } from "../../src/scheduling/infrastructure/persistence/unit-of-work/transaction-context";
 import { FakeNotificationPort } from "../fakes/fake-notification.port";
 import { createTestPrismaClient, resetDatabase } from "./database";
 

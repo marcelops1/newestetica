@@ -15,8 +15,8 @@
 
 ## 4. Transação para `persistence/unit-of-work/`
 
-- [ ] 4.1 Mover `persistence/prisma-unit-of-work.ts` + `persistence/transaction-context.ts` → `persistence/unit-of-work/` via `git mv`, sem tocar mais nada (o import relativo `./transaction-context` entre eles continua válido), e constatar que `tsc --noEmit` falha nos importadores externos (RED). Verificação: saída do typecheck com erros em `slot.repository.impl.ts`, `booking.repository.impl.ts`, `scheduling.module.ts` e specs de integração
-- [ ] 4.2 Atualizar os imports externos para `persistence/unit-of-work/*`, sem alterar conteúdo além do path, e constatar suite verde (GREEN). Verificação: `tsc --noEmit` limpo + suite verde + `grep -rn "persistence/prisma-unit-of-work\|persistence/transaction-context" backend/` vazio. Exceção docs/07 §4 registrada
+- [x] 4.1 Mover `persistence/prisma-unit-of-work.ts` + `persistence/transaction-context.ts` → `persistence/unit-of-work/` via `git mv`, sem tocar mais nada (o import relativo `./transaction-context` entre eles continua válido), e constatar que `tsc --noEmit` falha nos importadores externos (RED). Verificação: saída do typecheck com erros em `slot.repository.impl.ts`, `booking.repository.impl.ts`, `scheduling.module.ts` e specs de integração. Execução: RED real — **13 erros** `TS2307` (importadores externos + os imports internos dos dois arquivos movidos, que desceram um nível; o `./transaction-context` entre eles permaneceu válido, como o design previu)
+- [x] 4.2 Atualizar os imports externos para `persistence/unit-of-work/*`, sem alterar conteúdo além do path, e constatar suite verde (GREEN). Verificação: `tsc --noEmit` limpo + suite verde + `grep -rn "persistence/prisma-unit-of-work\|persistence/transaction-context" backend/` vazio. Exceção docs/07 §4 registrada. Execução: 9 arquivos ajustados (2 movidos + 2 repos + módulo + 4 specs de integração); typecheck exit=0, 60/60 testes, cobertura **idêntica ao baseline**, grep de caminhos antigos vazio
 
 ## 5. Verificação final
 

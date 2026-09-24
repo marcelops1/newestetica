@@ -5,7 +5,7 @@ import { Slot } from "../../src/scheduling/domain/entities/slot.entity";
 import { SlotAlreadyBooked } from "../../src/scheduling/domain/errors/errors";
 import { PrismaBookingRepository } from "../../src/scheduling/infrastructure/persistence/booking.repository.impl";
 import { PrismaSlotRepository } from "../../src/scheduling/infrastructure/persistence/slot.repository.impl";
-import { PrismaTransactionContext } from "../../src/scheduling/infrastructure/persistence/transaction-context";
+import { PrismaTransactionContext } from "../../src/scheduling/infrastructure/persistence/unit-of-work/transaction-context";
 import { createTestPrismaClient, resetDatabase } from "./database";
 
 const prisma = createTestPrismaClient();

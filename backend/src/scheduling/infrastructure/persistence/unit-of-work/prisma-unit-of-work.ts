@@ -1,5 +1,5 @@
-import type { PrismaClient } from "../../../generated/prisma/client";
-import type { UnitOfWork } from "../../domain/ports/unit-of-work.port";
+import type { PrismaClient } from "../../../../generated/prisma/client";
+import type { UnitOfWork } from "../../../domain/ports/unit-of-work.port";
 import type { PrismaTransactionContext } from "./transaction-context";
 
 export class PrismaUnitOfWork implements UnitOfWork {
