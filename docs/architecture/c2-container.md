@@ -44,7 +44,7 @@ flowchart TB
     F -->|login| K
 ```
 
-- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` —, os contratos de API em `contracts/` (schemas Zod dos contextos já mockados), o **Backend NestJS** com o primeiro módulo real (Agendamento: `POST /slots/:slotId/bookings` e `GET /slots/available`, Clean Architecture com TDD por camada) e o **PostgreSQL** (persistência do módulo, com índice único parcial anti-overbooking).
+- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` —, os contratos de API em `contracts/` (schemas Zod dos contextos já mockados), o **Backend NestJS** com o primeiro módulo real (Agendamento: `POST /slots/:slotId/bookings` e `GET /slots/available`, Clean Architecture com TDD por camada), o segundo módulo real (Catálogo: `GET /procedures` e `GET /procedures/:slug`, leitura só de itens ativos, com `isActive` interno e fora do contrato de saída) e o **PostgreSQL** (persistência dos módulos, com índice único parcial anti-overbooking).
 - **Planejado:** Keycloak + 2FA e os demais módulos do backend; o frontend ainda não consome a API (troca dos mocks — Épico 5).
 - Nenhum outro contêiner existe ou está previsto no MVP (sem microserviços, sem app nativo).
 

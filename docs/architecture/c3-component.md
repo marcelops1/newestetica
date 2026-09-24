@@ -142,6 +142,46 @@ flowchart LR
 - **Wiring:** `SchedulingModule` registra o `PrismaTransactionContext` como provider **singleton** compartilhado entre a `UnitOfWork` e os repositórios — a propagação do client transacional via `AsyncLocalStorage` depende dessa instância única (há teste-canário de write-then-throw contra os providers reais do módulo).
 - **Sem Keycloak ainda:** o módulo não tem autenticação (Feature 4.2 de Identidade e Acesso).
 
+## Backend (real — módulo Catálogo)
+
+Segundo módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **leitura pública** (o CRUD administrativo do UC 4.2.2 nasce com Identidade e Acesso). Regra de dependência verificada: `domain/` não importa nada de fora; `application/` só depende de `domain/`; `infrastructure/` implementa as portas do `domain/`; `presentation/` depende de `application/`.
+
+```mermaid
+flowchart LR
+    subgraph Presentation
+        CTRL[catalog.controller.ts<br/>GET /procedures<br/>GET /procedures/:slug]
+        PIPE[ZodValidationPipe<br/>422 estruturado]
+        FILTER[DomainExceptionFilter<br/>404]
+    end
+    subgraph Application
+        UC1[ListProceduresUseCase]
+        UC2[GetProcedureBySlugUseCase]
+    end
+    subgraph Domain
+        E1[Procedure<br/>isActive interno]
+        P1[ProcedureRepository<br/>findActive / findActiveByCategory / findActiveBySlug]
+    end
+    subgraph Infrastructure
+        R1[PrismaProcedureRepository<br/>ordenação name asc]
+        MAP[procedure.mapper + Prisma Client<br/>PostgreSQL]
+    end
+    CONTRACTS[contracts/<br/>ProcedureSchema]
+    CTRL --> PIPE
+    CTRL --> FILTER
+    CTRL --> UC1
+    CTRL --> UC2
+    PIPE -.->|valida entrada| CONTRACTS
+    CTRL -.->|saída = Procedure do contrato<br/>isActive fora do wire| CONTRACTS
+    UC1 --> P1
+    UC2 --> P1
+    R1 -.->|implementa| P1
+    R1 --> MAP
+```
+
+- Pastas verificadas: `backend/src/catalog/` com `domain/` (entidade `Procedure`, erros locais, porta de leitura), `application/use-cases/` (dois casos de uso), `infrastructure/persistence/` (repositório Prisma + mapper) e `presentation/` (controller, pipe Zod e filtro de domínio **locais do módulo** — bounded contexts não compartilham apresentação).
+- **Wiring:** `CatalogModule` cria o próprio `PrismaClient` (trade-off dos dois pools registrado no módulo; candidato a provider compartilhado quando o 3º módulo chegar). Sem `UnitOfWork`: leitura de entidade única não precisa de transação.
+- **Sem Keycloak ainda:** leitura pública por desenho (UC 4.2.2); a escrita nasce com Identidade e Acesso.
+
 ## Backend (placeholder normatizado)
 
 Quando cada módulo for implementado, detalhar aqui suas camadas — Domain, Application, Infrastructure, Presentation (`docs/02-arquitetura.md` §7) — módulo a módulo, não antes.
