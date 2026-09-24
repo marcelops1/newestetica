@@ -4,8 +4,8 @@
 
 ## 1. ZodValidationPipe compartilhado
 
-- [ ] 1.1 Escrever `backend/src/shared/http/zod-validation.pipe.spec.ts` (válido aprova, inválido reprova com o formato único de erro) importando o pipe do caminho compartilhado e constatar que falha (arquivo inexistente) — RED. Verificação: `Cannot find module`
-- [ ] 1.2 Criar `backend/src/shared/http/zod-validation.pipe.ts` (idêntico ao atual), migrar os 3 módulos para importar dele e remover as cópias locais — GREEN. Verificação: suíte backend verde + `grep -rn "class ZodValidationPipe" backend/src` retorna só o compartilhado
+- [x] 1.1 Escrever `backend/src/shared/http/zod-validation.pipe.spec.ts` (válido aprova, inválido reprova com o formato único de erro) importando o pipe do caminho compartilhado e constatar que falha (arquivo inexistente) — RED. Verificação: `Cannot find module`. Execução: RED real (`Cannot find module './zod-validation.pipe'`)
+- [x] 1.2 Criar `backend/src/shared/http/zod-validation.pipe.ts` (idêntico ao atual), migrar os 3 módulos para importar dele e remover as cópias locais — GREEN. Verificação: suíte backend verde + `grep -rn "class ZodValidationPipe" backend/src` retorna só o compartilhado. Execução: 3 controllers migrados (`../../../shared/http/zod-validation.pipe`), 3 cópias removidas (`git rm` + dirs vazios); suite **37 arquivos / 149 testes verdes** (147 baseline + 2 do spec novo); grep retorna só o compartilhado
 
 ## 2. Base DomainError compartilhada
 

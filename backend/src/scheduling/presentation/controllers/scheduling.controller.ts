@@ -3,7 +3,7 @@ import { BookingInputSchema, type BookingInput } from "@newestetica/contracts";
 import { CreateBookingUseCase } from "../../application/use-cases/create-booking.use-case";
 import { ListAvailabilityUseCase } from "../../application/use-cases/list-availability.use-case";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
-import { ZodValidationPipe } from "../pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 
 type AvailabilityResponse = {
   id: string;

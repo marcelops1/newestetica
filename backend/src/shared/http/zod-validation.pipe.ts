@@ -6,8 +6,9 @@ import {
 import { toValidationError } from "@newestetica/contracts";
 import type { ZodType } from "zod";
 
-/* Cópia local do módulo Conteúdo Público: bounded contexts não compartilham apresentação
-   (docs/architecture/02-arquitetura.md §3); o formato é o mesmo dos demais módulos. */
+/* Kernel técnico compartilhado (docs/architecture/02-arquitetura.md §3, exceção do
+   kernel): plumbing puro, sem vocabulário de domínio. O compartilhado nunca importa
+   de módulos; os módulos importam só o plumbing previsto na exceção. */
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {
   constructor(private readonly schema: ZodType) {}
