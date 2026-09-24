@@ -87,7 +87,9 @@ Nenhum achado. A única mudança de configuração (`argsIgnorePattern` no ESLin
 
 ## 7. Aceite do SonarCloud (task 6.3)
 
-- **SCOPE_SONAR** (PENDENTE — preencher com o resultado do check no PR)
+- **Aceite confirmado no PR #41:** `SonarCloud Code Analysis` → **Quality Gate passed**, com **0,0% de Duplication on New Code** (limite ≤ 3%) — contra os 8,5% do PR #40. Também: 0 new issues, 0 security hotspots.
+- O `.sonarcloud.properties` foi lido pelo Automatic Analysis (a exclusão de CPD para `backend/test/**` e `**/*.spec.ts` funcionou); o fallback (UI + registro versionado) não foi necessário.
+- Duplicação estrutural de produção: zerada pela extração do kernel (`backend/src/shared/`); clones de teste: fora da métrica por decisão documentada.
 
 ## 8. Checklist final
 
