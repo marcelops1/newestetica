@@ -251,3 +251,15 @@ A amarração obrigatória entre cada skill e a etapa do OpenSpec está em docs/
 ### Ferramentas de memória de sessão (opcional)
 
 O uso de ferramentas de memória de sessão (ex.: ai-memory — ver `docs/architecture/04-decisoes-tecnicas.md` §20) é **opcional e experimental**: serve para continuidade informal entre sessões/IAs, **não é fonte de verdade** e **nunca captura dado real de paciente** (`docs/security/03-seguranca.md` §4). Em caso de conflito com este AGENTS.md, este arquivo vence.
+
+### Grafo de conhecimento do codebase (opcional)
+
+O projeto pode ter um grafo de conhecimento em `graphify-out/` (god nodes, estrutura de comunidades, relações entre arquivos), gerado pelo graphify (github.com/Graphify-Labs/graphify) — parsing local via tree-sitter para código, sem custo e sem LLM; docs/PDFs usam o modelo da sessão. Pré-requisito por máquina: skill instalada (`graphify install`; CLI via `uv tool install graphifyy`).
+
+- Quando o usuário digitar `/graphify`, usar a skill instalada.
+- Para perguntas sobre o codebase, rodar `graphify query "<pergunta>"` primeiro quando `graphify-out/graph.json` existir; usar `graphify path "<A>" "<B>"` para relações e `graphify explain "<conceito>"` para conceitos focados — retornam subgrafo escopado, geralmente bem menor que `GRAPH_REPORT.md` ou grep bruto.
+- `graphify-out/` "sujo" após hooks/updates incrementais é esperado, não motivo para pular o graphify — só pular se a tarefa for sobre grafo desatualizado/incorreto, ou se o usuário disser explicitamente para não usar.
+- Se `graphify-out/wiki/index.md` existir, usar para navegação ampla em vez de busca bruta.
+- Ler `GRAPH_REPORT.md` só para revisão ampla de arquitetura ou quando `query`/`path`/`explain` não trouxerem contexto suficiente.
+- Após modificar código, rodar `graphify update .` para manter o grafo atualizado (só AST, sem custo de API).
+- Em caso de conflito com este AGENTS.md, este arquivo vence.

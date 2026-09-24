@@ -83,6 +83,14 @@ Ferramentas de memória/captura de sessão usadas no desenvolvimento (ex.: ai-me
 - **Antes de qualquer dado real de paciente existir no projeto** (quando o backend for implementado), a ferramenta deve ser revisada e reforçada com exclusão de path/allowlist explícita, garantindo que diretórios, bancos e volumes com dados reais fiquem fora da captura.
 - Em conflito entre a conveniência da ferramenta e esta regra, esta regra vence.
 
+### Navegação de codebase por ferramenta de IA (graphify)
+
+Ferramentas de navegação do codebase usadas no desenvolvimento (ex.: graphify — decisão §21 de `docs/architecture/04-decisoes-tecnicas.md`) indexam código localmente, mas **docs, PDFs e mídia passam pelo modelo da sessão** — por isso **NUNCA** devem processar doc, PDF ou mídia com dado real de paciente (nomes, contatos, fotos, histórico ou qualquer informação identificável).
+
+- Hoje o projeto usa apenas mocks (risco baixo), mas a regra vale desde já.
+- **Antes de qualquer dado real de paciente existir em doc/PDF/mídia do projeto**, a ferramenta deve ser revisada e reforçada com exclusão de path/allowlist explícita (ex.: `.graphifyignore`), garantindo que arquivos com dados reais fiquem fora da indexação.
+- Em conflito entre a conveniência da ferramenta e esta regra, esta regra vence.
+
 ---
 
 ## 5. Consentimento de Fotos (Antes e Depois)

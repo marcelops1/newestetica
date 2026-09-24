@@ -61,3 +61,8 @@ temp/
 # Misc
 *.local
 .cache/
+
+# graphify (decisão §21 de docs/architecture/04-decisoes-tecnicas.md): grafo
+# de conhecimento local e regenerável — gitignored por enquanto, reavaliar
+# quando a adoção crescer
+graphify-out/
