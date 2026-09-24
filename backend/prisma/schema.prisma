@@ -29,3 +29,12 @@ model Booking {
 
   @@unique([slotId], where: { status: "confirmed" })
 }
+
+model Procedure {
+  id          String   @id
+  name        String
+  description String
+  duration    String
+  categories  String[]
+  isActive    Boolean  @default(true)
+}
