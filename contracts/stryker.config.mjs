@@ -11,6 +11,7 @@ export default {
   mutate: [
     "src/catalog/**/*.ts",
     "src/scheduling/**/*.ts",
+    "src/content/**/*.ts",
     "!src/**/*.test.ts",
   ],
   concurrency: 2,
