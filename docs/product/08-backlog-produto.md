@@ -406,7 +406,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API expõe CRUD do catálogo; o público lê somente itens ativos.
 - **Critérios de aceite:**
   - Leitura pública nunca retorna item desativado.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (leitura pública entregue no módulo `backend/src/catalog` — listagem só de ativos, filtro por categoria e busca por slug, com `isActive` interno e fora do contrato de saída; pendentes: CRUD administrativo e autenticação, que nascem com o Épico 2/Identidade).
 
 **Use Case 4.2.3 — Agendamento (API)**
 
