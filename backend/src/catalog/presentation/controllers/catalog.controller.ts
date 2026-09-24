@@ -27,7 +27,9 @@ export class CatalogController {
   @Get()
   async list(
     @Query(new ZodValidationPipe(ListProceduresQuerySchema))
-    query: { category?: TreatmentCategory },
+    query: {
+      category?: TreatmentCategory;
+    },
   ): Promise<Procedure[]> {
     const procedures = await this.listProcedures.execute(query);
     /* Allowlist explícita do contrato: `isActive` é interno e nunca cruza o wire

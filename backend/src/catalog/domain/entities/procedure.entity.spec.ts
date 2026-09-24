@@ -12,7 +12,10 @@ const base = {
 
 describe("Procedure (entidade de domínio)", () => {
   it("cria procedimento válido e nasce ativo", () => {
-    const procedure = Procedure.create({ ...base, categories: [...base.categories] });
+    const procedure = Procedure.create({
+      ...base,
+      categories: [...base.categories],
+    });
 
     expect(procedure.id).toBe("limpeza-de-pele");
     expect(procedure.name).toBe("Limpeza de pele");
@@ -34,7 +37,11 @@ describe("Procedure (entidade de domínio)", () => {
   it("rejeita campos obrigatórios vazios ou só com espaços", () => {
     for (const field of ["id", "name", "description", "duration"] as const) {
       expect(() =>
-        Procedure.create({ ...base, categories: [...base.categories], [field]: "   " }),
+        Procedure.create({
+          ...base,
+          categories: [...base.categories],
+          [field]: "   ",
+        }),
       ).toThrow(InvalidProcedure);
     }
   });
@@ -62,5 +69,15 @@ describe("Procedure (entidade de domínio)", () => {
     });
 
     expect(procedure.isActive).toBe(false);
+  });
+
+  it("restore também valida o snapshot (defesa na entrada vinda do banco)", () => {
+    expect(() =>
+      Procedure.restore({
+        ...base,
+        categories: [...base.categories],
+        name: "   ",
+      }),
+    ).toThrow(InvalidProcedure);
   });
 });

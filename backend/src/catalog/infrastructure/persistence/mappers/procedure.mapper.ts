@@ -9,7 +9,9 @@ import { InvalidProcedure } from "../../../domain/errors/errors";
 function toCategories(values: string[]): TreatmentCategory[] {
   return values.map((value) => {
     if (!TREATMENT_CATEGORIES.includes(value as TreatmentCategory)) {
-      throw new InvalidProcedure(`categoria desconhecida vinda do banco: ${value}`);
+      throw new InvalidProcedure(
+        `categoria desconhecida vinda do banco: ${value}`,
+      );
     }
     return value as TreatmentCategory;
   });

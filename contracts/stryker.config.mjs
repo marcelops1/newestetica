@@ -8,6 +8,10 @@ export default {
   commandRunner: {
     command: "pnpm exec vitest run --bail=1",
   },
-  mutate: ["src/scheduling/**/*.ts", "!src/scheduling/**/*.test.ts"],
+  mutate: [
+    "src/catalog/**/*.ts",
+    "src/scheduling/**/*.ts",
+    "!src/**/*.test.ts",
+  ],
   concurrency: 2,
 };

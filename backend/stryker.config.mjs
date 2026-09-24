@@ -12,9 +12,10 @@ export default {
     command: "pnpm exec vitest run --config vitest.mutation.config.ts --bail=1",
   },
   mutate: [
+    "src/catalog/**/*.ts",
     "src/scheduling/**/*.ts",
-    "!src/scheduling/**/*.spec.ts",
-    "!src/scheduling/**/*.module.ts",
+    "!src/**/*.spec.ts",
+    "!src/**/*.module.ts",
   ],
   concurrency: 1,
 };

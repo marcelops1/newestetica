@@ -28,7 +28,8 @@ function createPrismaClient(): PrismaClient {
     { provide: PRISMA_CLIENT, useFactory: createPrismaClient },
     {
       provide: PROCEDURE_REPOSITORY,
-      useFactory: (prisma: PrismaClient) => new PrismaProcedureRepository(prisma),
+      useFactory: (prisma: PrismaClient) =>
+        new PrismaProcedureRepository(prisma),
       inject: [PRISMA_CLIENT],
     },
     {
