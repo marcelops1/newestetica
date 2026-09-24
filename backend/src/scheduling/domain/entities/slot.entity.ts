@@ -1,4 +1,4 @@
-import { InvalidSlot, SlotAlreadyBooked } from "../errors";
+import { InvalidSlot, SlotAlreadyBooked } from "../errors/errors";
 
 export type SlotProps = {
   id: string;

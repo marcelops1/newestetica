@@ -1,9 +1,9 @@
 import { Prisma, type PrismaClient } from "../../../generated/prisma/client";
 import type { Booking } from "../../domain/entities/booking.entity";
-import { SlotAlreadyBooked } from "../../domain/errors";
+import { SlotAlreadyBooked } from "../../domain/errors/errors";
 import type { BookingRepository } from "../../domain/ports/booking.repository";
 import { toBookingPersistence } from "./mappers/booking.mapper";
-import type { PrismaTransactionContext } from "./transaction-context";
+import type { PrismaTransactionContext } from "./unit-of-work/transaction-context";
 
 function isUniqueViolation(error: unknown): boolean {
   return (

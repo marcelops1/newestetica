@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { Booking } from "./entities/booking.entity";
-import { Slot } from "./entities/slot.entity";
-import { SlotAlreadyBooked } from "./errors";
+import { Booking } from "../entities/booking.entity";
+import { Slot } from "../entities/slot.entity";
+import { SlotAlreadyBooked } from "../errors/errors";
 
 function makeSlot(): Slot {
   return Slot.create({

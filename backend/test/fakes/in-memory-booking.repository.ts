@@ -3,7 +3,7 @@ import {
   type BookingSnapshot,
 } from "../../src/scheduling/domain/entities/booking.entity";
 import type { BookingRepository } from "../../src/scheduling/domain/ports/booking.repository";
-import { SlotAlreadyBooked } from "../../src/scheduling/domain/errors";
+import { SlotAlreadyBooked } from "../../src/scheduling/domain/errors/errors";
 
 export class InMemoryBookingRepository implements BookingRepository {
   private readonly bookings = new Map<string, BookingSnapshot>();

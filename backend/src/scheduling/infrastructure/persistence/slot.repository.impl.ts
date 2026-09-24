@@ -2,7 +2,7 @@ import type { Prisma, PrismaClient } from "../../../generated/prisma/client";
 import type { Slot } from "../../domain/entities/slot.entity";
 import type { SlotRepository } from "../../domain/ports/slot.repository";
 import { toSlotDomain, toSlotPersistence } from "./mappers/slot.mapper";
-import type { PrismaTransactionContext } from "./transaction-context";
+import type { PrismaTransactionContext } from "./unit-of-work/transaction-context";
 
 export class PrismaSlotRepository implements SlotRepository {
   constructor(

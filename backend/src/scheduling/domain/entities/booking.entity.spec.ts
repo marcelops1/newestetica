@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Booking } from "./booking.entity";
 import { Slot } from "./slot.entity";
-import { InvalidBooking } from "../errors";
+import { InvalidBooking } from "../errors/errors";
 
 describe("Booking (entidade de domínio)", () => {
   it("cria booking pendente vinculada a um slot com os dados da paciente", () => {

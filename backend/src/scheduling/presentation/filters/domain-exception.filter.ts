@@ -8,7 +8,7 @@ import {
   DomainError,
   SlotAlreadyBooked,
   SlotNotFound,
-} from "../../domain/errors";
+} from "../../domain/errors/errors";
 
 type HttpResponse = {
   status(code: number): { json(body: unknown): void };

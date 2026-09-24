@@ -6,8 +6,8 @@ import { ListAvailabilityUseCase } from "./application/use-cases/list-availabili
 import { ConsoleNotificationAdapter } from "./infrastructure/notifications/console-notification.adapter";
 import { PrismaBookingRepository } from "./infrastructure/persistence/booking.repository.impl";
 import { PrismaSlotRepository } from "./infrastructure/persistence/slot.repository.impl";
-import { PrismaUnitOfWork } from "./infrastructure/persistence/prisma-unit-of-work";
-import { PrismaTransactionContext } from "./infrastructure/persistence/transaction-context";
+import { PrismaUnitOfWork } from "./infrastructure/persistence/unit-of-work/prisma-unit-of-work";
+import { PrismaTransactionContext } from "./infrastructure/persistence/unit-of-work/transaction-context";
 import { SchedulingController } from "./presentation/controllers/scheduling.controller";
 
 export const PRISMA_CLIENT = Symbol("PRISMA_CLIENT");

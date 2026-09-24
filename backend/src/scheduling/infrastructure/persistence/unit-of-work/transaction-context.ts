@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import type { Prisma } from "../../../generated/prisma/client";
+import type { Prisma } from "../../../../generated/prisma/client";
 
 export class PrismaTransactionContext {
   private readonly storage = new AsyncLocalStorage<Prisma.TransactionClient>();
