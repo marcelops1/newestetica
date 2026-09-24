@@ -12,10 +12,10 @@
 
 ## 2. Application — casos de uso contra portas com fake em memória
 
-- [ ] 2.1 Escrever o teste de listar/filtrar/buscar (só ativos; categoria filtra; slug encontra; slug inativo ou inexistente → `ProcedureNotFound` indistinguível) com fakes e verificar que falha — RED. Verificação: `Cannot find module`
-- [ ] 2.2 Implementar os casos de uso dependendo só das portas e verificar verde — GREEN. Verificação: testes da task 2.1 passam, sem importar `infrastructure/`
-- [ ] 2.3 Escrever o teste adversarial com payload hostil real (categoria com injeção `' OR '1'='1`, slug gigante/malformado, strings acima de qualquer limite razoável) e verificar o comportamento seguro — RED. Verificação: teste falha (módulo de validação/filtro ausente ou aceita o hostil)
-- [ ] 2.4 Implementar o tratamento (validação de enum na fronteira + queries parametrizadas + limites) e verificar verde — GREEN. Verificação: hostil rejeitado ou neutralizado sem erro interno vazado
+- [x] 2.1 Escrever o teste de listar/filtrar/buscar (só ativos; categoria filtra; slug encontra; slug inativo ou inexistente → `ProcedureNotFound` indistinguível) com fakes e verificar que falha — RED. Verificação: `Cannot find module`. Execução: RED real nos dois módulos (`Cannot find module './list-procedures.use-case'` e `'./get-procedure-by-slug.use-case'`)
+- [x] 2.2 Implementar os casos de uso dependendo só das portas e verificar verde — GREEN. Verificação: testes da task 2.1 passam, sem importar `infrastructure/`. Execução: 5/5 verdes (2 arquivos); casos de uso só conhecem a porta
+- [x] 2.3 Escrever o teste adversarial com payload hostil real (categoria com injeção `' OR '1'='1`, slug gigante/malformado, strings acima de qualquer limite razoável) e verificar o comportamento seguro — RED. Verificação: teste falha (módulo de validação/filtro ausente ou aceita o hostil). Execução: RED real na categoria (`AssertionError: promise resolved "[]" instead of rejecting` — hostil aceito silenciosamente); o caso do slug gigante/malformado JÁ passava (slug é opaco por desenho, sem interpretação) — RED impossível por construção para esse caso, registrado
+- [x] 2.4 Implementar o tratamento (validação de enum na fronteira + queries parametrizadas + limites) e verificar verde — GREEN. Verificação: hostil rejeitado ou neutralizado sem erro interno vazado. Execução: `ListProceduresUseCase` valida a categoria contra o vocabulário do domínio (defesa em profundidade; a fronteira HTTP valida antes com 422) → 16/16 no módulo, typecheck 0. Nota de escopo: o teste adversarial de FRONTEIRA (422 na categoria com injeção, 404/422 no slug hostil) é da Presentation e está nas tasks 4.1/4.3
 
 ## 3. Infrastructure — Prisma + Postgres real em container
 
