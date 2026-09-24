@@ -15,6 +15,7 @@ export default {
     "src/catalog/**/*.ts",
     "src/scheduling/**/*.ts",
     "src/content/**/*.ts",
+    "src/shared/**/*.ts",
     "!src/**/*.spec.ts",
     "!src/**/*.module.ts",
   ],

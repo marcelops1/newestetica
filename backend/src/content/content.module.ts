@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
+import type { PrismaClient } from "../generated/prisma/client";
+import { createPrismaClientFromEnv } from "../shared/prisma/client-factory";
 import { GetPostBySlugUseCase } from "./application/use-cases/get-post-by-slug.use-case";
 import { ListBeforeAfterUseCase } from "./application/use-cases/list-before-after.use-case";
 import { ListPostsUseCase } from "./application/use-cases/list-posts.use-case";
@@ -17,24 +17,15 @@ export const BEFORE_AFTER_CASE_REPOSITORY = Symbol(
   "BEFORE_AFTER_CASE_REPOSITORY",
 );
 
-/* Cliente próprio do módulo (mesmo padrão de Scheduling/Catálogo): bounded contexts não
-   compartilham wiring. Trade-off registrado (design decisão 8): o terceiro pool é
-   conscientemente adiado; provider compartilhado vira change próprio no 4º módulo ou sob
-   pressão observada. */
-function createPrismaClient(): PrismaClient {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL não configurada para o backend");
-  }
-  return new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
-  });
-}
+/* Cliente próprio do módulo (mesmo padrão de Scheduling/Catálogo): a factory é
+   compartilhada (kernel), a instância não. Trade-off registrado (design decisão 8): o
+   terceiro pool segue conscientemente adiado; provider compartilhado vira change próprio
+   no 4º módulo ou sob pressão observada. */
 
 @Module({
   controllers: [ContentController],
   providers: [
-    { provide: CONTENT_PRISMA_CLIENT, useFactory: createPrismaClient },
+    { provide: CONTENT_PRISMA_CLIENT, useFactory: createPrismaClientFromEnv },
     {
       provide: TESTIMONIAL_REPOSITORY,
       useFactory: (prisma: PrismaClient) =>

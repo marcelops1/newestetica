@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
+import type { PrismaClient } from "../generated/prisma/client";
+import { createPrismaClientFromEnv } from "../shared/prisma/client-factory";
 import { CreateBookingUseCase } from "./application/use-cases/create-booking.use-case";
 import { ListAvailabilityUseCase } from "./application/use-cases/list-availability.use-case";
 import { ConsoleNotificationAdapter } from "./infrastructure/notifications/console-notification.adapter";
@@ -16,20 +16,10 @@ export const BOOKING_REPOSITORY = Symbol("BOOKING_REPOSITORY");
 export const UNIT_OF_WORK = Symbol("UNIT_OF_WORK");
 export const NOTIFICATION_PORT = Symbol("NOTIFICATION_PORT");
 
-function createPrismaClient(): PrismaClient {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL não configurada para o backend");
-  }
-  return new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
-  });
-}
-
 @Module({
   controllers: [SchedulingController],
   providers: [
-    { provide: PRISMA_CLIENT, useFactory: createPrismaClient },
+    { provide: PRISMA_CLIENT, useFactory: createPrismaClientFromEnv },
     PrismaTransactionContext,
     {
       provide: SLOT_REPOSITORY,

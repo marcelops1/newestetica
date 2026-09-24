@@ -11,7 +11,7 @@ import { ListBeforeAfterUseCase } from "../../application/use-cases/list-before-
 import { ListPostsUseCase } from "../../application/use-cases/list-posts.use-case";
 import { ListTestimonialsUseCase } from "../../application/use-cases/list-testimonials.use-case";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
-import { ZodValidationPipe } from "../pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 
 const SlugSchema = z.string().min(1).max(200);
 

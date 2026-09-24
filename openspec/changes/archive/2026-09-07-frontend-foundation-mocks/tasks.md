@@ -24,4 +24,4 @@
 ## 5. Verificação e validação
 
 - [x] 5.1 Rodar todos os quality gates (lint, format, typecheck, testes, build) e verificar que todos passam
-- [ ] 5.2 Preparar o checklist de validação visual por seção (telas, fluxos, textos, experiência) e verificar com a Fabiana Rosa, registrando aprovações e ajustes
+- [x] 5.2 Preparar o checklist de validação visual por seção (telas, fluxos, textos, experiência) e verificar com a Fabiana Rosa, registrando aprovações e ajustes

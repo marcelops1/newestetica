@@ -8,7 +8,7 @@ import { z } from "zod";
 import { GetProcedureBySlugUseCase } from "../../application/use-cases/get-procedure-by-slug.use-case";
 import { ListProceduresUseCase } from "../../application/use-cases/list-procedures.use-case";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
-import { ZodValidationPipe } from "../pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 
 const ListProceduresQuerySchema = z.object({
   category: TreatmentCategorySchema.optional(),
