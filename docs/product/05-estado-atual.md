@@ -151,7 +151,7 @@ A estrutura do monorepo já foi criada:
 
 ### Pendências registradas
 
-- **Dívida técnica:** decidir sobre presentation/erros compartilhados entre módulos de backend (pipe/filter duplicados) OU configurar exclusão de duplicação no SonarCloud para testes — avaliar antes do 4º módulo (Identidade e Acesso). Registro original: `verification.md` do change arquivado `2026-09-24-backend-modulo-conteudo-publico` (§8) e comentário no PR #40.
+- Nenhuma no momento. A dívida técnica de duplicação estrutural entre módulos de backend foi resolvida pelo change `resolver-duplicacao-sonar-backend` (kernel técnico compartilhado em `backend/src/shared/` + exclusões de duplicação para testes no SonarCloud; ver `docs/architecture/04-decisoes-tecnicas.md` §22).
 
 ---
 
