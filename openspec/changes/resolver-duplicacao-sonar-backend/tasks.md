@@ -14,8 +14,8 @@
 
 ## 3. Base DomainExceptionFilter compartilhada
 
-- [ ] 3.1 Escrever o spec da base (`backend/src/shared/http/domain-exception.filter.spec.ts`: com subclasse de teste, erro mapeado → status do mapa; erro fora do mapa → 422; corpo `{code, message}` sem stack) e constatar que falha — RED. Verificação: `Cannot find module`
-- [ ] 3.2 Criar a base abstrata (`catch` + `statusFor` protegido com default 422) e as subclasses finas por módulo com os mapas atuais (scheduling 404/409, catalog/content 404) — GREEN. Verificação: suíte backend verde (os testes HTTP 404/409/422 existentes provam os mapas preservados) + `grep` sem `class DomainExceptionFilter` fora do compartilhado e das 3 subclasses
+- [x] 3.1 Escrever o spec da base (`backend/src/shared/http/domain-exception.filter.spec.ts`: com subclasse de teste, erro mapeado → status do mapa; erro fora do mapa → 422; corpo `{code, message}` sem stack) e constatar que falha — RED. Verificação: `Cannot find module`. Execução: RED real (`Cannot find module './domain-exception.filter'`); spec corrigido depois para tipar os mocks (`Mock` do vitest) — o typecheck pegou
+- [x] 3.2 Criar a base abstrata (`catch` + `statusFor` protegido com default 422) e as subclasses finas por módulo com os mapas atuais (scheduling 404/409, catalog/content 404) — GREEN. Verificação: suíte backend verde (os testes HTTP 404/409/422 existentes provam os mapas preservados) + `grep` sem `class DomainExceptionFilter` fora do compartilhado e das 3 subclasses. Execução: base abstrata com `@Catch(DomainError)` + 3 subclasses finas (a herança do decorator foi provada pelos HTTP: 21/21 nos 3 módulos); suite final **39 arquivos / 153 testes verdes**, typecheck 0; grep lista só a base + 3 subclasses
 
 ## 4. Factory de PrismaClient compartilhada
 
