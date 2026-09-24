@@ -77,6 +77,7 @@ describe("Procedure (entidade de domínio)", () => {
         ...base,
         categories: [...base.categories],
         name: "   ",
+        isActive: true,
       }),
     ).toThrow(InvalidProcedure);
   });
