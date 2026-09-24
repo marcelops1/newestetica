@@ -3,7 +3,7 @@ import {
   Booking,
   type BookingStatus,
 } from "../../../domain/entities/booking.entity";
-import { InvalidBooking } from "../../../domain/errors";
+import { InvalidBooking } from "../../../domain/errors/errors";
 
 function toStatus(value: string): BookingStatus {
   if (value === "pending" || value === "confirmed") {

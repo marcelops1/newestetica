@@ -2,7 +2,7 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { Prisma } from "../../src/generated/prisma/client";
 import { Booking } from "../../src/scheduling/domain/entities/booking.entity";
 import { Slot } from "../../src/scheduling/domain/entities/slot.entity";
-import { SlotAlreadyBooked } from "../../src/scheduling/domain/errors";
+import { SlotAlreadyBooked } from "../../src/scheduling/domain/errors/errors";
 import { PrismaBookingRepository } from "../../src/scheduling/infrastructure/persistence/booking.repository.impl";
 import { PrismaSlotRepository } from "../../src/scheduling/infrastructure/persistence/slot.repository.impl";
 import { PrismaTransactionContext } from "../../src/scheduling/infrastructure/persistence/transaction-context";

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Slot } from "./slot.entity";
-import { InvalidSlot } from "../errors";
+import { InvalidSlot } from "../errors/errors";
 
 describe("Slot (entidade de domínio)", () => {
   it("cria slot válido com id, início e duração, nasce disponível", () => {

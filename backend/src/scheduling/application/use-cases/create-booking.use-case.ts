@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { Booking } from "../../domain/entities/booking.entity";
 import type { Slot } from "../../domain/entities/slot.entity";
-import { SlotAlreadyBooked, SlotNotFound } from "../../domain/errors";
+import { SlotAlreadyBooked, SlotNotFound } from "../../domain/errors/errors";
 import type { BookingRepository } from "../../domain/ports/booking.repository";
 import type { NotificationPort } from "../../domain/ports/notification.port";
 import type { SlotRepository } from "../../domain/ports/slot.repository";

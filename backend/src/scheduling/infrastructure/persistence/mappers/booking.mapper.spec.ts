@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { InvalidBooking } from "../../../domain/errors";
+import { InvalidBooking } from "../../../domain/errors/errors";
 import { toBookingDomain, toBookingPersistence } from "./booking.mapper";
 
 function makeRecord() {

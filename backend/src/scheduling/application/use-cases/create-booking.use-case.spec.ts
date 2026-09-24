@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { CreateBookingUseCase } from "./create-booking.use-case";
 import { Booking } from "../../domain/entities/booking.entity";
 import { Slot } from "../../domain/entities/slot.entity";
-import { SlotAlreadyBooked, SlotNotFound } from "../../domain/errors";
+import { SlotAlreadyBooked, SlotNotFound } from "../../domain/errors/errors";
 import { InMemorySlotRepository } from "../../../../test/fakes/in-memory-slot.repository";
 import { InMemoryBookingRepository } from "../../../../test/fakes/in-memory-booking.repository";
 import { FakeNotificationPort } from "../../../../test/fakes/fake-notification.port";

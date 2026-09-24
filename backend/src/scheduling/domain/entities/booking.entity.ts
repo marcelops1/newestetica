@@ -1,4 +1,4 @@
-import { InvalidBooking } from "../errors";
+import { InvalidBooking } from "../errors/errors";
 import type { Slot } from "./slot.entity";
 
 export type BookingStatus = "pending" | "confirmed";

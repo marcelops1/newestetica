@@ -5,8 +5,8 @@
 
 ## 2. Erros para `domain/errors/`
 
-- [ ] 2.1 Mover `domain/errors.ts` + `errors.spec.ts` → `domain/errors/` via `git mv`, sem tocar mais nada, e constatar que `tsc --noEmit` falha (RED). Verificação: saída do typecheck com erros nos importadores
-- [ ] 2.2 Atualizar os imports `domain/errors` → `domain/errors/errors` nos ~10 arquivos que o referenciam (lista exata via `grep -rln "domain/errors" backend/src backend/test`), sem alterar conteúdo além do path, e constatar suite verde (GREEN). Verificação: `tsc --noEmit` limpo + suite verde + `grep -rn "domain/errors[^/]" backend/src backend/test` vazio. Exceção docs/07 §4 registrada
+- [x] 2.1 Mover `domain/errors.ts` + `errors.spec.ts` → `domain/errors/` via `git mv`, sem tocar mais nada, e constatar que `tsc --noEmit` falha (RED). Verificação: saída do typecheck com erros nos importadores. Execução: RED real — **16 erros** `TS2307: Cannot find module '../errors' / '../../domain/errors'` nos importadores
+- [x] 2.2 Atualizar os imports `domain/errors` → `domain/errors/errors` nos ~10 arquivos que o referenciam (lista exata via `grep -rln "domain/errors" backend/src backend/test`), sem alterar conteúdo além do path, e constatar suite verde (GREEN). Verificação: `tsc --noEmit` limpo + suite verde + `grep -rn "domain/errors[^/]" backend/src backend/test` vazio. Exceção docs/07 §4 registrada. Execução: 17 arquivos ajustados pelo script; typecheck exit=0, 60/60 testes, cobertura **idêntica ao baseline**. Nota honesta: o script também tocou o import interno do `errors.spec.ts` (`./errors` já era correto após o move) — corrigido de volta e validado por typecheck/testes
 
 ## 3. Invariante para `domain/invariants/`
 

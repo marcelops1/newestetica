@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Booking } from "../entities/booking.entity";
 import { Slot } from "../entities/slot.entity";
-import { SlotAlreadyBooked } from "../errors";
+import { SlotAlreadyBooked } from "../errors/errors";
 import { InMemorySlotRepository } from "../../../../test/fakes/in-memory-slot.repository";
 import { InMemoryBookingRepository } from "../../../../test/fakes/in-memory-booking.repository";
 import { FakeNotificationPort } from "../../../../test/fakes/fake-notification.port";
