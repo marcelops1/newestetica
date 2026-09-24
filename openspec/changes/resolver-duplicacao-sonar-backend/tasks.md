@@ -19,8 +19,8 @@
 
 ## 4. Factory de PrismaClient compartilhada
 
-- [ ] 4.1 Escrever o spec da factory (`backend/src/shared/prisma/client-factory.spec.ts`: sem `DATABASE_URL` → throw com a mensagem atual; com URL → instancia `PrismaClient` sem conectar) e constatar que falha — RED. Verificação: `Cannot find module`
-- [ ] 4.2 Criar `createPrismaClientFromEnv` em `backend/src/shared/prisma/client-factory.ts` e migrar os 3 módulos (providers usam a factory; **instâncias continuam por módulo** — trigger da decisão 8 intacto) — GREEN. Verificação: suíte backend verde + `grep -rn "new PrismaClient" backend/src` retorna só a factory
+- [x] 4.1 Escrever o spec da factory (`backend/src/shared/prisma/client-factory.spec.ts`: sem `DATABASE_URL` → throw com a mensagem atual; com URL → instancia `PrismaClient` sem conectar) e constatar que falha — RED. Verificação: `Cannot find module`. Execução: RED real (`Cannot find module './client-factory'`); **FYI de ferramenta**: sob `--coverage`, `expect(client).toBeInstanceOf(PrismaClient)` estoura `RangeError: Maximum call stack size exceeded` e `constructor.name` vira `'t'` (proxy do Prisma + instrumentação v8) — asserção trocada por métodos (`$connect`/`$transaction`/`$disconnect`); o cliente conectável é provado pelos módulos na integração
+- [x] 4.2 Criar `createPrismaClientFromEnv` em `backend/src/shared/prisma/client-factory.ts` e migrar os 3 módulos (providers usam a factory; **instâncias continuam por módulo** — trigger da decisão 8 intacto) — GREEN. Verificação: suíte backend verde + `grep -rn "new PrismaClient" backend/src` retorna só a factory. Execução: factory criada; 3 módulos migrados para `useFactory: createPrismaClientFromEnv` (imports de `PrismaPg` removidos, `PrismaClient` mantido só para tipos); suite **40 arquivos / 155 testes verdes**; typecheck 0; grep só na factory
 
 ## 5. Escopo do Sonar + docs de arquitetura
 
