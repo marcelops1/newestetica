@@ -239,6 +239,42 @@ flowchart LR
 - **Wiring:** `ContentModule` cria o próprio `PrismaClient` (terceiro pool conscientemente adiado — design decisão 8; provider compartilhado vira change próprio no 4º módulo ou sob pressão observada). Sem `UnitOfWork`: leitura de entidade única não precisa de transação.
 - **Sem Keycloak ainda:** leitura pública por desenho (UC 4.2.7); escrita/CRUD e gestão de consentimento nascem com Identidade e Acesso. O contrato vigente não tem campos de imagem nem PII (fotos binárias são escopo futuro explícito).
 
+## Backend (kernel técnico compartilhado)
+
+Plumbing puro compartilhado entre os módulos, em exceção explícita à regra de bounded contexts não compartilharem apresentação (`docs/architecture/02-arquitetura.md` §3; decisão em `04-decisoes-tecnicas.md` §22). **Regra de filiação:** o kernel nunca importa de módulos nem conhece vocabulário de domínio; módulos importam do kernel só o plumbing técnico.
+
+```mermaid
+flowchart LR
+    subgraph Shared["backend/src/shared/ (kernel técnico)"]
+        PIPE[ZodValidationPipe]
+        FILTER[DomainExceptionFilter base<br/>hook statusFor default 422]
+        ERR[DomainError base genérica]
+        FACTORY[createPrismaClientFromEnv]
+    end
+    subgraph Módulos
+        S[Agendamento<br/>subclasse fina do filtro 404/409<br/>union + subclasse fina de erro]
+        C[Catálogo<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
+        CT[Conteúdo Público<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
+    end
+    S -.->|importa| PIPE
+    C -.->|importa| PIPE
+    CT -.->|importa| PIPE
+    S -.->|estende| FILTER
+    C -.->|estende| FILTER
+    CT -.->|estende| FILTER
+    S -.->|estende| ERR
+    C -.->|estende| ERR
+    CT -.->|estende| ERR
+    S -.->|usa no provider| FACTORY
+    C -.->|usa no provider| FACTORY
+    CT -.->|usa no provider| FACTORY
+```
+
+- Pastas verificadas: `backend/src/shared/http/` (pipe + base do filtro), `backend/src/shared/errors/` (base genérica) e `backend/src/shared/prisma/` (factory) — cada uma com spec unitário próprio.
+- **Mapeamentos continuam locais:** cada módulo mantém a subclasse fina do filtro com o seu status por código e o seu union `DomainErrorCode`; o kernel não conhece código de domínio nenhum.
+- **Instâncias de PrismaClient continuam por módulo:** a factory compartilha apenas a construção (trigger de provider compartilhado segue adiado — decisão 8 do change `backend-modulo-conteudo-publico`).
+- **Histórico:** extraído no change `resolver-duplicacao-sonar-backend` (SonarCloud reprovava por duplicação em 3 PRs seguidos; kernel + exclusão de CPD para testes zeram a causa no gate).
+
 ## Backend (placeholder normatizado)
 
 Quando cada módulo for implementado, detalhar aqui suas camadas — Domain, Application, Infrastructure, Presentation (`docs/02-arquitetura.md` §7) — módulo a módulo, não antes.

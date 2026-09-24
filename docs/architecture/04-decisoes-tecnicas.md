@@ -350,7 +350,34 @@ Toda nova decisão técnica relevante deve:
 
 ---
 
-## 22. Referências cruzadas
+## 22. Decisão: kernel técnico compartilhado entre módulos de backend
+
+**Escolhido:** criar `backend/src/shared/` como **kernel técnico** — plumbing puro, sem vocabulário de domínio — com regra de filiação estrita (o kernel nunca importa de módulos; módulos importam do kernel só o plumbing previsto), em exceção explícita à regra de bounded contexts não compartilharem apresentação (`docs/architecture/02-arquitetura.md` §3). Conteúdo inicial: `http/zod-validation.pipe`, `http/domain-exception.filter` (base com hook `statusFor` local por módulo), `errors/domain-error` (base genérica; cada módulo mantém o union de códigos e a subclasse fina) e `prisma/client-factory` (compartilha a construção do cliente, não a instância).
+
+**Motivos:**
+
+- O SonarCloud reprovou o Quality Gate por duplicação em 3 PRs de módulo seguidos (#35, #38, #40 — 8,5% em New Code contra o limite de 3%), com ~39% de clones estruturais de produção e ~61% de DAMP em testes
+- O 4º módulo (Identidade e Acesso) copiaria o plumbing pela 4ª vez; corrigir agora é mecânico, provado pela suíte existente, e evita a reincidência
+- Mapeamentos e unions permanecem locais: a independência dos contextos é preservada onde importa (domínio e regras), e guards de autenticação futuros não colidem com o kernel
+
+**Alternativas consideradas:**
+
+- **Aceitar a duplicação sem ação** (precedente dos PRs #35/#38): rejeitada — normalizaria o check vermelho pela 4ª vez e empurraria a conta para a Identidade
+- **Só extrair a produção**: rejeitada — não zera o gate (≈5,6% restantes)
+- **Só excluir os testes no Sonar**: rejeitada — não zera sozinha e acelera o índice (≈7,6%)
+- **Classe base genérica para repositórios Prisma**: rejeitada — repositórios/mappers/use-cases não têm duplicação textual; abstração sem ganho e com acoplamento
+- **Erro carregando o próprio status HTTP**: rejeitada — vazaria HTTP para o domínio (viola Clean Architecture e o §5)
+
+**Implicações:**
+
+- `docs/architecture/02-arquitetura.md` §3 ganha a exceção com a regra de filiação; `c3-component.md` documenta o kernel
+- Cada módulo mantém subclasse fina de filtro (mapa local) e de erro (union local) — poucas linhas, intencionalmente
+- Stryker mede `src/shared/**`; `.sonarcloud.properties` (Automatic Analysis — não usar `sonar-project.properties`) exclui os padrões de teste da métrica de duplicação
+- Provider de cliente compartilhado continua **não feito** (decisão 8 do change Conteúdo Público segue com o trigger no 4º módulo ou sob pressão de pools)
+
+---
+
+## 23. Referências cruzadas
 
 - Visão de produto: `docs/product/00-visao-do-produto.md`
 - Persona e UX: `docs/product/01-persona-e-ux-40+.md`

@@ -61,6 +61,7 @@ O domínio é organizado nos seguintes **Contextos Delimitados** (inicialmente):
 - Evitar que um módulo conheça detalhes internos de outro.
 - Comunicação entre contextos deve ser explícita e controlada.
 - No frontend, as features também devem respeitar essa separação conceitual.
+- **Exceção — kernel técnico compartilhado (`backend/src/shared/`):** plumbing puro, sem vocabulário de domínio (ex.: pipe de validação de entrada, base do filtro de exceção, base genérica de erro, factory de cliente de banco), PODE ser compartilhado entre módulos — compartilhar isso não é acoplar contextos. **Regra de filiação:** o kernel nunca importa de módulos nem conhece o domínio de nenhum contexto; modelo de domínio, entidades, portas, casos de uso e regras de negócio permanecem proibidos de compartilhar (a regra principal acima continua valendo); módulos importam do kernel somente o plumbing técnico admitido aqui.
 
 ---
 
