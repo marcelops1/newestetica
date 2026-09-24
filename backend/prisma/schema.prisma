@@ -18,14 +18,14 @@ model Slot {
 }
 
 model Booking {
-  id           String   @id
+  id           String  @id
   slotId       String
   patientName  String
   patientPhone String
   treatment    String?
   notes        String?
   status       String
-  slot         Slot     @relation(fields: [slotId], references: [id])
+  slot         Slot    @relation(fields: [slotId], references: [id])
 
   @@unique([slotId], where: { status: "confirmed" })
 }
@@ -37,4 +37,34 @@ model Procedure {
   duration    String
   categories  String[]
   isActive    Boolean  @default(true)
+}
+
+model Testimonial {
+  id      String @id
+  quote   String
+  author  String
+  context String
+}
+
+model Post {
+  id          String   @id
+  title       String
+  excerpt     String
+  category    String
+  content     String[]
+  publishedAt DateTime @db.Date
+}
+
+/**
+ * hasConsent fail-closed: sem consentimento claro, o caso não é servido
+ * publicamente (docs/security/03-seguranca.md §5; spec backend-content).
+ */
+model BeforeAfterCase {
+  id         String  @id
+  title      String
+  summary    String
+  sessions   String
+  recovery   String
+  goal       String
+  hasConsent Boolean @default(false)
 }
