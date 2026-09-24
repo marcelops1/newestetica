@@ -21,9 +21,9 @@ describe("Testimonial (entidade de domínio)", () => {
 
   it("rejeita campos obrigatórios vazios ou só com espaços", () => {
     for (const field of ["id", "quote", "author", "context"] as const) {
-      expect(() =>
-        Testimonial.create({ ...base, [field]: "   " }),
-      ).toThrow(InvalidContent);
+      expect(() => Testimonial.create({ ...base, [field]: "   " })).toThrow(
+        InvalidContent,
+      );
     }
   });
 

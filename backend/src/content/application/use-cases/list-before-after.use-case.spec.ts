@@ -29,7 +29,10 @@ describe("ListBeforeAfterUseCase", () => {
   it("lista somente casos com consentimento explícito", async () => {
     const cases = await makeUseCase().execute();
 
-    expect(cases.map((item) => item.id)).toEqual(["resultado-1", "resultado-2"]);
+    expect(cases.map((item) => item.id)).toEqual([
+      "resultado-1",
+      "resultado-2",
+    ]);
     expect(cases.every((item) => item.hasConsent)).toBe(true);
   });
 

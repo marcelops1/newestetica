@@ -103,12 +103,14 @@ describe("Content HTTP (contrato da Presentation)", () => {
 
     expect(response.status).toBe(200);
     const body = (await response.json()) as Array<Record<string, unknown>>;
-    expect(body.map((item) => item.id)).toEqual(["mais-recente", "mais-antigo"]);
+    expect(body.map((item) => item.id)).toEqual([
+      "mais-recente",
+      "mais-antigo",
+    ]);
     for (const item of body) {
-      expect(
-        PostSchema.safeParse(item).success,
-        JSON.stringify(item),
-      ).toBe(true);
+      expect(PostSchema.safeParse(item).success, JSON.stringify(item)).toBe(
+        true,
+      );
     }
   });
 

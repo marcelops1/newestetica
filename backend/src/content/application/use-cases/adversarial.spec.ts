@@ -42,7 +42,9 @@ describe("adversarial — entradas hostis contra os casos de uso", () => {
       content: ["Parágrafo fictício."],
       publishedAt: "2026-08-20",
     });
-    const useCase = new GetPostBySlugUseCase(new InMemoryPostRepository([post]));
+    const useCase = new GetPostBySlugUseCase(
+      new InMemoryPostRepository([post]),
+    );
 
     await expect(useCase.execute("' OR '1'='1")).rejects.toThrow(PostNotFound);
   });
