@@ -2,7 +2,11 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { CatalogModule } from "../../src/catalog/catalog.module";
-import { createTestPrismaClient, resetDatabase, testDatabaseUrl } from "./database";
+import {
+  createTestPrismaClient,
+  resetDatabase,
+  testDatabaseUrl,
+} from "./database";
 
 const prisma = createTestPrismaClient();
 let app: INestApplication;
@@ -89,6 +93,19 @@ describe("Catalog HTTP (contrato da Presentation)", () => {
     );
     expect(missing.status).toBe(404);
     expect(inactive.status).toBe(404);
-    expect(await missing.json()).toEqual(await inactive.json());
+    const missingBody = (await missing.json()) as { code: string };
+    const inactiveBody = (await inactive.json()) as { code: string };
+    expect(missingBody.code).toBe("PROCEDURE_NOT_FOUND");
+    expect(missingBody).toEqual(inactiveBody);
+  });
+
+  it("dado corrompido no banco responde 422 estruturado, sem vazar o registro", async () => {
+    await seedProcedure("dado-corrompido", ["inexistente"]);
+
+    const response = await fetch(`${baseUrl}/procedures`);
+
+    expect(response.status).toBe(422);
+    const body = (await response.json()) as { code: string };
+    expect(body.code).toBe("INVALID_PROCEDURE");
   });
 });

@@ -1,4 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
+import { InvalidProcedure } from "../../src/catalog/domain/errors/errors";
 import { PrismaProcedureRepository } from "../../src/catalog/infrastructure/persistence/procedure.repository.impl";
 import { createTestPrismaClient, resetDatabase } from "./database";
 
@@ -53,16 +54,28 @@ describe("PrismaProcedureRepository (integração com Postgres real)", () => {
     expect(active.map((procedure) => procedure.id)).toEqual(["alfa", "zebra"]);
   });
 
-  it("findActiveByCategory filtra por categoria entre os ativos", async () => {
+  it("findActiveByCategory filtra por categoria entre os ativos e ordena por nome", async () => {
     await seedProcedure("limpeza-de-pele", ["facial"]);
+    await seedProcedure("zebra-corporal", ["corporal"]);
     await seedProcedure("massagem-relaxante", ["corporal", "rejuvenescimento"]);
-    await seedProcedure("protocolo-corporal-descontinuado", ["corporal"], false);
+    await seedProcedure(
+      "protocolo-corporal-descontinuado",
+      ["corporal"],
+      false,
+    );
 
     const corporal = await repository.findActiveByCategory("corporal");
 
     expect(corporal.map((procedure) => procedure.id)).toEqual([
       "massagem-relaxante",
+      "zebra-corporal",
     ]);
+  });
+
+  it("findActive rejeita categoria desconhecida vinda do banco (dado corrompido)", async () => {
+    await seedProcedure("dado-corrompido", ["inexistente"]);
+
+    await expect(repository.findActive()).rejects.toThrow(InvalidProcedure);
   });
 
   it("findActiveBySlug ignora item desativado e retorna null para inexistente", async () => {

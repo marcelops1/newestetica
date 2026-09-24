@@ -3,19 +3,17 @@ import type { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { ProcedureSchema } from "@newestetica/contracts";
 import { CatalogModule } from "../../src/catalog/catalog.module";
-import { createTestPrismaClient, resetDatabase, testDatabaseUrl } from "./database";
+import {
+  createTestPrismaClient,
+  resetDatabase,
+  testDatabaseUrl,
+} from "./database";
 
 const prisma = createTestPrismaClient();
 let app: INestApplication;
 let baseUrl: string;
 
-const CONTRACT_KEYS = [
-  "categories",
-  "description",
-  "duration",
-  "id",
-  "name",
-];
+const CONTRACT_KEYS = ["categories", "description", "duration", "id", "name"];
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
@@ -51,9 +49,10 @@ describe("saída do catálogo conforme o contrato (verificação nas duas pontas
     expect(response.status).toBe(200);
     expect(body).toHaveLength(1);
     for (const item of body) {
-      expect(ProcedureSchema.safeParse(item).success, JSON.stringify(item)).toBe(
-        true,
-      );
+      expect(
+        ProcedureSchema.safeParse(item).success,
+        JSON.stringify(item),
+      ).toBe(true);
       expect(item).not.toHaveProperty("isActive");
       expect(Object.keys(item).sort()).toEqual(CONTRACT_KEYS);
     }
