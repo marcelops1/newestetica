@@ -46,7 +46,7 @@ export class Post {
         throw new InvalidContent("parágrafo não pode ser vazio");
       }
     }
-    if (!ISO_DATE.test(props.publishedAt.trim())) {
+    if (!ISO_DATE.test(props.publishedAt)) {
       throw new InvalidContent(
         `data de publicação fora do formato AAAA-MM-DD: ${props.publishedAt}`,
       );

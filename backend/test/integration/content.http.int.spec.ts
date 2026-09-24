@@ -170,4 +170,22 @@ describe("Content HTTP (contrato da Presentation)", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual([]);
   });
+
+  it("dado corrompido no banco responde 422 estruturado, sem vazar o registro", async () => {
+    await prisma.testimonial.create({
+      data: {
+        id: "depoimento-corrompido",
+        quote: "   ",
+        author: "Mariana S.",
+        context: "Paciente ilustrativa",
+      },
+    });
+
+    const response = await fetch(`${baseUrl}/testimonials`);
+
+    expect(response.status).toBe(422);
+    const body = (await response.json()) as { code: string; message: string };
+    expect(body.code).toBe("INVALID_CONTENT");
+    expect(JSON.stringify(body)).not.toContain("depoimento-corrompido");
+  });
 });

@@ -48,6 +48,18 @@ describe("Post (entidade de domínio)", () => {
     );
   });
 
+  it("rejeita data parcial ou com ruído ao redor (regex estritamente ancorada)", () => {
+    for (const publishedAt of [
+      "2026-08-20T00:00:00",
+      "x2026-08-20",
+      " 2026-08-20 ",
+    ]) {
+      expect(() => Post.create({ ...base, publishedAt })).toThrow(
+        InvalidContent,
+      );
+    }
+  });
+
   it("restore preserva os campos e também valida o snapshot", () => {
     const post = Post.restore(base);
 
