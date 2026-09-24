@@ -322,7 +322,35 @@ Toda nova decisão técnica relevante deve:
 
 ---
 
-## 21. Referências cruzadas
+## 21. Decisão: graphify como ferramenta experimental de navegação de codebase
+
+**Escolhido:** adoção **experimental e não obrigatória** do graphify (github.com/Graphify-Labs/graphify — grafo de conhecimento do codebase consultável via `/graphify` e comandos `query`/`path`/`explain`) como navegação **informal** do repositório entre sessões e IAs.
+
+**Motivos:**
+
+- Código com parsing local via tree-sitter (AST determinístico) — sem custo de API e sem nada sair da máquina; só docs/PDFs/mídia passam pelo modelo da sessão (ou chave configurada)
+- God nodes, detecção de comunidades e arestas explicadas (`EXTRACTED`/`INFERRED`) — respostas como subgrafo escopado, geralmente bem menor que varredura bruta
+- Skill por plataforma (`graphify opencode install`, com seção operacional em `AGENTS.md`) — alinhado ao princípio multi-IA do projeto
+- O precedente da instalação que escreveu sozinha no `AGENTS.md` (revertido) mostrou que a ferramenta precisa de regra explícita via OpenSpec antes de operar no repo
+
+**Alternativas consideradas:**
+
+- **Versionar `graphify-out/` desde já** (recomendação upstream): rejeitada por enquanto — grafo com baixo valor no codebase atual; poluiria o repo com artefato regenerável de baixo uso (decisão registrada no `design.md` do change; reavaliar quando a adoção crescer)
+- **Só grep/busca bruta**: rejeitada — não escala com o crescimento do backend; o grafo responde com contexto escopado
+- **Nenhuma ferramenta de navegação**: rejeitada — cada IA redescobriria a estrutura do zero por sessão
+
+**Implicações:**
+
+- Ferramenta de **DESENVOLVIMENTO**: nunca faz parte do deploy de produção nem de `infra/docker/`; CLI/skill instalados por máquina, fora do repo versionado
+- **Não substitui** o `AGENTS.md` nem o OpenSpec como fonte de verdade autoritativa; em conflito, eles vencem
+- `graphify-out/` **gitignored por enquanto** (entrada no `.gitignore`); reavaliação em change próprio quando a adoção justificar
+- **Nunca processa dado real de paciente em docs/PDFs** (regra explícita em `docs/security/03-seguranca.md` §4), com reforço técnico obrigatório antes de existir dado real no projeto
+- Adoção não obrigatória: qualquer IA ou pessoa pode trabalhar sem a ferramenta; o fluxo OpenSpec não muda
+- A seção operacional em `AGENTS.md` é o mecanismo no OpenCode (instruction-file platform): `query` primeiro com `graph.json` existente, `GRAPH_REPORT.md` só para revisão ampla, `update .` após modificar código
+
+---
+
+## 22. Referências cruzadas
 
 - Visão de produto: `docs/product/00-visao-do-produto.md`
 - Persona e UX: `docs/product/01-persona-e-ux-40+.md`
