@@ -1,7 +1,7 @@
 ## 0. Contrato — `contracts/src/patients/` desenhado do zero (fonte da verdade)
 
-- [ ] 0.1 Escrever o teste do contrato (`PatientInput` aceita cadastro mínimo e rejeita nome curto/telefone sem DDD/finalidade ausente; `PatientUpdate` aceita parcial e neutraliza `status`; `Patient` exige id/timestamps/status do vocabulário; sem campo de saúde/e-mail) e verificar que falha porque os schemas não existem — RED. Verificação: `Cannot find module`
-- [ ] 0.2 Criar `contracts/src/patients/patient.ts` + `patient.test.ts` + `index.ts` e reexportar no índice do pacote (tipos saem dos próprios schemas; sem tocar em contrato vigente) e verificar que o teste passa — GREEN. Verificação: teste da task 0.1 passa
+- [x] 0.1 Escrever o teste do contrato (`PatientInput` aceita cadastro mínimo e rejeita nome curto/telefone sem DDD/finalidade ausente; `PatientUpdate` aceita parcial e neutraliza `status`; `Patient` exige id/timestamps/status do vocabulário; sem campo de saúde/e-mail) e verificar que falha porque os schemas não existem — RED. Verificação: `Cannot find module`. Execução: RED real (`Cannot find module './patient'` no `pnpm --filter contracts test`)
+- [x] 0.2 Criar `contracts/src/patients/patient.ts` + `patient.test.ts` + `index.ts` e reexportar no índice do pacote (tipos saem dos próprios schemas; sem tocar em contrato vigente) e verificar que o teste passa — GREEN. Verificação: teste da task 0.1 passa. Execução: contrato criado (`PatientInput`/`PatientUpdate`/`PatientSchema`/`PatientStatusSchema`, `id: z.uuid()`, strip padrão); barrel raiz atualizado (ordem alfabética entre `errors` e `scheduling`); **13 arquivos / 60 testes verdes** no contracts (54 anteriores + 6 novos); lint/typecheck limpos; campos fora do contrato (e-mail/saúde/status) ignorados sem efeito, provado por chaves exatas
 
 ## 1. Setup de persistência (test-first de wire-up)
 
