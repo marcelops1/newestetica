@@ -26,8 +26,8 @@
 
 ## 5. Remoção dos scripts pnpm (test-first)
 
-- [ ] 5.1 Grepar `infra:up|infra:down` fora de `openspec/changes/archive/` e constatar ocorrências vivas (`package.json`, `05-estado-atual.md`, comentário do `stryker.config.mjs`) — RED. Verificação: lista de ocorrências colada
-- [ ] 5.2 Remover `infra:up`/`infra:down` do `package.json` raiz e atualizar cada referência viva para `make up`/`make down` (sem tocar o archive — registro histórico) — GREEN. Verificação: `grep` retorna zero fora do archive; `pnpm infra:up` agora falha (script inexistente)
+- [x] 5.1 Grepar `infra:up|infra:down` fora de `openspec/changes/archive/` e constatar ocorrências vivas (`package.json`, `05-estado-atual.md`, comentário do `stryker.config.mjs`) — RED. Verificação: lista de ocorrências colada. Execução: ocorrências vivas em `package.json` (2 scripts), `backend/stryker.config.mjs:2`, `docs/product/05-estado-atual.md:88` + a main spec `openspec/specs/infra-docker/spec.md` (sincronizada no archive)
+- [x] 5.2 Remover `infra:up`/`infra:down` do `package.json` raiz e atualizar cada referência viva para `make up`/`make down` (sem tocar o archive — registro histórico) — GREEN. Verificação: `grep` retorna zero fora do archive; `pnpm infra:up` agora falha (script inexistente). Execução: scripts removidos; stryker → `make up`; 05 → `make up` (com backend containerizado); auditoria sem ocorrências fora do archive/change ativo (a main spec é sincronizada no archive — regra 7); `pnpm infra:up` → `Command "infra:up" not found`
 
 ## 6. Docs e gates
 

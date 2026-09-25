@@ -85,7 +85,7 @@ A estrutura do monorepo já foi criada:
 - UI/UX Pro Max no frontend
 - Stryker instalado para mutation testing manual (fora do CI)
 - Deploy do frontend na Vercel (decisão registrada em `docs/architecture/04-decisoes-tecnicas.md` §18)
-- Containerização e orquestração local com Docker (`infra/docker/`): Postgres e Keycloak sobem com `pnpm infra:up` (base implementada com pins/healthchecks; o serviço do backend entra no compose com o primeiro módulo) — decisão no §19
+- Containerização e orquestração local com Docker (`infra/docker/`): Postgres, Keycloak **e o backend NestJS** sobem com `make up` (convenção Makefile com `make help` autodescoberto; backend com Dockerfile multi-stage, migrations no entrypoint e healthcheck em `GET /health`) — decisão no §19
 
 ### Design System
 

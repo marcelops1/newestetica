@@ -12,9 +12,7 @@
     "typecheck": "pnpm --filter frontend --filter contracts --filter backend typecheck",
     "test": "pnpm --filter frontend --filter contracts --filter backend test",
     "build": "pnpm --filter contracts build && pnpm --filter frontend build && pnpm --filter backend build",
-    "openspec": "openspec",
-    "infra:up": "docker compose -f infra/docker/docker-compose.yml up -d --wait",
-    "infra:down": "docker compose -f infra/docker/docker-compose.yml down --remove-orphans"
+    "openspec": "openspec"
   },
   "engines": {
     "node": ">=24"
