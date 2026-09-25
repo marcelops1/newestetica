@@ -135,9 +135,7 @@ describe("PrismaPatientRepository (integração com Postgres real)", () => {
     patient.anonymize();
     await repository.save(patient);
 
-    await expect(
-      repository.findVisibleById(patient.id),
-    ).resolves.toBeNull();
+    await expect(repository.findVisibleById(patient.id)).resolves.toBeNull();
     const record = await prisma.patient.findUnique({
       where: { id: patient.id },
     });
