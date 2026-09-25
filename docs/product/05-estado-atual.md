@@ -151,7 +151,8 @@ A estrutura do monorepo já foi criada:
 
 ### Pendências registradas
 
-- Nenhuma no momento. A dívida técnica de duplicação estrutural entre módulos de backend foi resolvida pelo change `resolver-duplicacao-sonar-backend` (kernel técnico compartilhado em `backend/src/shared/` + exclusões de duplicação para testes no SonarCloud; ver `docs/architecture/04-decisoes-tecnicas.md` §22).
+- Nenhuma pendência de duplicação estrutural: resolvida pelo change `resolver-duplicacao-sonar-backend` (kernel técnico compartilhado em `backend/src/shared/` + exclusões de duplicação para testes no SonarCloud; ver `docs/architecture/04-decisoes-tecnicas.md` §22).
+- **Dívida técnica (retenção de PII em backups — Pacientes):** política de retenção/expurgo de PII em backups do banco (paciente é anonimizado pela aplicação — placeholders + `status`/`anonymizedAt` —, mas backups pré-anonimização retêm PII) — avaliar quando existir estratégia real de backup em produção. Também: módulos futuros que fizerem join com Pacientes (ex.: Atendimento/Histórico) devem respeitar o filtro `findVisible` para não vazar paciente anonimizado. Registro original: revisão final do PR #42 (R3) e `verification.md` do change arquivado `2026-09-25-backend-modulo-pacientes` (§8).
 
 ---
 

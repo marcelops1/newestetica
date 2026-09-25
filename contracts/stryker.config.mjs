@@ -12,6 +12,7 @@ export default {
     "src/catalog/**/*.ts",
     "src/scheduling/**/*.ts",
     "src/content/**/*.ts",
+    "src/patients/**/*.ts",
     "!src/**/*.test.ts",
   ],
   concurrency: 2,

@@ -68,3 +68,19 @@ model BeforeAfterCase {
   goal       String
   hasConsent Boolean @default(false)
 }
+
+/**
+ * PII mínima de paciente (nome/telefone/finalidade). `status` fecha por padrão em
+ * `active`; `anonymizedAt` marca a anonimização (PII substituída — nunca apagada
+ * fisicamente). Nenhum campo clínico/saúde (docs/security/03-seguranca.md §4).
+ */
+model Patient {
+  id           String    @id
+  fullName     String
+  phone        String
+  purpose      String
+  status       String    @default("active")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  anonymizedAt DateTime?
+}

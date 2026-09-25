@@ -428,7 +428,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API mantém cadastro e dados básicos com coleta mínima e finalidade informada.
 - **Critérios de aceite:**
   - Direitos do titular preparáveis (acesso, correção, exclusão) sem retrabalho estrutural.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (CRUD básico entregue no módulo `backend/src/patients` — cadastro mínimo com finalidade registrada, leitura/atualização só de ativos, **anonimização via delete** (PII substituída por placeholders, `status`/`anonymizedAt`) e **guard honesto de bloqueio** (403 `AUTH_NOT_IMPLEMENTED` em todas as rotas até a Identidade); contrato novo em `contracts/src/patients/`; pendentes: **substituir o guard pelo Keycloak/RBAC real** (próximo passo obrigatório do módulo de Identidade, UC 4.2.1), exportação de dados do titular e campos adicionais — todos com trigger registrado).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 **Use Case 4.2.5 — Atendimento / Histórico (API)**
