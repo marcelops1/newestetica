@@ -1,0 +1,46 @@
+## 0. Contrato — `contracts/src/patients/` desenhado do zero (fonte da verdade)
+
+- [ ] 0.1 Escrever o teste do contrato (`PatientInput` aceita cadastro mínimo e rejeita nome curto/telefone sem DDD/finalidade ausente; `PatientUpdate` aceita parcial e neutraliza `status`; `Patient` exige id/timestamps/status do vocabulário; sem campo de saúde/e-mail) e verificar que falha porque os schemas não existem — RED. Verificação: `Cannot find module`
+- [ ] 0.2 Criar `contracts/src/patients/patient.ts` + `patient.test.ts` + `index.ts` e reexportar no índice do pacote (tipos saem dos próprios schemas; sem tocar em contrato vigente) e verificar que o teste passa — GREEN. Verificação: teste da task 0.1 passa
+
+## 1. Setup de persistência (test-first de wire-up)
+
+- [ ] 1.1 Executar `pnpm --filter backend test` filtrado ao novo módulo e constatar que falha (pacote `patients/` inexistente) — RED. Verificação: filtro sem arquivos
+- [ ] 1.2 Criar `backend/prisma/schema.prisma` com o modelo `Patient` (id UUID, `fullName`, `phone`, `purpose`, `status` com default `active`, `createdAt`/`updatedAt`, `anonymizedAt` opcional) + migration inicial + seed fictício (3 pacientes claramente fictícios, só ativos) — GREEN parcial. Verificação: `prisma migrate deploy` aplica limpo no banco de teste e o seed popula sem erro
+
+## 2. Domain — Patient e a invariante "anonimizado nunca é servido" (unitários puros)
+
+- [ ] 2.1 Escrever o teste da entidade (`create` com campos válidos e id gerado fora dela; vazios/malformados rejeitados; `anonymize()` limpa PII, carimba status/timestamp e só aceita ativo→anonimizado; `restore` preserva e valida) e verificar que falha porque a entidade não existe — RED. Verificação: `Cannot find module`
+- [ ] 2.2 Criar `domain/entities/patient.entity.ts` + erros locais (`InvalidPatient`/`PatientNotFound` genérico, sem eco de PII) e verificar que o teste passa — GREEN. Verificação: teste da task 2.1 passa
+- [ ] 2.3 Escrever o teste das portas (`PatientRepository.save`, `findVisible`/`findVisibleById` excluindo anonimizados, compilando contra fake manual) e verificar que falha — RED. Verificação: falha de compilação/tipo (precedente dos módulos anteriores)
+- [ ] 2.4 Criar `domain/ports/patient.repository.ts` (só a entidade única; sem `UnitOfWork` — decisão 3 do design) e verificar verde + auditoria de imports (`domain/` sem imports externos) — GREEN. Verificação: typecheck limpo e `grep` de imports externos vazio
+
+## 3. Application — casos de uso contra portas com fake em memória
+
+- [ ] 3.1 Escrever o teste de cadastrar/listar/buscar/atualizar/anonimizar (create retorna com id; lista só ativos em ordem; detalhe encontra; inexistente/anonimizado → não-encontrado idêntico; PATCH parcial preserva o resto; DELETE anonimiza e some das leituras; segundo DELETE → não-encontrado) com fakes e verificar que falha — RED. Verificação: `Cannot find module`
+- [ ] 3.2 Implementar os casos de uso dependendo só das portas e verificar verde — GREEN. Verificação: testes da task 3.1 passam, sem importar `infrastructure/`
+- [ ] 3.3 Escrever o teste adversarial com payload hostil real (nome/telefone gigantes, injeção, unicode, `limit` acima do teto; sondas: acesso direto a anonimizado ausente; `status` via PATCH neutralizado) e verificar o comportamento seguro — RED. Verificação: teste falha (módulo ausente ou hostil aceito)
+- [ ] 3.4 Implementar o tratamento (validação na fronteira do núcleo + queries parametrizadas + limites; PII nunca ecoada em erro) e verificar verde — GREEN. Verificação: hostil rejeitado ou neutralizado sem erro interno ou PII vazados
+
+## 4. Infrastructure — Prisma + Postgres real em container
+
+- [ ] 4.1 Escrever o teste de integração do repositório (round-trip com timestamps; `findVisible` exclui anonimizado mesmo com o registro existindo; `findVisibleById` ignora inexistente/anonimizado; ordenação determinística; `save` cria e atualiza) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente
+- [ ] 4.2 Criar o modelo Prisma + mapper manual (Data Mapper, nunca Active Record; `anonymizedAt` só banco/entidade, fora do contrato; validação pela entidade como fonte única) e implementar o repositório — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado
+
+## 5. Presentation — controller com validação Zod e guard honesto de bloqueio
+
+- [ ] 5.1 Escrever o teste de contrato da Presentation (`POST /patients` 201; `GET /patients` com `limit` válido e acima do teto → 422; `GET /patients/:id` e `PATCH` com corpos validados; id inexistente/anonimizado → 404 idêntico; `DELETE` → 204), executando com bypass do guard (`overrideGuard`, simulando a Identidade futura) e verificar que falha — RED. Verificação: 404 de rota ou `Cannot find module`
+- [ ] 5.2 Criar controller (com `@UseGuards(IdentityPendingGuard)` em todas as rotas, sem exceção) + `PatientsModule` (mesmo padrão de wiring: providers por tokens, cliente próprio, pipe/filtro/erros locais, guard nos providers, sem `UnitOfWork`) e verificar verde de ponta a ponta com bypass — GREEN. Verificação: testes passam contra o app com banco de teste
+- [ ] 5.3 Escrever o teste do guard honesto (sem bypass, cada uma das 5 rotas responde 403 com `AUTH_NOT_IMPLEMENTED`; nenhuma rota acessível sem proteção) e verificar que falha enquanto o guard não existe — RED: sem guard, a rota responde normalmente, sem proteção nenhuma. Verificação: o teste falha porque a rota está acessível (200/201/404 em vez de 403)
+- [ ] 5.4 Implementar `IdentityPendingGuard` (`backend/src/patients/presentation/guards/`, nega tudo com 403 + código/mensagem explícitos, sem simular autenticação) e verificar verde — GREEN: rotas bloqueadas por padrão, e os testes de rotas com bypass continuam verdes. Verificação: teste da task 5.3 passa; nenhum teste anterior quebra
+- [ ] 5.5 Escrever o teste de saída conforme o contrato (corpos validados contra os schemas nas duas pontas, 07 §13, com bypass do guard) e verificar que falha antes do ajuste — RED. Verificação: divergência reprova
+- [ ] 5.6 Ajustar o formato de saída até zerar a divergência (allowlist explícita; tipo de retorno = tipos do próprio `@newestetica/contracts`) — GREEN. Verificação: teste passa; nenhuma divergência nova
+- [ ] 5.7 Prova de exclusão de anonimização (dedicada e explícita): semear no banco um paciente ativo e um anonimizado e asserir que nenhuma leitura contém o anonimizado — RED: o anonimizado aparece hoje (filtro ausente/ingênuo); GREEN: o filtro real (`where` no banco) bloqueia e o teste passa. Verificação: o teste distingue as duas situações (falha sem o filtro, passa com ele) — garantia provada pela falha, não presumida
+
+## 6. Mutation, segurança, registros e backlog
+
+- [ ] 6.1 Rodar Stryker contra o módulo (`pnpm --filter backend mutation`, banco de teste no ar; estender o escopo `mutate` para `src/patients/**`) e contra `contracts/src/patients/`, e registrar score real + triagem de sobreviventes em `verification.md` — GREEN. Verificação: relatório completo no registro (meta docs/07 §13)
+- [ ] 6.2 Revisar segurança com `security-and-hardening` contra `docs/security/03-seguranca.md` (gatilhos: entrada de usuário, **dados de paciente**, guard de bloqueio honesto no lugar de auth real, enumeração, DoS de listagem) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada, com os abuse cases do threat model um a um
+- [ ] 6.3 Revisar com `code-review-and-quality` e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada
+- [ ] 6.4 Atualizar `docs/product/08-backlog-produto.md` (UC 4.2.4 → Em andamento), a linha de Purpose de `openspec/specs/api-contracts/spec.md` ("e Pacientes") e avaliar `c2/c3-component.md` — exceção docs/07 §4 (verificação por releitura). Verificação: releitura confirma os status
+- [ ] 6.5 Avaliar a complexidade da sessão (emendas? padrões reutilizáveis?) e alimentar a seção 14 de docs/07 ou registrar a dispensa com motivo — exceção docs/07 §4. Verificação: seção 14 atualizada ou dispensa justificada em `verification.md`
