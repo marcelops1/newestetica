@@ -84,6 +84,30 @@ describe("contrato de Pacientes (cadastro mínimo + saída)", () => {
     }
   });
 
+  it("PatientUpdate valida as mesmas bordas do cadastro em nome e finalidade", () => {
+    expect(
+      PatientUpdateSchema.safeParse({ fullName: "Paciente Fictícia Bravo" })
+        .success,
+    ).toBe(true);
+    expect(
+      PatientUpdateSchema.safeParse({
+        purpose: "Cadastro para acompanhamento na clínica",
+      }).success,
+    ).toBe(true);
+    expect(PatientUpdateSchema.safeParse({ fullName: " A " }).success).toBe(
+      false,
+    );
+    expect(
+      PatientUpdateSchema.safeParse({ fullName: "x".repeat(121) }).success,
+    ).toBe(false);
+    expect(PatientUpdateSchema.safeParse({ purpose: "   " }).success).toBe(
+      false,
+    );
+    expect(
+      PatientUpdateSchema.safeParse({ purpose: "x".repeat(201) }).success,
+    ).toBe(false);
+  });
+
   it("Patient exige id/timestamps/status e rejeita status fora do vocabulário", () => {
     expect(PatientSchema.safeParse(validPatient).success).toBe(true);
     expect(

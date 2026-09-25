@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { InMemoryPatientRepository } from "../../../../test/fakes/in-memory-patient.repository";
 import { Patient } from "../../domain/entities/patient.entity";
+import { InvalidPatient } from "../../domain/errors/errors";
 import type { PatientRepository } from "../../domain/ports/patient.repository";
 import {
   DEFAULT_PATIENTS_LIMIT,
@@ -81,5 +82,16 @@ describe("ListPatientsUseCase", () => {
 
     expect(spy.lastLimit).toBe(1);
     expect(patients).toHaveLength(1);
+  });
+
+  it("aceita o teto exato (500) e rejeita acima dele", async () => {
+    const { useCase, spy } = makeUseCase();
+
+    await useCase.execute({ limit: 500 });
+    expect(spy.lastLimit).toBe(500);
+
+    await expect(useCase.execute({ limit: 501 })).rejects.toThrow(
+      InvalidPatient,
+    );
   });
 });

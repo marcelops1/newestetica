@@ -129,10 +129,34 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
     expect(limited.status).toBe(200);
     await expect(limited.json()).resolves.toHaveLength(1);
 
+    const midLimit = await fetch(`${baseUrl}/patients?limit=2`);
+    expect(midLimit.status).toBe(200);
+    await expect(midLimit.json()).resolves.toHaveLength(2);
+
     const overLimit = await fetch(`${baseUrl}/patients?limit=501`);
     expect(overLimit.status).toBe(422);
     const invalidLimit = await fetch(`${baseUrl}/patients?limit=abc`);
     expect(invalidLimit.status).toBe(422);
+  });
+
+  it("dado corrompido no banco responde 422 estruturado, sem vazar o registro", async () => {
+    await prisma.patient.create({
+      data: {
+        id: "00000000-0000-4000-8000-000000000009",
+        fullName: "   ",
+        phone: "(11) 5555-0001",
+        purpose: "Cadastro fictício para teste",
+        status: "active",
+        updatedAt: new Date(),
+      },
+    });
+
+    const response = await fetch(`${baseUrl}/patients`);
+
+    expect(response.status).toBe(422);
+    const body = (await response.json()) as { code: string; message: string };
+    expect(body.code).toBe("INVALID_PATIENT");
+    expect(JSON.stringify(body)).not.toContain("5555");
   });
 
   it("GET /patients/:id encontra ativo e 404 idêntico para inexistente ou anonimizado", async () => {

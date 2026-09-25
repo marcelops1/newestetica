@@ -58,12 +58,14 @@ describe("PrismaPatientRepository (integração com Postgres real)", () => {
       "00000000-0000-4000-8000-000000000002",
       "Paciente Fictícia Bravo",
     );
+    /* Empate de nome inserido fora da ordem de id: sem o desempate por id, a ordem
+       física (003 antes de 001) apareceria e este teste reprovaria. */
     await seedPatient(
-      "00000000-0000-4000-8000-000000000001",
+      "00000000-0000-4000-8000-000000000003",
       "Paciente Fictícia Alfa",
     );
     await seedPatient(
-      "00000000-0000-4000-8000-000000000003",
+      "00000000-0000-4000-8000-000000000001",
       "Paciente Fictícia Alfa",
     );
     await seedPatient(

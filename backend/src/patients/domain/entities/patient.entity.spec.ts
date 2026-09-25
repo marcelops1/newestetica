@@ -56,6 +56,21 @@ describe("Patient (entidade de domínio)", () => {
     );
   });
 
+  it("aceita as bordas exatas (nome 2/120, telefone 20, finalidade 1/200)", () => {
+    const phone20 = "(11) 55555-5555-5555";
+    expect(phone20).toHaveLength(20);
+
+    expect(Patient.create({ ...base, fullName: "Ab" }).fullName).toBe("Ab");
+    expect(
+      Patient.create({ ...base, fullName: "x".repeat(120) }).fullName,
+    ).toHaveLength(120);
+    expect(Patient.create({ ...base, phone: phone20 }).phone).toBe(phone20);
+    expect(Patient.create({ ...base, purpose: "x" }).purpose).toBe("x");
+    expect(
+      Patient.create({ ...base, purpose: "x".repeat(200) }).purpose,
+    ).toHaveLength(200);
+  });
+
   it("update aplica somente os campos informados e avança updatedAt", async () => {
     const patient = Patient.create(base);
     const createdAt = patient.createdAt.getTime();
@@ -68,6 +83,28 @@ describe("Patient (entidade de domínio)", () => {
     expect(patient.purpose).toBe(base.purpose);
     expect(patient.status).toBe("active");
     expect(patient.updatedAt.getTime()).toBeGreaterThanOrEqual(createdAt);
+  });
+
+  it("update aplica nome e finalidade além do telefone", () => {
+    const patient = Patient.create(base);
+
+    patient.update({
+      fullName: "Paciente Fictícia Atualizada",
+      purpose: "Nova finalidade registrada",
+    });
+
+    expect(patient.fullName).toBe("Paciente Fictícia Atualizada");
+    expect(patient.purpose).toBe("Nova finalidade registrada");
+    expect(patient.phone).toBe(base.phone);
+  });
+
+  it("update de paciente anonimizada é rejeitado", () => {
+    const patient = Patient.create(base);
+    patient.anonymize();
+
+    expect(() => patient.update({ phone: "(11) 5555-0003" })).toThrow(
+      InvalidPatient,
+    );
   });
 
   it("anonymize substitui a PII por placeholders fixos e carimba status/timestamp", () => {
