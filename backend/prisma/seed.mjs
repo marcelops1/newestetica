@@ -196,6 +196,30 @@ const beforeAfterCases = [
   },
 ];
 
+/* Pacientes fictícios (nunca dado real — docs/security/03-seguranca.md §4/§11):
+   nomes e telefones claramente ilustrativos, telefone com prefixo 5555, só ativos.
+   Ids fixos (UUID v4 fictícios) para o upsert idempotente. */
+const patients = [
+  {
+    id: "00000000-0000-4000-8000-000000000101",
+    fullName: "Paciente Ilustrativa Alfa",
+    phone: "(11) 5555-0101",
+    purpose: "Cadastro fictício para desenvolvimento (paciente ilustrativa)",
+  },
+  {
+    id: "00000000-0000-4000-8000-000000000102",
+    fullName: "Paciente Ilustrativa Bravo",
+    phone: "(11) 5555-0102",
+    purpose: "Cadastro fictício para desenvolvimento (paciente ilustrativa)",
+  },
+  {
+    id: "00000000-0000-4000-8000-000000000103",
+    fullName: "Paciente Ilustrativa Charlie",
+    phone: "(11) 5555-0103",
+    purpose: "Cadastro fictício para desenvolvimento (paciente ilustrativa)",
+  },
+];
+
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   throw new Error("DATABASE_URL não configurada para o seed");
@@ -296,6 +320,23 @@ try {
   const withoutConsent = beforeAfterCases.filter((c) => !c.hasConsent).length;
   console.log(
     `Seed de antes/depois aplicado: ${beforeAfterCases.length} casos fictícios (${withoutConsent} sem consentimento — nunca servido publicamente).`,
+  );
+
+  for (const patient of patients) {
+    await client.query(
+      `INSERT INTO "Patient" (id, "fullName", phone, purpose, status, "updatedAt")
+       VALUES ($1, $2, $3, $4, 'active', now())
+       ON CONFLICT (id) DO UPDATE SET
+         "fullName" = EXCLUDED."fullName",
+         phone = EXCLUDED.phone,
+         purpose = EXCLUDED.purpose,
+         status = EXCLUDED.status,
+         "updatedAt" = now()`,
+      [patient.id, patient.fullName, patient.phone, patient.purpose],
+    );
+  }
+  console.log(
+    `Seed de pacientes aplicado: ${patients.length} fictícios (ilustrativos, só ativos).`,
   );
 } finally {
   await client.end();

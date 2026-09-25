@@ -5,8 +5,8 @@
 
 ## 1. Setup de persistência (test-first de wire-up)
 
-- [ ] 1.1 Executar `pnpm --filter backend test` filtrado ao novo módulo e constatar que falha (pacote `patients/` inexistente) — RED. Verificação: filtro sem arquivos
-- [ ] 1.2 Criar `backend/prisma/schema.prisma` com o modelo `Patient` (id UUID, `fullName`, `phone`, `purpose`, `status` com default `active`, `createdAt`/`updatedAt`, `anonymizedAt` opcional) + migration inicial + seed fictício (3 pacientes claramente fictícios, só ativos) — GREEN parcial. Verificação: `prisma migrate deploy` aplica limpo no banco de teste e o seed popula sem erro
+- [x] 1.1 Executar `pnpm --filter backend test` filtrado ao novo módulo e constatar que falha (pacote `patients/` inexistente) — RED. Verificação: filtro sem arquivos. Execução: `No test files found, exiting with code 1` (RED real)
+- [x] 1.2 Criar `backend/prisma/schema.prisma` com o modelo `Patient` (id UUID, `fullName`, `phone`, `purpose`, `status` com default `active`, `createdAt`/`updatedAt`, `anonymizedAt` opcional) + migration inicial + seed fictício (3 pacientes claramente fictícios, só ativos) — GREEN parcial. Verificação: `prisma migrate deploy` aplica limpo no banco de teste e o seed popula sem erro. Execução: modelo + migration `20260925122837_add_patient` (aplicada no dev e no test via `migrate deploy`); seed estendido com 3 pacientes ilustrativos (prefixo 5555, upsert idempotente, `updatedAt = now()`); `prisma generate` rodado (`models/Patient.ts` presente); `resetDatabase` atualizado com `patient.deleteMany()` e um teste de integração existente rodado para confirmar (8/8)
 
 ## 2. Domain — Patient e a invariante "anonimizado nunca é servido" (unitários puros)
 
