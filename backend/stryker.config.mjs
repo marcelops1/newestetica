@@ -16,6 +16,7 @@ export default {
     "src/scheduling/**/*.ts",
     "src/content/**/*.ts",
     "src/shared/**/*.ts",
+    "src/patients/**/*.ts",
     "!src/**/*.spec.ts",
     "!src/**/*.module.ts",
   ],
