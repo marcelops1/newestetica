@@ -22,7 +22,7 @@ Registrar de forma explícita as decisões técnicas do projeto, evitando decis�
 | Estilo de API | A definir nos contracts | Preferência por contratos claros (OpenAPI/Zod) |
 | UI/UX | UI/UX Pro Max + diretrizes 40+ | Obrigatório no frontend |
 | Deploy do frontend | Vercel | Preview deployments por PR |
-| Orquestração do backend | Docker + docker-compose | Ambiente futuro em `infra/` |
+| Orquestração do backend | Docker + docker-compose via `make` | Ambiente local em `infra/` |
 
 ---
 
@@ -268,7 +268,8 @@ Toda nova decisão técnica relevante deve:
 
 - **Postgres e Keycloak** sobem em containers no ambiente local (base implementada em 2026-09-19, com healthchecks e versões pinadas);
 - **Frontend** tem Dockerfile multi-stage (standalone) — portabilidade de hospedagem para AWS/VPS, **sem substituir** a Vercel, que segue como plataforma de **demo** (decisão 18);
-- **Backend** (NestJS) entra no compose quando o primeiro módulo nascer (`backend/Dockerfile` ainda não existe; o serviço fica comentado no compose até lá).
+- **Backend** (NestJS) tem Dockerfile multi-stage (runtime non-root) e está ativo no compose ao lado de Postgres e Keycloak; as migrations rodam no entrypoint (`prisma migrate deploy`) antes de o servidor subir, com healthcheck em `GET /health`;
+- **Ciclo de vida local via `Makefile`** na raiz (`make up/down/logs/build/restart/ps/db-shell`, com `make help` autodescobrindo os comandos) — os scripts `infra:up`/`infra:down` do `package.json` foram removidos e não coexistem com a nova convenção.
 
 **Motivos:**
 
@@ -288,7 +289,7 @@ Toda nova decisão técnica relevante deve:
 
 - `docker-compose.yml`, realm de exemplo e `.env.example` vivem em `infra/docker/`; segredos fora do repositório (`.env` ignorado pelo git, conforme `docs/security/03-seguranca.md`)
 - Versões pinadas (séries estáveis) e healthchecks obrigatórios no compose
-- O serviço `backend` fica comentado no compose até `backend/Dockerfile` existir (primeiro módulo do Épico 4)
+- O backend sobe com o stack e aplica migrations no entrypoint (falha rápida se o banco estiver inalcançável — sem boot silencioso sem banco); o comando do desenvolvedor é `make up`/`make down`
 - Testes de integração do backend usam o mesmo PostgreSQL real em container (ver `docs/engineering/07-workflow-de-engenharia.md` §13)
 
 **Nota de roadmap:** a rejeição de Kubernetes acima é para o estágio atual do projeto, não permanente. O plano de longo prazo do usuário é hospedar o sistema em produção sobre Kubernetes rodando em cima de VPS (ex.: DigitalOcean), quando a escala e a maturidade operacional justificarem. Docker Compose continua sendo o padrão de desenvolvimento local e do estágio inicial de produção; a migração para Kubernetes será uma decisão técnica nova, proposta via OpenSpec quando esse momento chegar — não decida a favor ou contra Kubernetes sem essa proposta formal.
