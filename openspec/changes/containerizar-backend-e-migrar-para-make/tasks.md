@@ -1,0 +1,35 @@
+## 0. Baseline RED (o backend não sobe em container hoje)
+
+- [ ] 0.1 Constatar que o backend não existe no grafo ativo (`docker compose -f infra/docker/docker-compose.yml config --services` lista só postgres/keycloak), que `docker build -f backend/Dockerfile .` falha (arquivo inexistente) e que `make help` falha (sem Makefile) — RED. Verificação: os três comandos falham/omitem como descrito, com a saída colada
+- [ ] 0.2 Confirmar pré-requisitos na máquina (`make --version`, `docker compose version`) e o padrão de referência (`frontend/Dockerfile`, `.dockerignore` da raiz, `main.ts` lendo `PORT`, `GET /health`) — GREEN de contexto. Verificação: versões impressas + arquivos lidos, sem mudar nada
+
+## 1. backend/Dockerfile multi-stage (test-first)
+
+- [ ] 1.1 Executar `docker build -f backend/Dockerfile -t newestetica-backend-test .` e constatar que falha (arquivo inexistente) — RED. Verificação: `failed to read dockerfile` (ou equivalente) colado
+- [ ] 1.2 Criar `backend/Dockerfile` (builder: workspace + `prisma generate` + build contracts/backend; runtime Alpine non-root com `dist/`, `prisma/`, `node_modules` com CLI, `docker-entrypoint.sh`) e verificar que o build sai com zero nos dois estágios — GREEN. Verificação: build conclui; `docker run --rm <img> whoami` imprime `node` (não-root); `ls dist/main.js` existe na imagem
+
+## 2. Entrypoint com migrations (test-first)
+
+- [ ] 2.1 Subir o backend apontando para banco inalcançável e constatar que o container sai com erro diferente de zero (falha rápida, sem boot silencioso sem banco) — RED do comportamento atual (sem entrypoint, o servidor subiria e só falharia nas queries). Verificação: exit code ≠ 0 colado
+- [ ] 2.2 Criar o entrypoint (`prisma migrate deploy` com `DATABASE_URL`, depois `node dist/main.js`) e verificar que, em volume de dados limpo, as migrations aplicam antes do servidor aceitar conexões — GREEN. Verificação: volume zerado + up → tabela `Patient` existe via `db-shell`/`psql` e `GET /health` responde 200 em seguida
+
+## 3. Serviço backend ativo no compose (test-first)
+
+- [ ] 3.1 Descomentar/ativar o serviço `backend` (build da raiz, `DATABASE_URL` interna, porta documentada, `depends_on` só do postgres saudável, healthcheck em `GET /health`) e verificar `config` com zero e os 3 serviços no grafo — GREEN. Verificação: `config --services` lista postgres, keycloak e backend
+- [ ] 3.2 Executar o up completo do zero e verificar os 3 serviços saudáveis + backend respondendo — GREEN. Verificação: `docker compose ps` com `(healthy)` nos três; `curl/wget GET :3001/health` → `{"status":"ok"}`
+
+## 4. Makefile como única interface (test-first)
+
+- [ ] 4.1 Executar `make help` e constatar que falha (arquivo inexistente) — RED. Verificação: `make: *** No rule to make target 'help'` colado
+- [ ] 4.2 Criar o `Makefile` (`help` padrão + `up`, `down`, `logs`, `build`, `restart`, `ps`, `db-shell`, todos `.PHONY` com descrição `##`) e verificar que `make help` lista cada target com descrição — GREEN. Verificação: saída do `help` colada com os 8 alvos
+- [ ] 4.3 Executar cada target de ponta a ponta (`make up` do zero até saudável; `make ps`; `make logs --help`-style ou saída inicial; `make build`; `make restart`; `make db-shell -c 'select 1'`; `make down` zerando containers) — GREEN. Verificação: cada comando com saída/estado colado
+
+## 5. Remoção dos scripts pnpm (test-first)
+
+- [ ] 5.1 Grepar `infra:up|infra:down` fora de `openspec/changes/archive/` e constatar ocorrências vivas (`package.json`, `05-estado-atual.md`, comentário do `stryker.config.mjs`) — RED. Verificação: lista de ocorrências colada
+- [ ] 5.2 Remover `infra:up`/`infra:down` do `package.json` raiz e atualizar cada referência viva para `make up`/`make down` (sem tocar o archive — registro histórico) — GREEN. Verificação: `grep` retorna zero fora do archive; `pnpm infra:up` agora falha (script inexistente)
+
+## 6. Docs e gates
+
+- [ ] 6.1 Atualizar `docs/architecture/04-decisoes-tecnicas.md` §19 (backend ativo, convenção make, decisões do design registradas) e `docs/product/05-estado-atual.md` (bullet do §19 com `make up`) — exceção docs/07 §4 (documentação de decisão; verificação por releitura). Verificação: releitura confirma os dois pontos, sem resto de "serviço comentado"
+- [ ] 6.2 Rodar gates (`pnpm build` do backend intacto, `docker compose config` zero, suíte `pnpm --filter backend test` como regressão com o compose no ar, `lint`/`format`/`typecheck` inalterados) + `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: tabela de gates no registro
