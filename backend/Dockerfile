@@ -26,6 +26,7 @@ COPY --from=builder --chown=node:node /repo/contracts/package.json ./contracts/p
 COPY --from=builder --chown=node:node /repo/contracts/dist ./contracts/dist
 COPY --from=builder --chown=node:node /repo/contracts/node_modules ./contracts/node_modules
 COPY --from=builder --chown=node:node /repo/backend/package.json ./backend/package.json
+COPY --from=builder --chown=node:node /repo/backend/node_modules ./backend/node_modules
 COPY --from=builder --chown=node:node /repo/backend/dist ./backend/dist
 COPY --from=builder --chown=node:node /repo/backend/prisma ./backend/prisma
 COPY --from=builder --chown=node:node /repo/backend/prisma.config.ts ./backend/prisma.config.ts
