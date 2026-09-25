@@ -19,7 +19,7 @@ flowchart TB
         R9[/blog<br/>conteúdo educativo/]
         R10[/blog/[slug]<br/>artigo/]
         CONTRACTS[contracts/<br/>schemas Zod]
-        BE[Backend NestJS<br/>módulos Agendamento, Catálogo<br/>e Conteúdo Público<br/>Clean Architecture]
+        BE[Backend NestJS<br/>módulos Agendamento, Catálogo,<br/>Conteúdo Público e Pacientes<br/>Clean Architecture]
         DB[(PostgreSQL)]
     end
     subgraph Planejado
@@ -44,7 +44,7 @@ flowchart TB
     F -->|login| K
 ```
 
-- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` —, os contratos de API em `contracts/` (schemas Zod dos contextos já mockados), o **Backend NestJS** com o primeiro módulo real (Agendamento: `POST /slots/:slotId/bookings` e `GET /slots/available`, Clean Architecture com TDD por camada), o segundo módulo real (Catálogo: `GET /procedures` e `GET /procedures/:slug`, leitura só de itens ativos, com `isActive` interno e fora do contrato de saída), o terceiro módulo real (Conteúdo Público: `GET /testimonials`, `GET /posts`, `GET /posts/:slug` e `GET /before-after`, leitura pública com antes/depois somente com consentimento explícito — invariante em três camadas: default `false` no banco, filtro na query e validação de saída contra o contrato público) e o **PostgreSQL** (persistência dos módulos, com índice único parcial anti-overbooking).
+- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` —, os contratos de API em `contracts/` (schemas Zod dos contextos já mockados), o **Backend NestJS** com o primeiro módulo real (Agendamento: `POST /slots/:slotId/bookings` e `GET /slots/available`, Clean Architecture com TDD por camada), o segundo módulo real (Catálogo: `GET /procedures` e `GET /procedures/:slug`, leitura só de itens ativos, com `isActive` interno e fora do contrato de saída), o terceiro módulo real (Conteúdo Público: `GET /testimonials`, `GET /posts`, `GET /posts/:slug` e `GET /before-after`, leitura pública com antes/depois somente com consentimento explícito — invariante em três camadas: default `false` no banco, filtro na query e validação de saída contra o contrato público), o quarto módulo real (Pacientes: `POST /patients`, `GET /patients`, `GET /patients/:id`, `PATCH /patients/:id` e `DELETE /patients/:id` — CRUD administrativo com PII mínima, anonimização via delete e **guard honesto de bloqueio**: todas as rotas respondem 403 `AUTH_NOT_IMPLEMENTED` até a Identidade) e o **PostgreSQL** (persistência dos módulos, com índice único parcial anti-overbooking).
 - **Planejado:** Keycloak + 2FA e os demais módulos do backend; o frontend ainda não consome a API (troca dos mocks — Épico 5).
 - Nenhum outro contêiner existe ou está previsto no MVP (sem microserviços, sem app nativo).
 

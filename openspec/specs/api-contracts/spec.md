@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define os formatos de dados oficiais entre frontend e backend para Catálogo, Agendamento e Conteúdo Público, de modo que mocks, frontend e futuro backend falem a mesma língua validável.
+Define os formatos de dados oficiais entre frontend e backend para Catálogo, Agendamento, Conteúdo Público e Pacientes, de modo que mocks, frontend e futuro backend falem a mesma língua validável.
 
 ## Requirements
 

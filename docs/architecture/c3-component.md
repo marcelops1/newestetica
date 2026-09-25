@@ -239,6 +239,59 @@ flowchart LR
 - **Wiring:** `ContentModule` cria o próprio `PrismaClient` (terceiro pool conscientemente adiado — design decisão 8; provider compartilhado vira change próprio no 4º módulo ou sob pressão observada). Sem `UnitOfWork`: leitura de entidade única não precisa de transação.
 - **Sem Keycloak ainda:** leitura pública por desenho (UC 4.2.7); escrita/CRUD e gestão de consentimento nascem com Identidade e Acesso. O contrato vigente não tem campos de imagem nem PII (fotos binárias são escopo futuro explícito).
 
+## Backend (real — módulo Pacientes)
+
+Quarto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **CRUD administrativo com PII mínima** — o contrato nasceu do zero em `contracts/src/patients/` (contexto sem mock no frontend). Estrutura dos direitos do titular (LGPD) já operante: anonimização via delete e visibilidade na query. **Autorização real diferida com mecanismo honesto:** todas as rotas nascem sob `IdentityPendingGuard` (403 `AUTH_NOT_IMPLEMENTED`), substituído pelo guard Keycloak/RBAC quando a Identidade existir (UC 4.2.1 — próximo passo obrigatório). Sem `UnitOfWork`: escrita de entidade única.
+
+```mermaid
+flowchart LR
+    subgraph Presentation
+        GUARD[IdentityPendingGuard<br/>403 AUTH_NOT_IMPLEMENTED<br/>todas as rotas até a Identidade]
+        CTRL[patients.controller.ts<br/>POST /patients<br/>GET /patients[?limit]<br/>GET /patients/:id<br/>PATCH /patients/:id<br/>DELETE /patients/:id]
+        PIPE[ZodValidationPipe<br/>422 estruturado]
+        FILTER[DomainExceptionFilter<br/>404]
+    end
+    subgraph Application
+        UC1[CreatePatientUseCase]
+        UC2[ListPatientsUseCase<br/>default 100 / teto 500]
+        UC3[GetPatientByIdUseCase]
+        UC4[UpdatePatientUseCase]
+        UC5[AnonymizePatientUseCase]
+    end
+    subgraph Domain
+        E1[Patient<br/>anonymize: placeholders fixos<br/>status active/anonymized]
+        P1[PatientRepository<br/>save / findVisible limit / findVisibleById]
+    end
+    subgraph Infrastructure
+        R1[PrismaPatientRepository<br/>where status active na QUERY<br/>take limit / ordem nome,id]
+        MAP[patient.mapper + Prisma Client<br/>PostgreSQL]
+    end
+    CONTRACTS[contracts/<br/>PatientInput / PatientUpdate / Patient]
+    CTRL --> GUARD
+    CTRL --> PIPE
+    CTRL --> FILTER
+    CTRL --> UC1
+    CTRL --> UC2
+    CTRL --> UC3
+    CTRL --> UC4
+    CTRL --> UC5
+    PIPE -.->|valida entrada| CONTRACTS
+    CTRL -.->|saída = Patient do contrato<br/>timestamps ISO, anonymizedAt fora do wire| CONTRACTS
+    UC1 --> P1
+    UC2 --> P1
+    UC3 --> P1
+    UC4 --> P1
+    UC5 --> P1
+    R1 -.->|implementa| P1
+    R1 --> MAP
+```
+
+- Pastas verificadas: `backend/src/patients/` com `domain/` (entidade `Patient` com `anonymize`, erros locais, porta única), `application/use-cases/` (cinco casos de uso), `infrastructure/persistence/` (repositório Prisma + mapper) e `presentation/` (controller, guard honesto, pipe/filtro locais).
+- **Direitos do titular (estrutura operante):** `DELETE` **anonimiza** — PII vira placeholders fixos, `status`/`anonymizedAt` carimbados; o registro sai de todas as leituras visíveis (filtro na query) e id anonimizado responde 404 idêntico ao inexistente. Prova por write-then-throw no `verification.md` do change.
+- **PII mínima:** contrato sem e-mail, sem campo livre de observações e sem qualquer campo clínico; finalidade registrada por registro (LGPD, 03 §4); nenhum log de payload.
+- **Bloqueio honesto:** `IdentityPendingGuard` nega todas as rotas com 403 `AUTH_NOT_IMPLEMENTED` (mensagem aponta o UC 4.2.1) — não simula autenticação; o guard é a única barreira (provado por `overrideGuard` nos testes de rota). Substituição obrigatória no módulo de Identidade.
+- **Wiring:** `PatientsModule` com cliente próprio (factory do kernel compartilhado; quarto pool adiado como decisão consciente) e guard nos providers; wireado no `AppModule`.
+
 ## Backend (kernel técnico compartilhado)
 
 Plumbing puro compartilhado entre os módulos, em exceção explícita à regra de bounded contexts não compartilharem apresentação (`docs/architecture/02-arquitetura.md` §3; decisão em `04-decisoes-tecnicas.md` §22). **Regra de filiação:** o kernel nunca importa de módulos nem conhece vocabulário de domínio; módulos importam do kernel só o plumbing técnico.
