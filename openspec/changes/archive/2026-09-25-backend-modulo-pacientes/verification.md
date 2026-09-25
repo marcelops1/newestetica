@@ -11,11 +11,12 @@
 | Contrato (group 0) | `PatientInput`/`PatientUpdate`/`Patient`/`PatientStatus` (bordas de nome/telefone/finalidade, strip de campos fora, status) | 1 | 7 |
 | Unit — domínio | `Patient` (create/restore/update valida-antes-de-aplicar/`anonymize` com placeholders) e porta | 2 | 11 |
 | Unit — aplicação | Cinco casos de uso + adversarial (hostil, limite, bypass de anonimizada, `status` neutralizado) | 6 | 20 |
+| Unit — presentation | Acoplamento do schema de `limit` ao teto do núcleo (R2) | 1 | 1 |
 | Integração — persistência | Repositório Prisma contra Postgres real (round-trip, visibilidade na query, ordem, limite, update, anonimização persistida) | 1 | 6 |
 | Integração — HTTP | Rotas com bypass (9), **guard honesto sem bypass (6)**, contrato de saída (4), exclusão de anonimização (3) | 4 | 22 |
-| **Total do módulo** | | **14** | **66** |
+| **Total do módulo** | | **15** | **67** |
 
-Suíte completa no Verify: **81 arquivos / 384 testes verdes** (backend 53/214, contracts 13/61, frontend 15/109).
+Suíte completa no Verify: **82 arquivos / 390 testes verdes** (backend 54/220, contracts 13/61, frontend 15/109).
 
 **REDs reais colados (não apenas "testes verdes"):**
 
@@ -74,7 +75,7 @@ Foco pedido (PII + guard honesto), um a um:
 
 ## 4. Revisão de código (task 6.3 — `code-review-and-quality`)
 
-- **Correção:** 384 testes verdes; contrato nas duas pontas; 404 idêntico; anonimização; guard; teto.
+- **Correção:** 390 testes verdes; contrato nas duas pontas; 404 idêntico; anonimização; guard; teto.
 - **Arquitetura:** domínio sem imports externos; aplicação só domínio (auditado); infraestrutura implementa a porta; presentation fina com guard/filtro/pipe locais; kernel compartilhado reutilizado (pipe/filtro/erro/factory); sem `UnitOfWork` (escrita de entidade única — decisão 3); `PatientsModule` wireado no `AppModule`.
 - **Legibilidade:** nomes consistentes com os módulos anteriores; comentários só de decisão (guard honesto, visibilidade na query, placeholders).
 - **Simplicidade:** allowlist única no controller (`toResponse`); nenhuma abstração nova além do necessário; o scaffold frágil do RED (guard pass-through, mapeamento sem `status`) foi removido no fechamento das tasks.
@@ -88,7 +89,7 @@ Foco pedido (PII + guard honesto), um a um:
 | `pnpm lint` | ✅ limpo (1 warning pré-existente em `frontend/stryker.config.mjs`) |
 | `pnpm format` | ✅ limpo (após `format:write` nos arquivos do módulo) |
 | `pnpm typecheck` | ✅ limpo |
-| `pnpm test` | ✅ 81 arquivos / 384 testes (backend 53/214) |
+| `pnpm test` | ✅ 82 arquivos / 390 testes (backend 54/220) |
 | `pnpm build` | ✅ limpo |
 | `pnpm audit --audit-level high` | ✅ 0 high/critical (3 moderate — baseline do repo) |
 
@@ -107,3 +108,9 @@ Foco pedido (PII + guard honesto), um a um:
 - [x] **(c)** Mutation real medida e registrada (seção 2), com triagem completa (contratos 80%→100%).
 - [x] **(d)** Teste adversarial: payloads hostis reais, limite hostil, sondas de bypass de anonimizada, `status` neutralizado + guard (RED real) + write-then-throw da visibilidade.
 - [x] **(e)** §14 alimentada — padrão 8 (novo), não dispensa.
+
+## 8. Ajustes pós-revisão do PR #42 (R1–R3)
+
+- **R1 — números de teste corrigidos:** a contagem no Verify estava desatualizada (a triagem de mutation adicionou 5 testes depois do registro). Confirmado por comando na árvore final: backend **54 arquivos / 220 testes**, contracts 13/61, frontend 15/109 → **82 arquivos / 390 testes** (tabelas e §4/§5 atualizados; corpo do PR corrigido via API REST).
+- **R2 — constante duplicada eliminada:** o schema da Presentation repetia o literal `500`; agora importa `MAX_PATIENTS_LIMIT` do use case. Refactor puro (sem mudança de comportamento) — exceção docs/07 §4 registrada. **Teste de acoplamento** novo (`patients.controller.spec.ts`, caracterização): aceita o teto exato do núcleo e rejeita um acima. **Prova write-then-throw:** com o schema divergindo de propósito (literal `600` ≠ constante `500`), o teste reprovou (`AssertionError: expected true to be false`); restaurado o acoplamento → verde. O teste passa a detectar qualquer divergência futura entre as duas camadas.
+- **R3 — dívida registrada (sem implementação):** `docs/product/05-estado-atual.md` (Pendências registradas) ganhou a política de retenção/expurgo de PII em backups pré-anonimização e o requisito de que módulos futuros com join em Pacientes respeitem o filtro `findVisible`.

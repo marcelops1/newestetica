@@ -20,7 +20,10 @@ import { z } from "zod";
 import { AnonymizePatientUseCase } from "../../application/use-cases/anonymize-patient.use-case";
 import { CreatePatientUseCase } from "../../application/use-cases/create-patient.use-case";
 import { GetPatientByIdUseCase } from "../../application/use-cases/get-patient-by-id.use-case";
-import { ListPatientsUseCase } from "../../application/use-cases/list-patients.use-case";
+import {
+  ListPatientsUseCase,
+  MAX_PATIENTS_LIMIT,
+} from "../../application/use-cases/list-patients.use-case";
 import { UpdatePatientUseCase } from "../../application/use-cases/update-patient.use-case";
 import type { Patient } from "../../domain/entities/patient.entity";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
@@ -29,8 +32,10 @@ import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 
 const IdSchema = z.string().min(1).max(200);
 
-const ListPatientsQuerySchema = z.object({
-  limit: z.coerce.number().int().min(1).max(500).optional(),
+/* Exportado para o teste de acoplamento: o teto do schema É o teto do núcleo
+   (`MAX_PATIENTS_LIMIT`) — nunca um literal duplicado. */
+export const ListPatientsQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(MAX_PATIENTS_LIMIT).optional(),
 });
 
 type PatientListResponse = PatientResponse[];
