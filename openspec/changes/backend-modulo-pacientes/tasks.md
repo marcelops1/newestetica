@@ -24,8 +24,8 @@
 
 ## 4. Infrastructure — Prisma + Postgres real em container
 
-- [ ] 4.1 Escrever o teste de integração do repositório (round-trip com timestamps; `findVisible` exclui anonimizado mesmo com o registro existindo; `findVisibleById` ignora inexistente/anonimizado; ordenação determinística; `save` cria e atualiza) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente
-- [ ] 4.2 Criar o modelo Prisma + mapper manual (Data Mapper, nunca Active Record; `anonymizedAt` só banco/entidade, fora do contrato; validação pela entidade como fonte única) e implementar o repositório — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado
+- [x] 4.1 Escrever o teste de integração do repositório (round-trip com timestamps; `findVisible` exclui anonimizado mesmo com o registro existindo; `findVisibleById` ignora inexistente/anonimizado; ordenação determinística; `save` cria e atualiza) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente. Execução: RED real (`Cannot find module '.../patient.repository.impl'`); spec cobre round-trip, exclusão de anonimizada, ordem, limite, update e persistência da anonimização (placeholders no banco)
+- [x] 4.2 Criar o modelo Prisma + mapper manual (Data Mapper, nunca Active Record; `anonymizedAt` só banco/entidade, fora do contrato; validação pela entidade como fonte única) e implementar o repositório — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado. Execução: mapper `toPatientDomain`/`toPatientPersistence` + `PrismaPatientRepository`; **visibilidade e teto na QUERY** (`where status active`, `take: limit`, `orderBy fullName/id`); 6/6 verdes contra Postgres real; typecheck 0
 
 ## 5. Presentation — controller com validação Zod e guard honesto de bloqueio
 
