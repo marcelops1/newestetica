@@ -30,7 +30,7 @@ COPY --from=builder --chown=node:node /repo/backend/node_modules ./backend/node_
 COPY --from=builder --chown=node:node /repo/backend/dist ./backend/dist
 COPY --from=builder --chown=node:node /repo/backend/prisma ./backend/prisma
 COPY --from=builder --chown=node:node /repo/backend/prisma.config.ts ./backend/prisma.config.ts
-COPY --from=builder --chown=node:node --chmod=755 /repo/backend/docker-entrypoint.sh ./backend/docker-entrypoint.sh
+COPY --from=builder --chown=node:node /repo/backend/docker-entrypoint.sh ./backend/docker-entrypoint.sh
 WORKDIR /app/backend
 USER node
 EXPOSE 3001
