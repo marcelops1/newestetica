@@ -56,3 +56,13 @@
 - [x] Gates completos verdes com o stack no ar
 - [x] Sem gatilho de segurança direto; auditoria registrada
 - [x] `openspec validate --all` verde; change arquivado com sync
+
+## 7. Ajuste pós-archive — SonarCloud S6504 (`--chown` não-root)
+
+O PR #43 foi reprovado no Sonar com **Security Rating B em New Code** (anotação em `backend/Dockerfile:33`). Investigação sem dashboard (API do projeto bloqueada anonymous; anotação do check via GitHub API + catálogo público de regras): a regra era **docker:S6504 — `COPY` com `--chown` para usuário não-root** (o usuário poderia alterar as permissões/arquivos copiados).
+
+- Tentativa 1: `RUN chmod +x` → `COPY --chmod=755` — **não resolveu** (mesma issue).
+- Tentativa 2: modo executável do git no arquivo, sem chmod algum — **não resolveu**.
+- Correção: **runtime com arquivos root-owned** (sem `--chown`; o processo `node` só lê/executa) — **Quality Gate passed**. Além do gate, é melhoria real de segurança: um processo comprometido não consegue reescrever o próprio código.
+
+Re-verificação após a correção: build ok; entrypoint `-rwxr-xr-x root:root` (executável); fail-fast `exit=1` com banco inalcançável; `make build` + `make up` com **os 3 serviços `(healthy)`** e `GET :3001/health → {"status":"ok"}`; entrypoint checando as 4 migrations no boot; `make down` com 0 containers.
