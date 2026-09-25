@@ -1,7 +1,7 @@
 ## 0. Baseline RED (o backend não sobe em container hoje)
 
-- [ ] 0.1 Constatar que o backend não existe no grafo ativo (`docker compose -f infra/docker/docker-compose.yml config --services` lista só postgres/keycloak), que `docker build -f backend/Dockerfile .` falha (arquivo inexistente) e que `make help` falha (sem Makefile) — RED. Verificação: os três comandos falham/omitem como descrito, com a saída colada
-- [ ] 0.2 Confirmar pré-requisitos na máquina (`make --version`, `docker compose version`) e o padrão de referência (`frontend/Dockerfile`, `.dockerignore` da raiz, `main.ts` lendo `PORT`, `GET /health`) — GREEN de contexto. Verificação: versões impressas + arquivos lidos, sem mudar nada
+- [x] 0.1 Constatar que o backend não existe no grafo ativo (`docker compose -f infra/docker/docker-compose.yml config --services` lista só postgres/keycloak), que `docker build -f backend/Dockerfile .` falha (arquivo inexistente) e que `make help` falha (sem Makefile) — RED. Verificação: os três comandos falham/omitem como descrito, com a saída colada. Execução: `config --services` → `postgres`, `keycloak` (sem backend); build → `ERROR: failed to build: failed to solve: failed to read dockerfile: open Dockerfile: no such file or directory`; `make help` → `make: *** No rule to make target 'help'. Stop.`
+- [x] 0.2 Confirmar pré-requisitos na máquina (`make --version`, `docker compose version`) e o padrão de referência (`frontend/Dockerfile`, `.dockerignore` da raiz, `main.ts` lendo `PORT`, `GET /health`) — GREEN de contexto. Verificação: versões impressas + arquivos lidos, sem mudar nada. Execução: GNU Make 4.4.1; Docker Compose v5.5.1; `frontend/Dockerfile` multi-stage lido; `.dockerignore` exclui `node_modules`/`infra`; `main.ts` lê `PORT` (3001) e `health.controller.ts` expõe `GET /health`
 
 ## 1. backend/Dockerfile multi-stage (test-first)
 
