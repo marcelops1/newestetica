@@ -5,8 +5,8 @@
 
 ## 1. backend/Dockerfile multi-stage (test-first)
 
-- [ ] 1.1 Executar `docker build -f backend/Dockerfile -t newestetica-backend-test .` e constatar que falha (arquivo inexistente) — RED. Verificação: `failed to read dockerfile` (ou equivalente) colado
-- [ ] 1.2 Criar `backend/Dockerfile` (builder: workspace + `prisma generate` + build contracts/backend; runtime Alpine non-root com `dist/`, `prisma/`, `node_modules` com CLI, `docker-entrypoint.sh`) e verificar que o build sai com zero nos dois estágios — GREEN. Verificação: build conclui; `docker run --rm <img> whoami` imprime `node` (não-root); `ls dist/main.js` existe na imagem
+- [x] 1.1 Executar `docker build -f backend/Dockerfile -t newestetica-backend-test .` e constatar que falha (arquivo inexistente) — RED. Verificação: `failed to read dockerfile` (ou equivalente) colado. Execução: `ERROR: failed to build: failed to solve: failed to read dockerfile: open Dockerfile: no such file or directory`
+- [x] 1.2 Criar `backend/Dockerfile` (builder: workspace + `prisma generate` + build contracts/backend; runtime Alpine non-root com `dist/`, `prisma/`, `node_modules` com CLI, `docker-entrypoint.sh`) e verificar que o build sai com zero nos dois estágios — GREEN. Verificação: build conclui; `docker run --rm <img> whoami` imprime `node` (não-root); `ls dist/main.js` existe na imagem. Execução: build 2 estágios concluiu (exit 0, ~17s); `whoami` → `node`; `ls dist/main.js` → presente; imagem 922MB (aceito na decisão 2, poda com trigger para deploy real); entrypoint inicialmente pass-through (RED da 2.1)
 
 ## 2. Entrypoint com migrations (test-first)
 
