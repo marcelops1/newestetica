@@ -269,7 +269,7 @@ Toda nova decisão técnica relevante deve:
 - **Postgres e Keycloak** sobem em containers no ambiente local (base implementada em 2026-09-19, com healthchecks e versões pinadas);
 - **Frontend** tem Dockerfile multi-stage (standalone) — portabilidade de hospedagem para AWS/VPS, **sem substituir** a Vercel, que segue como plataforma de **demo** (decisão 18);
 - **Backend** (NestJS) tem Dockerfile multi-stage (runtime non-root) e está ativo no compose ao lado de Postgres e Keycloak; as migrations rodam no entrypoint (`prisma migrate deploy`) antes de o servidor subir, com healthcheck em `GET /health`;
-- **Ciclo de vida local via `Makefile`** na raiz (`make up/down/logs/build/restart/ps/db-shell`, com `make help` autodescobrindo os comandos) — os scripts `infra:up`/`infra:down` do `package.json` foram removidos e não coexistem com a nova convenção.
+- **Ciclo de vida local via `Makefile`** na raiz (`make up/down/logs/build/restart/ps/db-shell`, com `make help` autodescobrindo os comandos) — os scripts `infra:*` do `package.json` foram removidos e não coexistem com a nova convenção.
 
 **Motivos:**
 
