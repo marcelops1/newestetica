@@ -20,9 +20,9 @@
 
 ## 4. Makefile como única interface (test-first)
 
-- [ ] 4.1 Executar `make help` e constatar que falha (arquivo inexistente) — RED. Verificação: `make: *** No rule to make target 'help'` colado
-- [ ] 4.2 Criar o `Makefile` (`help` padrão + `up`, `down`, `logs`, `build`, `restart`, `ps`, `db-shell`, todos `.PHONY` com descrição `##`) e verificar que `make help` lista cada target com descrição — GREEN. Verificação: saída do `help` colada com os 8 alvos
-- [ ] 4.3 Executar cada target de ponta a ponta (`make up` do zero até saudável; `make ps`; `make logs --help`-style ou saída inicial; `make build`; `make restart`; `make db-shell -c 'select 1'`; `make down` zerando containers) — GREEN. Verificação: cada comando com saída/estado colado
+- [x] 4.1 Executar `make help` e constatar que falha (arquivo inexistente) — RED. Verificação: `make: *** No rule to make target 'help'` colado. Execução: RED real já capturado no baseline (mesmo comando): `make: *** No rule to make target 'help'. Stop.`
+- [x] 4.2 Criar o `Makefile` (`help` padrão + `up`, `down`, `logs`, `build`, `restart`, `ps`, `db-shell`, todos `.PHONY` com descrição `##`) e verificar que `make help` lista cada target com descrição — GREEN. Verificação: saída do `help` colada com os 8 alvos. Execução: `make help` exit 0 listando os 8 alvos com descrição (`.DEFAULT_GOAL := help`, 9 linhas com TAB)
+- [x] 4.3 Executar cada target de ponta a ponta (`make up` do zero até saudável; `make ps`; `make logs --help`-style ou saída inicial; `make build`; `make restart`; `make db-shell -c 'select 1'`; `make down` zerando containers) — GREEN. Verificação: cada comando com saída/estado colado. Execução: **up** exit 0 com `(healthy)` nos 3 + `/health → {"status":"ok"}`; **ps** com a tabela de estado; **logs** streaming (69 linhas, timeout 3s esperado); **build** `Image newestetica-backend Built`; **restart** exit 0 + 3 healthy; **db-shell ARGS="-c 'select 1 as ok'"** → `ok=1`; **down** exit 0 + **0 containers** do projeto (volume de dev preservado)
 
 ## 5. Remoção dos scripts pnpm (test-first)
 
