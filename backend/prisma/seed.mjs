@@ -220,6 +220,23 @@ const patients = [
   },
 ];
 
+/* Atendimentos fictícios (histórico operacional — nunca dado clínico):
+   dois registros simples vinculados às pacientes ilustrativas acima (FK). */
+const attendances = [
+  {
+    id: "00000000-0000-4000-8000-000000000201",
+    patientId: "00000000-0000-4000-8000-000000000101",
+    summary: "Limpeza de pele realizada, sem intercorrências.",
+    performedAt: "2026-08-12T14:30:00.000Z",
+  },
+  {
+    id: "00000000-0000-4000-8000-000000000202",
+    patientId: "00000000-0000-4000-8000-000000000102",
+    summary: "Hidratação facial realizada, pele bem tolerada.",
+    performedAt: "2026-09-02T10:00:00.000Z",
+  },
+];
+
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   throw new Error("DATABASE_URL não configurada para o seed");
@@ -337,6 +354,27 @@ try {
   }
   console.log(
     `Seed de pacientes aplicado: ${patients.length} fictícios (ilustrativos, só ativos).`,
+  );
+
+  for (const attendance of attendances) {
+    await client.query(
+      `INSERT INTO "Attendance" (id, "patientId", summary, "performedAt", "updatedAt")
+       VALUES ($1, $2, $3, $4, now())
+       ON CONFLICT (id) DO UPDATE SET
+         "patientId" = EXCLUDED."patientId",
+         summary = EXCLUDED.summary,
+         "performedAt" = EXCLUDED."performedAt",
+         "updatedAt" = now()`,
+      [
+        attendance.id,
+        attendance.patientId,
+        attendance.summary,
+        attendance.performedAt,
+      ],
+    );
+  }
+  console.log(
+    `Seed de atendimentos aplicado: ${attendances.length} fictícios (histórico operacional, sem dado clínico).`,
   );
 } finally {
   await client.end();

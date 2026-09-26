@@ -20,5 +20,7 @@ export async function resetDatabase(prisma: PrismaClient): Promise<void> {
   await prisma.beforeAfterCase.deleteMany();
   await prisma.post.deleteMany();
   await prisma.testimonial.deleteMany();
+  /* Atendimentos antes de pacientes: a FK exige a ordem. */
+  await prisma.attendance.deleteMany();
   await prisma.patient.deleteMany();
 }

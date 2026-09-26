@@ -8,7 +8,7 @@ import { ListPatientsUseCase } from "./application/use-cases/list-patients.use-c
 import { UpdatePatientUseCase } from "./application/use-cases/update-patient.use-case";
 import { PrismaPatientRepository } from "./infrastructure/persistence/patient.repository.impl";
 import { PatientsController } from "./presentation/controllers/patients.controller";
-import { IdentityPendingGuard } from "./presentation/guards/identity-pending.guard";
+import { IdentityPendingGuard } from "../shared/http/identity-pending.guard";
 
 export const PATIENTS_PRISMA_CLIENT = Symbol("PATIENTS_PRISMA_CLIENT");
 export const PATIENT_REPOSITORY = Symbol("PATIENT_REPOSITORY");
