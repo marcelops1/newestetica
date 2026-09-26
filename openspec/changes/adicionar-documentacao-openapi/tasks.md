@@ -30,6 +30,6 @@
 
 ## 6. Gates, registros e backlog
 
-- [ ] 6.1 Rodar gates completos (lint, format, typecheck, test, build) + `pnpm audit --audit-level high` e registrar em `verification.md`. Verificação: tabela de gates no registro
-- [ ] 6.2 Revisar com `code-review-and-quality` + `security-and-hardening` (foco: superfície nova sem dados reais, 403 honesto, gate por ambiente) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisões registradas
-- [ ] 6.3 Confirmar que nenhum UC muda de status (documentação de API não é UC do backlog) e arquivar (`openspec-archive-change`) com `openspec validate --all` verde. Verificação: change arquivado; validate passa
+- [x] 6.1 Rodar gates completos (lint, format, typecheck, test, build) + `pnpm audit --audit-level high` e registrar em `verification.md`. Verificação: tabela de gates no registro. Execução: lint/format/typecheck 0 (após remover import não usado e formatar), **84 arquivos / 399 testes** (backend 56/229), build 0, audit 0 high/critical (3 moderate baseline), `docker compose config --quiet` 0
+- [x] 6.2 Revisar com `code-review-and-quality` + `security-and-hardening` (foco: superfície nova sem dados reais, 403 honesto, gate por ambiente) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisões registradas. Execução: seções 3 e 4 do verification (abuse cases um a um; nenhum achado exigindo correção; FYIs de peer do nestjs-zod e wire do compose)
+- [x] 6.3 Confirmar que nenhum UC muda de status (documentação de API não é UC do backlog) e arquivar (`openspec-archive-change`) com `openspec validate --all` verde. Verificação: change arquivado; validate passa. Execução: nenhum UC afetado (confirmado); change arquivado com a capability `api-documentation` sincronizada; `openspec validate --all` → verde
