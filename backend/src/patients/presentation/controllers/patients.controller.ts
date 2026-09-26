@@ -12,23 +12,55 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import {
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+  ApiUnprocessableEntityResponse,
+} from "@nestjs/swagger";
+import {
   PatientInputSchema,
+  PatientSchema,
   PatientUpdateSchema,
   type Patient as PatientResponse,
 } from "@newestetica/contracts";
+import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 import { AnonymizePatientUseCase } from "../../application/use-cases/anonymize-patient.use-case";
 import { CreatePatientUseCase } from "../../application/use-cases/create-patient.use-case";
 import { GetPatientByIdUseCase } from "../../application/use-cases/get-patient-by-id.use-case";
 import {
-  ListPatientsUseCase,
   MAX_PATIENTS_LIMIT,
+  ListPatientsUseCase,
 } from "../../application/use-cases/list-patients.use-case";
 import { UpdatePatientUseCase } from "../../application/use-cases/update-patient.use-case";
 import type { Patient } from "../../domain/entities/patient.entity";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
-import { IdentityPendingGuard } from "../guards/identity-pending.guard";
+import {
+  AUTH_NOT_IMPLEMENTED_CODE,
+  AUTH_NOT_IMPLEMENTED_MESSAGE,
+  IdentityPendingGuard,
+} from "../guards/identity-pending.guard";
 import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
+
+class PatientInputDto extends createZodDto(PatientInputSchema) {}
+class PatientUpdateDto extends createZodDto(PatientUpdateSchema) {}
+class PatientResponseDto extends createZodDto(PatientSchema) {}
+
+const FORBIDDEN_DESCRIPTION =
+  "Bloqueado pelo IdentityPendingGuard: autenticação ainda não implementada para este módulo (UC 4.2.1).";
+const FORBIDDEN_SCHEMA = {
+  type: "object",
+  properties: {
+    code: { type: "string", example: AUTH_NOT_IMPLEMENTED_CODE },
+    message: { type: "string", example: AUTH_NOT_IMPLEMENTED_MESSAGE },
+  },
+};
 
 const IdSchema = z.string().min(1).max(200);
 
@@ -55,6 +87,7 @@ function toResponse(patient: Patient): PatientItemResponse {
   };
 }
 
+@ApiTags("Pacientes (bloqueado até a Identidade)")
 @Controller("patients")
 @UseGuards(IdentityPendingGuard)
 @UseFilters(DomainExceptionFilter)
@@ -68,19 +101,41 @@ export class PatientsController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: "Cadastra uma paciente (bloqueado até a Identidade)" })
+  @ApiForbiddenResponse({
+    description: FORBIDDEN_DESCRIPTION,
+    schema: FORBIDDEN_SCHEMA,
+  })
+  @ApiCreatedResponse({
+    description: "Paciente cadastrada.",
+    type: PatientResponseDto,
+  })
+  @ApiUnprocessableEntityResponse({ description: "Dados inválidos." })
   async create(
-    @Body(new ZodValidationPipe(PatientInputSchema))
-    input: {
-      fullName: string;
-      phone: string;
-      purpose: string;
-    },
+    @Body(new ZodValidationPipe(PatientInputSchema)) input: PatientInputDto,
   ): Promise<PatientItemResponse> {
     const patient = await this.createPatient.execute(input);
     return toResponse(patient);
   }
 
   @Get()
+  @ApiOperation({ summary: "Lista as pacientes ativas (bloqueado até a Identidade)" })
+  @ApiQuery({
+    name: "limit",
+    required: false,
+    description: "Limite de itens (padrão 100, máximo 500).",
+    schema: { type: "integer", minimum: 1, maximum: 500 },
+  })
+  @ApiForbiddenResponse({
+    description: FORBIDDEN_DESCRIPTION,
+    schema: FORBIDDEN_SCHEMA,
+  })
+  @ApiOkResponse({
+    description: "Pacientes ativas (anonimizadas nunca aparecem).",
+    type: PatientResponseDto,
+    isArray: true,
+  })
+  @ApiUnprocessableEntityResponse({ description: "Limite inválido." })
   async list(
     @Query(new ZodValidationPipe(ListPatientsQuerySchema))
     query: {
@@ -92,6 +147,17 @@ export class PatientsController {
   }
 
   @Get(":id")
+  @ApiOperation({ summary: "Consulta uma paciente pelo id (bloqueado até a Identidade)" })
+  @ApiParam({ name: "id", description: "Identificador da paciente." })
+  @ApiForbiddenResponse({
+    description: FORBIDDEN_DESCRIPTION,
+    schema: FORBIDDEN_SCHEMA,
+  })
+  @ApiOkResponse({ description: "Paciente ativa.", type: PatientResponseDto })
+  @ApiNotFoundResponse({
+    description: "Não encontrada (inexistente ou anonimizada, sem distinção).",
+  })
+  @ApiUnprocessableEntityResponse({ description: "Id inválido." })
   async byId(
     @Param("id", new ZodValidationPipe(IdSchema)) id: string,
   ): Promise<PatientItemResponse> {
@@ -100,10 +166,24 @@ export class PatientsController {
   }
 
   @Patch(":id")
+  @ApiOperation({ summary: "Atualiza uma paciente (bloqueado até a Identidade)" })
+  @ApiParam({ name: "id", description: "Identificador da paciente." })
+  @ApiForbiddenResponse({
+    description: FORBIDDEN_DESCRIPTION,
+    schema: FORBIDDEN_SCHEMA,
+  })
+  @ApiOkResponse({
+    description: "Paciente atualizada.",
+    type: PatientResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: "Não encontrada (inexistente ou anonimizada, sem distinção).",
+  })
+  @ApiUnprocessableEntityResponse({ description: "Dados inválidos." })
   async update(
     @Param("id", new ZodValidationPipe(IdSchema)) id: string,
     @Body(new ZodValidationPipe(PatientUpdateSchema))
-    changes: { fullName?: string; phone?: string; purpose?: string },
+    changes: PatientUpdateDto,
   ): Promise<PatientItemResponse> {
     const patient = await this.updatePatient.execute(id, changes);
     return toResponse(patient);
@@ -111,6 +191,21 @@ export class PatientsController {
 
   @Delete(":id")
   @HttpCode(204)
+  @ApiOperation({
+    summary: "Anonimiza uma paciente (bloqueado até a Identidade)",
+  })
+  @ApiParam({ name: "id", description: "Identificador da paciente." })
+  @ApiForbiddenResponse({
+    description: FORBIDDEN_DESCRIPTION,
+    schema: FORBIDDEN_SCHEMA,
+  })
+  @ApiNoContentResponse({
+    description: "PII substituída por placeholders; sem corpo.",
+  })
+  @ApiNotFoundResponse({
+    description: "Não encontrada (inexistente ou anonimizada, sem distinção).",
+  })
+  @ApiUnprocessableEntityResponse({ description: "Id inválido." })
   async anonymize(
     @Param("id", new ZodValidationPipe(IdSchema)) id: string,
   ): Promise<void> {

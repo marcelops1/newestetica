@@ -1,12 +1,12 @@
 ## 0. Baseline RED (sem documentação hoje)
 
-- [ ] 0.1 Constatar que `GET /docs` e `GET /docs-json` respondem 404 com o backend no ar — RED. Verificação: ambos os status colados
-- [ ] 0.2 Confirmar o inventário de rotas (14 no total: 2 scheduling + 2 catalog + 4 content + 5 patients + health) e a ausência de qualquer decorator Swagger nos controllers — GREEN de contexto. Verificação: lista de rotas + `grep` por `ApiOperation|ApiTags` vazio, sem mudar nada
+- [x] 0.1 Constatar que `GET /docs` e `GET /docs-json` respondem 404 com o backend no ar — RED. Verificação: ambos os status colados. Execução: com o stack do compose no ar: `GET /docs → 404` e `GET /docs-json → 404`
+- [x] 0.2 Confirmar o inventário de rotas (14 no total: 2 scheduling + 2 catalog + 4 content + 5 patients + health) e a ausência de qualquer decorator Swagger nos controllers — GREEN de contexto. Verificação: lista de rotas + `grep` por `ApiOperation|ApiTags` vazio, sem mudar nada. Execução: 14 rotas confirmadas por grep (health 1, scheduling 2, catalog 2, content 4, patients 5); `rg "ApiTags|ApiOperation|ApiResponse"` → zero
 
 ## 1. Dependências, ponte Zod e setup (test-first)
 
-- [ ] 1.1 Avaliar e fixar a biblioteca da ponte (`@nestjs/swagger` + candidata `nestjs-zod` v5): instalar e verificar peers limpos com o Nest 12 + gerar schema de um DTO fumegante a partir de contrato real — RED se a instalação quebrar ou o schema sair vazio. Verificação: install sem erro de peer + schema fumegante contém os campos do contrato (se quebrar, aplicar o fallback manual antes de prosseguir, sem mudar specs)
-- [ ] 1.2 Configurar `main.ts` (`DocumentBuilder` + `/docs` e `/docs-json`) e verificar UI 200 + JSON 200 com OpenAPI 3.x parseável — GREEN. Verificação: ambos os status e o `openapi` version colados
+- [x] 1.1 Avaliar e fixar a biblioteca da ponte (`@nestjs/swagger` + candidata `nestjs-zod` v5): instalar e verificar peers limpos com o Nest 12 + gerar schema de um DTO fumegante a partir de contrato real — RED se a instalação quebrar ou o schema sair vazio. Verificação: install sem erro de peer + schema fumegante contém os campos do contrato (se quebrar, aplicar o fallback manual antes de prosseguir, sem mudar specs). Execução: `@nestjs/swagger@12.0.2` (peer `@nestjs/core ^12.0.0` OK) + `nestjs-zod@5.5.0` instalados sem erro; peers declarados do nestjs-zod ainda não listam Nest 12/Swagger 12 (nota registrada no verification, trigger de rechecagem); smoke com `createZodDto(PatientInputSchema)` construiu o DTO sem erro — prova definitiva da ponte no documento gerado (2.x)
+- [x] 1.2 Configurar `main.ts` (`DocumentBuilder` + `/docs` e `/docs-json`) e verificar UI 200 + JSON 200 com OpenAPI 3.x parseável — GREEN. Verificação: ambos os status e o `openapi` version colados. Execução: RED antes do setup (`expected 404 to be 200` nos dois); setup extraído para `backend/src/swagger.ts` (`setupSwagger` chamado pelo `main.ts` e pelos testes) + wire no `main.ts`; **2/2 verdes** (UI 200 com HTML Swagger; JSON 200 com `openapi 3.x` e título); typecheck 0
 
 ## 2. Decorators por módulo (test-first)
 
