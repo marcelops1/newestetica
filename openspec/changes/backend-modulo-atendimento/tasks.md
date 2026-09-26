@@ -10,10 +10,10 @@
 
 ## 2. Domain — Attendance imutável + porta PatientDirectory (unitários puros)
 
-- [ ] 2.1 Escrever o teste da entidade (`create` com campos válidos e id gerado fora dela; resumo vazio/gigante e data fora do ISO rejeitados; sem método de update/delete na API da entidade; `restore` preserva e valida) e verificar que falha porque a entidade não existe — RED. Verificação: `Cannot find module`
-- [ ] 2.2 Criar `domain/entities/attendance.entity.ts` + erros locais (`InvalidAttendance`/`AttendanceNotFound` genérico, sem eco) e verificar que o teste passa — GREEN. Verificação: teste da task 2.1 passa
-- [ ] 2.3 Escrever o teste das portas (`AttendanceRepository.save`, `findVisibleByPatient`/`findVisibleById` excluindo histórico de anonimizada, `PatientDirectory.findVisiblePatient` retornando nulo para anonimizada — compilando contra fakes manuais) e verificar que falha — RED. Verificação: falha de compilação/tipo (precedente dos módulos anteriores)
-- [ ] 2.4 Criar `domain/ports/*.ts` (só interfaces + tipos, zero implementação; sem `UnitOfWork` — só escrita de entidade única, design decisão 4; sem importar o domínio de Pacientes) e verificar verde + auditoria de imports (`domain/` sem imports externos, inclusive sem `patients/`) — GREEN. Verificação: typecheck limpo e `grep` de imports externos e cruzados vazio
+- [x] 2.1 Escrever o teste da entidade (`create` com campos válidos e id gerado fora dela; resumo vazio/gigante e data fora do ISO rejeitados; sem método de update/delete na API da entidade; `restore` preserva e valida) e verificar que falha porque a entidade não existe — RED. Verificação: `Cannot find module`
+- [x] 2.2 Criar `domain/entities/attendance.entity.ts` + erros locais (`InvalidAttendance`/`AttendanceNotFound` genérico, sem eco) e verificar que o teste passa — GREEN. Verificação: teste da task 2.1 passa
+- [x] 2.3 Escrever o teste das portas (`AttendanceRepository.save`, `findVisibleByPatient`/`findVisibleById` excluindo histórico de anonimizada, `PatientDirectory.findVisiblePatient` retornando nulo para anonimizada — compilando contra fakes manuais) e verificar que falha — RED. Verificação: falha de compilação/tipo (precedente dos módulos anteriores)
+- [x] 2.4 Criar `domain/ports/*.ts` (só interfaces + tipos, zero implementação; sem `UnitOfWork` — só escrita de entidade única, design decisão 4; sem importar o domínio de Pacientes) e verificar verde + auditoria de imports (`domain/` sem imports externos, inclusive sem `patients/`) — GREEN. Verificação: typecheck limpo e `grep` de imports externos e cruzados vazio
 
 ## 3. Application — casos de uso contra portas com fake em memória
 
