@@ -66,7 +66,8 @@ type AttendanceListResponse = AttendanceResponse[];
 type AttendanceItemResponse = AttendanceResponse;
 
 /* Allowlist explícita do contrato: a entidade nunca cruza o wire; timestamps viram
-   ISO string e nenhum campo interno (anonymizedAt do paciente, por exemplo) entra. */
+   ISO string e nenhum campo interno (nome de paciente, por exemplo) entra. O tipo de
+   retorno é o do próprio contrato — divergência reprova no typecheck e no teste. */
 function toResponse(attendance: Attendance): AttendanceItemResponse {
   return {
     id: attendance.id,
@@ -74,7 +75,8 @@ function toResponse(attendance: Attendance): AttendanceItemResponse {
     summary: attendance.summary,
     performedAt: attendance.performedAt.toISOString(),
     createdAt: attendance.createdAt.toISOString(),
-  } as AttendanceItemResponse;
+    updatedAt: attendance.updatedAt.toISOString(),
+  };
 }
 
 @ApiTags("Atendimento (bloqueado até a Identidade)")
