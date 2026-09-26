@@ -178,9 +178,10 @@ describe("bloqueio de Pacientes explícito na documentação", () => {
         forbidden?.content?.["application/json"]?.schema?.properties?.code
           ?.example;
       expect(code, `${label} 403 sem o código`).toBe("AUTH_NOT_IMPLEMENTED");
-      expect(operation?.summary ?? "", `${label} sugere acesso livre`).toContain(
-        "bloqueado",
-      );
+      expect(
+        operation?.summary ?? "",
+        `${label} sugere acesso livre`,
+      ).toContain("bloqueado");
     }
   });
 });

@@ -9,11 +9,7 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
-import {
-  BookingInputSchema,
-  SlotSchema,
-  type BookingInput,
-} from "@newestetica/contracts";
+import { BookingInputSchema, SlotSchema } from "@newestetica/contracts";
 import { createZodDto } from "nestjs-zod";
 import { CreateBookingUseCase } from "../../application/use-cases/create-booking.use-case";
 import { ListAvailabilityUseCase } from "../../application/use-cases/list-availability.use-case";

@@ -101,7 +101,9 @@ export class PatientsController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: "Cadastra uma paciente (bloqueado até a Identidade)" })
+  @ApiOperation({
+    summary: "Cadastra uma paciente (bloqueado até a Identidade)",
+  })
   @ApiForbiddenResponse({
     description: FORBIDDEN_DESCRIPTION,
     schema: FORBIDDEN_SCHEMA,
@@ -119,7 +121,9 @@ export class PatientsController {
   }
 
   @Get()
-  @ApiOperation({ summary: "Lista as pacientes ativas (bloqueado até a Identidade)" })
+  @ApiOperation({
+    summary: "Lista as pacientes ativas (bloqueado até a Identidade)",
+  })
   @ApiQuery({
     name: "limit",
     required: false,
@@ -147,7 +151,9 @@ export class PatientsController {
   }
 
   @Get(":id")
-  @ApiOperation({ summary: "Consulta uma paciente pelo id (bloqueado até a Identidade)" })
+  @ApiOperation({
+    summary: "Consulta uma paciente pelo id (bloqueado até a Identidade)",
+  })
   @ApiParam({ name: "id", description: "Identificador da paciente." })
   @ApiForbiddenResponse({
     description: FORBIDDEN_DESCRIPTION,
@@ -166,7 +172,9 @@ export class PatientsController {
   }
 
   @Patch(":id")
-  @ApiOperation({ summary: "Atualiza uma paciente (bloqueado até a Identidade)" })
+  @ApiOperation({
+    summary: "Atualiza uma paciente (bloqueado até a Identidade)",
+  })
   @ApiParam({ name: "id", description: "Identificador da paciente." })
   @ApiForbiddenResponse({
     description: FORBIDDEN_DESCRIPTION,
