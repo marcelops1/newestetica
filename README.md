@@ -36,6 +36,15 @@ pnpm test       # vitest com cobertura (threshold 80%)
 pnpm build      # build de produção (Next.js)
 ```
 
+### Backend e documentação da API (Swagger)
+
+O backend sobe com o stack local (`make up` — ver `Makefile`) e expõe a documentação da API:
+
+- UI: <http://127.0.0.1:3001/docs>
+- Schema OpenAPI: <http://127.0.0.1:3001/docs-json>
+
+A documentação reflete **somente os módulos implementados até agora** (Agendamento, Catálogo, Conteúdo Público e Pacientes) e é gerada a partir dos contratos de `contracts/` — sem duplicar campos. As rotas de Pacientes aparecem marcadas como bloqueadas (`403 AUTH_NOT_IMPLEMENTED` do guard até o módulo de Identidade). Em produção, `/docs` e `/docs-json` ficam desabilitadas por padrão (só com `SWAGGER_ENABLED=true`).
+
 ## Documentação oficial
 
 Antes de qualquer trabalho, leia nesta ordem (ver `AGENTS.md`):

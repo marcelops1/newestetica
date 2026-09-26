@@ -25,8 +25,8 @@
 
 ## 5. Docs de processo (exceção §4)
 
-- [ ] 5.1 Adicionar o bloco de acesso ao Swagger na seção "Como rodar" do `README.md` (URLs, nota de módulos implementados, nota do 403 em Pacientes) — exceção docs/07 §4 (só docs). Verificação: releitura do bloco
-- [ ] 5.2 Adicionar a §17 em `docs/engineering/07-workflow-de-engenharia.md` (decorators na mesma task do endpoint) e o checkbox no `.github/pull_request_template.md` ao lado do de C2/C3 — exceção docs/07 §4 (só docs). Verificação: releitura dos dois pontos
+- [x] 5.1 Adicionar o bloco de acesso ao Swagger na seção "Como rodar" do `README.md` (URLs, nota de módulos implementados, nota do 403 em Pacientes) — exceção docs/07 §4 (só docs). Verificação: releitura do bloco. Execução: subseção "Backend e documentação da API (Swagger)" com `/docs`, `/docs-json`, nota de módulos implementados, 403 de Pacientes e gate de produção
+- [x] 5.2 Adicionar a §17 em `docs/engineering/07-workflow-de-engenharia.md` (decorators na mesma task do endpoint) e o checkbox no `.github/pull_request_template.md` ao lado do de C2/C3 — exceção docs/07 §4 (só docs). Verificação: releitura dos dois pontos. Execução: §17 criada (regra de manutenção + ponte como fonte + verificação automatizada); checkbox novo adicionado ao lado do de C2/C3
 
 ## 6. Gates, registros e backlog
 
