@@ -10,8 +10,8 @@
 
 ## 2. Decorators por módulo (test-first)
 
-- [ ] 2.1 Escrever o teste de cobertura total (as 14 rotas aparecem no schema, cada uma com operação/parâmetros/corpo/respostas; nenhuma rota fantasma) e verificar que falha antes dos decorators — RED. Verificação: rotas ausentes listadas na falha
-- [ ] 2.2 Decorar os 4 controllers (`ApiTags`, `ApiOperation`, `ApiResponse` por status real provado, `ApiParam`/`ApiQuery`) com as rotas de Pacientes documentando o 403 `AUTH_NOT_IMPLEMENTED` (código + descrição com guard e UC 4.2.1) — GREEN. Verificação: teste da task 2.1 passa; nenhuma rota sugere acesso livre em Pacientes
+- [x] 2.1 Escrever o teste de cobertura total (as 14 rotas aparecem no schema, cada uma com operação/parâmetros/corpo/respostas; nenhuma rota fantasma) e verificar que falha antes dos decorators — RED. Verificação: rotas ausentes listadas na falha. Execução: as 14 rotas já apareciam sem decoração; o RED real foi `AssertionError: get /health sem resumo` (+ respostas/tags/parâmetros/requestBody ausentes); teste também cobre rota fantasma
+- [x] 2.2 Decorar os 4 controllers (`ApiTags`, `ApiOperation`, `ApiResponse` por status real provado, `ApiParam`/`ApiQuery`) com as rotas de Pacientes documentando o 403 `AUTH_NOT_IMPLEMENTED` (código + descrição com guard e UC 4.2.1) — GREEN. Verificação: teste da task 2.1 passa; nenhuma rota sugere acesso livre em Pacientes. Execução: 5 controllers decorados (tags por módulo, resumo, respostas reais, params/query corretos, requestBody via DTO do contrato); Pacientes com `@ApiForbiddenResponse` usando as constantes REAIS do guard (código `AUTH_NOT_IMPLEMENTED` + mensagem) e resumo "(bloqueado até a Identidade)"; teste dedicado do 403 honesto (descrição com guard + UC 4.2.1, código exato, resumo com "bloqueado"); **5/5 verdes**
 
 ## 3. Fidelidade ao contrato, sem duplicação (test-first)
 
