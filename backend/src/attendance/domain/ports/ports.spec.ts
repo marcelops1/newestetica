@@ -84,22 +84,13 @@ describe("portas do Domain (atendimento)", () => {
     ]);
 
     await expect(
-      repository.findVisibleById(
-        "00000000-0000-4000-8000-000000000201",
-        ALFA,
-      ),
+      repository.findVisibleById("00000000-0000-4000-8000-000000000201", ALFA),
     ).resolves.toMatchObject({ id: "00000000-0000-4000-8000-000000000201" });
     await expect(
-      repository.findVisibleById(
-        "00000000-0000-4000-8000-000000000201",
-        BRAVO,
-      ),
+      repository.findVisibleById("00000000-0000-4000-8000-000000000201", BRAVO),
     ).resolves.toBeNull();
     await expect(
-      repository.findVisibleById(
-        "00000000-0000-4000-8000-000000000299",
-        ALFA,
-      ),
+      repository.findVisibleById("00000000-0000-4000-8000-000000000299", ALFA),
     ).resolves.toBeNull();
   });
 
@@ -119,10 +110,7 @@ describe("portas do Domain (atendimento)", () => {
       [],
     );
     await expect(
-      repository.findVisibleById(
-        "00000000-0000-4000-8000-000000000201",
-        ALFA,
-      ),
+      repository.findVisibleById("00000000-0000-4000-8000-000000000201", ALFA),
     ).resolves.toBeNull();
   });
 

@@ -12,14 +12,13 @@ const ALFA = "00000000-0000-4000-8000-000000000101";
 const BRAVO = "00000000-0000-4000-8000-000000000102";
 const ANONYMIZED = "00000000-0000-4000-8000-000000000104";
 
-async function seedPatient(
-  id: string,
-  active = true,
-): Promise<void> {
+async function seedPatient(id: string, active = true): Promise<void> {
   await prisma.patient.create({
     data: {
       id,
-      fullName: active ? "Paciente Fictícia Ilustrativa" : "Paciente anonimizada",
+      fullName: active
+        ? "Paciente Fictícia Ilustrativa"
+        : "Paciente anonimizada",
       phone: "(11) 5555-0001",
       purpose: "Cadastro fictício para teste",
       status: active ? "active" : "anonymized",
@@ -117,6 +116,11 @@ describe("PrismaAttendanceRepository (integração com Postgres real)", () => {
     expect(visible.map((attendance) => attendance.id)).toEqual([
       "00000000-0000-4000-8000-000000000201",
     ]);
+
+    /* A própria anonimizada, consultada pelo seu id, também não recebe histórico. */
+    await expect(
+      repository.findVisibleByPatient(ANONYMIZED, 100),
+    ).resolves.toEqual([]);
   });
 
   it("findVisibleByPatient ordena por data desc/id asc e respeita o limite na query", async () => {
@@ -182,10 +186,7 @@ describe("PrismaAttendanceRepository (integração com Postgres real)", () => {
       ),
     ).resolves.toBeNull();
     await expect(
-      repository.findVisibleById(
-        "00000000-0000-4000-8000-000000000299",
-        ALFA,
-      ),
+      repository.findVisibleById("00000000-0000-4000-8000-000000000299", ALFA),
     ).resolves.toBeNull();
   });
 

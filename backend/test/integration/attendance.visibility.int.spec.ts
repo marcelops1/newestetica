@@ -33,7 +33,9 @@ async function seedPatient(id: string, active: boolean): Promise<void> {
   await prisma.patient.create({
     data: {
       id,
-      fullName: active ? "Paciente Fictícia Ilustrativa" : "Paciente anonimizada",
+      fullName: active
+        ? "Paciente Fictícia Ilustrativa"
+        : "Paciente anonimizada",
       phone: "(11) 5555-0001",
       purpose: "Cadastro fictício para teste",
       status: active ? "active" : "anonymized",

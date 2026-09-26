@@ -18,7 +18,10 @@ function makeUseCase(): {
 } {
   const attendances = new InMemoryAttendanceRepository();
   const patients = new InMemoryPatientDirectory([{ id: PATIENT_ID }]);
-  return { useCase: new CreateAttendanceUseCase(attendances, patients), attendances };
+  return {
+    useCase: new CreateAttendanceUseCase(attendances, patients),
+    attendances,
+  };
 }
 
 describe("CreateAttendanceUseCase", () => {
@@ -73,6 +76,66 @@ describe("CreateAttendanceUseCase", () => {
     ).rejects.toThrow(InvalidAttendance);
     await expect(
       useCase.execute({ ...validInput, performedAt: "10/09/2026" }),
+    ).rejects.toThrow(InvalidAttendance);
+    await expect(
+      attendances.findVisibleByPatient(PATIENT_ID, 100),
+    ).resolves.toEqual([]);
+  });
+
+  it("aceita as duas formas ISO do contrato (UTC com Z e offset explícito, com ou sem fração)", async () => {
+    const { useCase } = makeUseCase();
+
+    for (const performedAt of [
+      "2026-09-10T14:30:00Z",
+      "2026-09-10T14:30:00.000Z",
+      "2026-09-10T11:30:00-03:00",
+      "2026-09-10T11:30:00.123-03:00",
+    ]) {
+      await expect(
+        useCase.execute({ ...validInput, performedAt }),
+        `forma ISO: ${performedAt}`,
+      ).resolves.toBeDefined();
+    }
+  });
+
+  it("rejeita data com lixo antes/depois do ISO e objeto com toString de data (âncoras e tipo)", async () => {
+    const { useCase, attendances } = makeUseCase();
+
+    await expect(
+      useCase.execute({
+        ...validInput,
+        performedAt: `x${validInput.performedAt}`,
+      }),
+    ).rejects.toThrow(InvalidAttendance);
+    await expect(
+      useCase.execute({
+        ...validInput,
+        performedAt: `${validInput.performedAt}x`,
+      }),
+    ).rejects.toThrow(InvalidAttendance);
+    /* Espaço nas pontas: `new Date` tolera (faz trim), mas o núcleo não — o formato é
+       ancorado (o espaço só passaria com as âncoras mutadas). */
+    await expect(
+      useCase.execute({
+        ...validInput,
+        performedAt: ` ${validInput.performedAt}`,
+      }),
+    ).rejects.toThrow(InvalidAttendance);
+    await expect(
+      useCase.execute({
+        ...validInput,
+        performedAt: `${validInput.performedAt} `,
+      }),
+    ).rejects.toThrow(InvalidAttendance);
+    /* Objeto com toString válido: o núcleo não aceita — só string de verdade entra
+       (o regex testaria a conversão implícita; o typeof corta antes). */
+    await expect(
+      useCase.execute({
+        ...validInput,
+        performedAt: {
+          toString: () => validInput.performedAt,
+        } as never,
+      }),
     ).rejects.toThrow(InvalidAttendance);
     await expect(
       attendances.findVisibleByPatient(PATIENT_ID, 100),

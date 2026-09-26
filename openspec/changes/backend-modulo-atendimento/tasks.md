@@ -39,8 +39,8 @@
 
 ## 6. Mutation, segurança, registros e backlog
 
-- [ ] 6.1 Rodar Stryker contra o módulo (`pnpm --filter backend mutation`, banco de teste no ar; estender o escopo `mutate` para `src/attendance/**`) e contra `contracts/src/attendance/`, e registrar score real + triagem de sobreviventes em `verification.md` — GREEN. Verificação: relatório completo no registro (meta docs/07 §13)
-- [ ] 6.2 Revisar segurança com `security-and-hardening` contra `docs/security/03-seguranca.md` (gatilhos: entrada de usuário, **PII herdada via join**, ausência de auth com guard honesto, enumeração cruzada, DoS de listagem) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada, com os abuse cases do threat model um a um
-- [ ] 6.3 Revisar com `code-review-and-quality` e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada
-- [ ] 6.4 Atualizar `docs/product/08-backlog-produto.md` (UC 4.2.5 → Em andamento) e avaliar `c2/c3-component.md` — exceção docs/07 §4 (verificação por releitura). Verificação: releitura confirma os status
-- [ ] 6.5 Avaliar a complexidade da sessão (emendas? padrões reutilizáveis?) e alimentar a seção 14 de docs/07 ou registrar a dispensa com motivo — exceção docs/07 §4. Verificação: seção 14 atualizada ou dispensa justificada em `verification.md`
+- [x] 6.1 Rodar Stryker contra o módulo (`pnpm --filter backend mutation`, banco de teste no ar; estender o escopo `mutate` para `src/attendance/**`) e contra `contracts/src/attendance/`, e registrar score real + triagem de sobreviventes em `verification.md` — GREEN. Verificação: relatório completo no registro (meta docs/07 §13)
+- [x] 6.2 Revisar segurança com `security-and-hardening` contra `docs/security/03-seguranca.md` (gatilhos: entrada de usuário, **PII herdada via join**, ausência de auth com guard honesto, enumeração cruzada, DoS de listagem) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada, com os abuse cases do threat model um a um
+- [x] 6.3 Revisar com `code-review-and-quality` e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada
+- [x] 6.4 Atualizar `docs/product/08-backlog-produto.md` (UC 4.2.5 → Em andamento) e avaliar `c2/c3-component.md` — exceção docs/07 §4 (verificação por releitura). Verificação: releitura confirma os status
+- [x] 6.5 Avaliar a complexidade da sessão (emendas? padrões reutilizáveis?) e alimentar a seção 14 de docs/07 ou registrar a dispensa com motivo — exceção docs/07 §4. Verificação: seção 14 atualizada ou dispensa justificada em `verification.md`

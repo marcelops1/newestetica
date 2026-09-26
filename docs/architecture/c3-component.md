@@ -289,8 +289,62 @@ flowchart LR
 - Pastas verificadas: `backend/src/patients/` com `domain/` (entidade `Patient` com `anonymize`, erros locais, porta única), `application/use-cases/` (cinco casos de uso), `infrastructure/persistence/` (repositório Prisma + mapper) e `presentation/` (controller, guard honesto, pipe/filtro locais).
 - **Direitos do titular (estrutura operante):** `DELETE` **anonimiza** — PII vira placeholders fixos, `status`/`anonymizedAt` carimbados; o registro sai de todas as leituras visíveis (filtro na query) e id anonimizado responde 404 idêntico ao inexistente. Prova por write-then-throw no `verification.md` do change.
 - **PII mínima:** contrato sem e-mail, sem campo livre de observações e sem qualquer campo clínico; finalidade registrada por registro (LGPD, 03 §4); nenhum log de payload.
-- **Bloqueio honesto:** `IdentityPendingGuard` nega todas as rotas com 403 `AUTH_NOT_IMPLEMENTED` (mensagem aponta o UC 4.2.1) — não simula autenticação; o guard é a única barreira (provado por `overrideGuard` nos testes de rota). Substituição obrigatória no módulo de Identidade.
+- **Bloqueio honesto:** `IdentityPendingGuard` nega todas as rotas com 403 `AUTH_NOT_IMPLEMENTED` (mensagem aponta o UC 4.2.1) — não simula autenticação; o guard é a única barreira (provado por `overrideGuard` nos testes de rota). Substituição obrigatória no módulo de Identidade. **Movido para o kernel** no change `backend-modulo-atendimento` (uma definição para os dois módulos administrativos).
 - **Wiring:** `PatientsModule` com cliente próprio (factory do kernel compartilhado; quarto pool adiado como decisão consciente) e guard nos providers; wireado no `AppModule`.
+
+## Backend (real — módulo Atendimento/Histórico)
+
+Quinto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **registro e leitura do histórico simples por paciente** (UC 4.2.5) — histórico **imutável** (sem update/delete; correção por novo registro) e **sem prontuário**: `summary` é texto operacional opaco, com teto de 500, sem campo clínico dedicado. Contrato novo em `contracts/src/attendance/` (contexto sem mock no frontend). **Visibilidade herdada do paciente:** primeiro join com Pacientes, respeitando a dívida R3 — porta `PatientDirectory` (leitura cruzada explícita, sem importar o domínio de Pacientes) + filtro de relação na query; histórico de anonimizada nunca é servido (prova write-then-throw em duas camadas no `verification.md`). **Autorização real diferida:** rotas sob o `IdentityPendingGuard` agora compartilhado no kernel (403 `AUTH_NOT_IMPLEMENTED` até a Identidade). Sem `UnitOfWork`: escrita de entidade única.
+
+```mermaid
+flowchart LR
+    subgraph Presentation
+        GUARD[IdentityPendingGuard<br/>kernel compartilhado<br/>403 AUTH_NOT_IMPLEMENTED]
+        CTRL[attendances.controller.ts<br/>POST /patients/:patientId/attendances<br/>GET /patients/:patientId/attendances[?limit]<br/>GET /patients/:patientId/attendances/:id]
+        PIPE[ZodValidationPipe<br/>422 estruturado]
+        FILTER[DomainExceptionFilter<br/>404 paciente/atendimento]
+    end
+    subgraph Application
+        UC1[CreateAttendanceUseCase<br/>paciente visível obrigatória]
+        UC2[ListAttendancesUseCase<br/>default 100 / teto 500]
+        UC3[GetAttendanceByIdUseCase<br/>pertencimento no detalhe]
+    end
+    subgraph Domain
+        E1[Attendance<br/>imutável / summary máx 500<br/>sem update e sem delete]
+        P1[AttendanceRepository<br/>save / findVisibleByPatient / findVisibleById]
+        P2[PatientDirectory<br/>findVisiblePatient → só o vínculo]
+    end
+    subgraph Infrastructure
+        R1[PrismaAttendanceRepository<br/>patient.status active na QUERY<br/>ordem data desc, id asc / take limit]
+        R2[PrismaPatientDirectory<br/>where id + status active / select id]
+        MAP[mappers + Prisma Client<br/>PostgreSQL / FK para Patient]
+    end
+    CONTRACTS[contracts/<br/>AttendanceInput / Attendance]
+    CTRL --> GUARD
+    CTRL --> PIPE
+    CTRL --> FILTER
+    CTRL --> UC1
+    CTRL --> UC2
+    CTRL --> UC3
+    PIPE -.->|valida entrada| CONTRACTS
+    CTRL -.->|saída = Attendance do contrato<br/>timestamps ISO, sem nome de paciente| CONTRACTS
+    UC1 --> P1
+    UC1 --> P2
+    UC2 --> P1
+    UC2 --> P2
+    UC3 --> P1
+    UC3 --> P2
+    R1 -.->|implementa| P1
+    R2 -.->|implementa| P2
+    R1 --> MAP
+    R2 --> MAP
+```
+
+- Pastas verificadas: `backend/src/attendance/` com `domain/` (entidade `Attendance` imutável, erros locais, portas `AttendanceRepository` e `PatientDirectory`), `application/use-cases/` (três casos de uso), `infrastructure/persistence/` (repositório Prisma + adapter da porta de Pacientes + mapper) e `presentation/` (controller, pipe/filtro locais).
+- **Imutabilidade:** a entidade não expõe update/delete; a API não expõe PATCH/PUT/DELETE (rota não encontrada) — provado em teste; a exclusão de dados pessoais acontece na paciente (anonimização).
+- **PII mínima:** nenhum snapshot de nome no histórico (só FK); a porta de Pacientes seleciona apenas o vínculo; nenhum log de payload. `summary` é dado opaco — nunca interpretado (injeção/unicode preservados literalmente, testado).
+- **Bloqueio honesto:** `IdentityPendingGuard` (agora no kernel `backend/src/shared/http/`) nega todas as rotas com 403 `AUTH_NOT_IMPLEMENTED`; o contraste com os testes de rota com bypass prova que o guard é a única barreira. Substituição obrigatória no módulo de Identidade.
+- **Wiring:** `AttendanceModule` com cliente próprio (factory do kernel compartilhado; quinto pool adiado como decisão consciente) e guard nos providers; wireado no `AppModule`.
 
 ## Backend (kernel técnico compartilhado)
 
@@ -303,30 +357,44 @@ flowchart LR
         FILTER[DomainExceptionFilter base<br/>hook statusFor default 422]
         ERR[DomainError base genérica]
         FACTORY[createPrismaClientFromEnv]
+        GUARD[IdentityPendingGuard<br/>403 AUTH_NOT_IMPLEMENTED]
     end
     subgraph Módulos
         S[Agendamento<br/>subclasse fina do filtro 404/409<br/>union + subclasse fina de erro]
         C[Catálogo<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
         CT[Conteúdo Público<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
+        PA[Pacientes<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
+        AT[Atendimento<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
     end
     S -.->|importa| PIPE
     C -.->|importa| PIPE
     CT -.->|importa| PIPE
+    PA -.->|importa| PIPE
+    AT -.->|importa| PIPE
     S -.->|estende| FILTER
     C -.->|estende| FILTER
     CT -.->|estende| FILTER
+    PA -.->|estende| FILTER
+    AT -.->|estende| FILTER
     S -.->|estende| ERR
     C -.->|estende| ERR
     CT -.->|estende| ERR
+    PA -.->|estende| ERR
+    AT -.->|estende| ERR
     S -.->|usa no provider| FACTORY
     C -.->|usa no provider| FACTORY
     CT -.->|usa no provider| FACTORY
+    PA -.->|usa no provider| FACTORY
+    AT -.->|usa no provider| FACTORY
+    PA -.->|usa nas rotas| GUARD
+    AT -.->|usa nas rotas| GUARD
 ```
 
-- Pastas verificadas: `backend/src/shared/http/` (pipe + base do filtro), `backend/src/shared/errors/` (base genérica) e `backend/src/shared/prisma/` (factory) — cada uma com spec unitário próprio.
+- Pastas verificadas: `backend/src/shared/http/` (pipe + base do filtro + `identity-pending.guard.ts`), `backend/src/shared/errors/` (base genérica) e `backend/src/shared/prisma/` (factory) — cada uma com spec unitário próprio.
 - **Mapeamentos continuam locais:** cada módulo mantém a subclasse fina do filtro com o seu status por código e o seu union `DomainErrorCode`; o kernel não conhece código de domínio nenhum.
-- **Instâncias de PrismaClient continuam por módulo:** a factory compartilha apenas a construção (trigger de provider compartilhado segue adiado — decisão 8 do change `backend-modulo-conteudo-publico`).
-- **Histórico:** extraído no change `resolver-duplicacao-sonar-backend` (SonarCloud reprovava por duplicação em 3 PRs seguidos; kernel + exclusão de CPD para testes zeram a causa no gate).
+- **Guard honesto compartilhado:** `IdentityPendingGuard` (plumbing puro, sem vocabulário de domínio) tem **uma única definição** no kernel e é importado por Pacientes e Atendimento — replicá-lo por módulo foi rejeitado na decisão 6 do change `backend-modulo-atendimento`. Substituição pelo guard Keycloak/RBAC é próximo passo obrigatório do módulo de Identidade (UC 4.2.1).
+- **Instâncias de PrismaClient continuam por módulo:** a factory compartilha apenas a construção (trigger de provider compartilhado segue adiado — decisão 10 do change `backend-modulo-atendimento`).
+- **Histórico:** extraído no change `resolver-duplicacao-sonar-backend` (SonarCloud reprovava por duplicação em 3 PRs seguidos; kernel + exclusão de CPD para testes zeram a causa no gate); ampliado no change `backend-modulo-atendimento` (guard).
 
 ## Backend (placeholder normatizado)
 

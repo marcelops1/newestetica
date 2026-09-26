@@ -1,5 +1,8 @@
 import type { Attendance } from "../../domain/entities/attendance.entity";
-import { AttendanceNotFound, PatientNotFound } from "../../domain/errors/errors";
+import {
+  AttendanceNotFound,
+  PatientNotFound,
+} from "../../domain/errors/errors";
 import type { AttendanceRepository } from "../../domain/ports/attendance.repository";
 import type { PatientDirectory } from "../../domain/ports/patient-directory";
 

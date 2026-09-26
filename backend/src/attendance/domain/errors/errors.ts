@@ -1,9 +1,7 @@
 import { DomainError as SharedDomainError } from "../../../shared/errors/domain-error";
 
 export type DomainErrorCode =
-  | "INVALID_ATTENDANCE"
-  | "PATIENT_NOT_FOUND"
-  | "ATTENDANCE_NOT_FOUND";
+  "INVALID_ATTENDANCE" | "PATIENT_NOT_FOUND" | "ATTENDANCE_NOT_FOUND";
 
 /* Subclasse fina local sobre o kernel compartilhado (docs/architecture/02-arquitetura.md
    §3, exceção do kernel): o union de códigos e as classes concretas continuam do módulo. */

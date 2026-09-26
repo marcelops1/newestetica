@@ -439,7 +439,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API registra e recupera o histórico simples por paciente.
 - **Critérios de aceite:**
   - Somente histórico operacional; sem prontuário médico completo.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (registro e leitura do histórico simples entregues no módulo `backend/src/attendance` — `POST /patients/:patientId/attendances`, `GET /patients/:patientId/attendances` e `GET /patients/:patientId/attendances/:id`, histórico **imutável** (sem update/delete), visibilidade **herdada do paciente** (histórico de anonimizada nunca é servido — invariante provada por write-then-throw em duas camadas: porta `PatientDirectory` + filtro de relação na query), contrato novo em `contracts/src/attendance/` e **guard honesto compartilhado no kernel** (`IdentityPendingGuard` em `backend/src/shared/http/` — 403 `AUTH_NOT_IMPLEMENTED` em todas as rotas até a Identidade); pendentes: fluxo de correção (novo registro; trigger se a Fabiana pedir), exportação do histórico, offset/busca textual e substituição do guard pelo Keycloak/RBAC real — todos com trigger registrado).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 **Use Case 4.2.6 — Financeiro Básico (API)**

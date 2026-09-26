@@ -43,7 +43,10 @@ export class Attendance {
     if (typeof props.id !== "string" || props.id.trim().length === 0) {
       throw new InvalidAttendance("id não pode ser vazio");
     }
-    if (typeof props.patientId !== "string" || props.patientId.trim().length === 0) {
+    if (
+      typeof props.patientId !== "string" ||
+      props.patientId.trim().length === 0
+    ) {
       throw new InvalidAttendance("paciente não pode ser vazia");
     }
     if (typeof props.summary !== "string") {

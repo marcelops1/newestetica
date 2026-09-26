@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { InMemoryAttendanceRepository } from "../../../../test/fakes/in-memory-attendance.repository";
 import { InMemoryPatientDirectory } from "../../../../test/fakes/in-memory-patient-directory";
 import { Attendance } from "../../domain/entities/attendance.entity";
-import {
-  InvalidAttendance,
-  PatientNotFound,
-} from "../../domain/errors/errors";
+import { InvalidAttendance, PatientNotFound } from "../../domain/errors/errors";
 import type { AttendanceRepository } from "../../domain/ports/attendance.repository";
 import {
   DEFAULT_ATTENDANCES_LIMIT,
@@ -133,9 +130,9 @@ describe("ListAttendancesUseCase", () => {
       new InMemoryPatientDirectory([]),
     );
 
-    await expect(
-      useCase.execute({ patientId: PATIENT_ID }),
-    ).rejects.toThrow(PatientNotFound);
+    await expect(useCase.execute({ patientId: PATIENT_ID })).rejects.toThrow(
+      PatientNotFound,
+    );
     expect(attendances.listCalls).toBe(0);
   });
 
@@ -145,8 +142,8 @@ describe("ListAttendancesUseCase", () => {
       new InMemoryPatientDirectory([{ id: PATIENT_ID }]),
     );
 
-    await expect(
-      useCase.execute({ patientId: PATIENT_ID }),
-    ).resolves.toEqual([]);
+    await expect(useCase.execute({ patientId: PATIENT_ID })).resolves.toEqual(
+      [],
+    );
   });
 });

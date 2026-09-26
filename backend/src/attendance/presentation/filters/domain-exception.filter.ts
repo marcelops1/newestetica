@@ -11,7 +11,10 @@ import {
    Paciente invisível e atendimento invisível respondem 404 (anti-enumeração). */
 export class DomainExceptionFilter extends SharedDomainExceptionFilter {
   protected statusFor(error: DomainError): number {
-    if (error instanceof PatientNotFound || error instanceof AttendanceNotFound) {
+    if (
+      error instanceof PatientNotFound ||
+      error instanceof AttendanceNotFound
+    ) {
       return HttpStatus.NOT_FOUND;
     }
     return HttpStatus.UNPROCESSABLE_ENTITY;

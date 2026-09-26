@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import { InMemoryAttendanceRepository } from "../../../../test/fakes/in-memory-attendance.repository";
 import { InMemoryPatientDirectory } from "../../../../test/fakes/in-memory-patient-directory";
 import { Attendance } from "../../domain/entities/attendance.entity";
-import { AttendanceNotFound, PatientNotFound } from "../../domain/errors/errors";
+import {
+  AttendanceNotFound,
+  PatientNotFound,
+} from "../../domain/errors/errors";
 import { GetAttendanceByIdUseCase } from "./get-attendance-by-id.use-case";
 
 const PATIENT_ID = "00000000-0000-4000-8000-000000000101";
@@ -22,10 +25,7 @@ function makeUseCase(
   invisiblePatientIds: ReadonlySet<string> = new Set(),
 ): GetAttendanceByIdUseCase {
   return new GetAttendanceByIdUseCase(
-    new InMemoryAttendanceRepository(
-      [makeAttendance()],
-      invisiblePatientIds,
-    ),
+    new InMemoryAttendanceRepository([makeAttendance()], invisiblePatientIds),
     new InMemoryPatientDirectory([
       { id: PATIENT_ID },
       { id: OTHER_PATIENT_ID },

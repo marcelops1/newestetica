@@ -1,8 +1,5 @@
 import type { Attendance } from "../../domain/entities/attendance.entity";
-import {
-  InvalidAttendance,
-  PatientNotFound,
-} from "../../domain/errors/errors";
+import { InvalidAttendance, PatientNotFound } from "../../domain/errors/errors";
 import type { AttendanceRepository } from "../../domain/ports/attendance.repository";
 import type { PatientDirectory } from "../../domain/ports/patient-directory";
 
@@ -25,7 +22,11 @@ export class ListAttendancesUseCase {
 
   async execute(input: ListAttendancesInput): Promise<Attendance[]> {
     const limit = input.limit ?? DEFAULT_ATTENDANCES_LIMIT;
-    if (!Number.isInteger(limit) || limit < 1 || limit > MAX_ATTENDANCES_LIMIT) {
+    if (
+      !Number.isInteger(limit) ||
+      limit < 1 ||
+      limit > MAX_ATTENDANCES_LIMIT
+    ) {
       throw new InvalidAttendance(
         `limite fora do intervalo permitido (1..${MAX_ATTENDANCES_LIMIT})`,
       );

@@ -199,6 +199,12 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     expect(limited.status).toBe(200);
     await expect(limited.json()).resolves.toHaveLength(1);
 
+    const midLimit = await fetch(
+      `${baseUrl}/patients/${ALFA}/attendances?limit=2`,
+    );
+    expect(midLimit.status).toBe(200);
+    await expect(midLimit.json()).resolves.toHaveLength(2);
+
     const overLimit = await fetch(
       `${baseUrl}/patients/${ALFA}/attendances?limit=501`,
     );
@@ -272,7 +278,9 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     expect(crossedBody.code).toBe("ATTENDANCE_NOT_FOUND");
     expect(missingBody).toEqual(crossedBody);
     expect(anonymizedBody.code).toBe("PATIENT_NOT_FOUND");
-    expect(JSON.stringify(anonymizedBody)).not.toContain("Atendimento fictício");
+    expect(JSON.stringify(anonymizedBody)).not.toContain(
+      "Atendimento fictício",
+    );
   });
 
   it("PUT/PATCH/DELETE não são expostos (histórico imutável)", async () => {

@@ -24,22 +24,24 @@ describe("Attendance (entidade imutável)", () => {
     expect(attendance.createdAt.getTime()).toBe(attendance.updatedAt.getTime());
   });
 
-  it("aceita resumo com exatamente 500 caracteres", () => {
+  it("aceita resumo com exatamente 500 caracteres e resumo de 1 caractere", () => {
     const attendance = Attendance.create({
       ...validProps,
       summary: "x".repeat(500),
     });
-
     expect(attendance.summary).toHaveLength(500);
+
+    const minimal = Attendance.create({ ...validProps, summary: "x" });
+    expect(minimal.summary).toBe("x");
   });
 
   it("rejeita id vazio, paciente vazia, resumo vazio ou acima de 500 e data inválida", () => {
     expect(() => Attendance.create({ ...validProps, id: "  " })).toThrow(
       InvalidAttendance,
     );
-    expect(() =>
-      Attendance.create({ ...validProps, patientId: "  " }),
-    ).toThrow(InvalidAttendance);
+    expect(() => Attendance.create({ ...validProps, patientId: "  " })).toThrow(
+      InvalidAttendance,
+    );
     expect(() => Attendance.create({ ...validProps, summary: "" })).toThrow(
       InvalidAttendance,
     );
@@ -75,6 +77,39 @@ describe("Attendance (entidade imutável)", () => {
     };
 
     expect(() => Attendance.restore(snapshot)).toThrow(InvalidAttendance);
+  });
+
+  it("restore rejeita timestamps inválidos ou de tipo errado (banco não é fonte confiável)", () => {
+    const base = {
+      ...validProps,
+      createdAt: new Date("2026-09-10T15:00:00.000Z"),
+      updatedAt: new Date("2026-09-10T15:00:00.000Z"),
+    };
+
+    expect(() =>
+      Attendance.restore({ ...base, createdAt: new Date("inválida") }),
+    ).toThrow(InvalidAttendance);
+    expect(() =>
+      Attendance.restore({ ...base, updatedAt: new Date("inválida") }),
+    ).toThrow(InvalidAttendance);
+    expect(() =>
+      Attendance.restore({ ...base, createdAt: "2026-09-10" as never }),
+    ).toThrow(InvalidAttendance);
+    expect(() =>
+      Attendance.restore({ ...base, updatedAt: "2026-09-10" as never }),
+    ).toThrow(InvalidAttendance);
+  });
+
+  it("rejeita objetos que apenas imitam strings em id/paciente (tipo confundido)", () => {
+    const idLike = { trim: () => "id-fictício" } as never;
+    const patientLike = { trim: () => "paciente-fictícia" } as never;
+
+    expect(() => Attendance.create({ ...validProps, id: idLike })).toThrow(
+      InvalidAttendance,
+    );
+    expect(() =>
+      Attendance.create({ ...validProps, patientId: patientLike }),
+    ).toThrow(InvalidAttendance);
   });
 
   it("restore preserva os timestamps originais da persistência", () => {

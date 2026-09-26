@@ -99,7 +99,10 @@ describe("adversarial — entradas hostis contra os casos de uso", () => {
       create.execute({ ...validInput, performedAt: null as never }),
     ).rejects.toThrow(InvalidAttendance);
     await expect(
-      create.execute({ ...validInput, performedAt: 1_700_000_000_000 as never }),
+      create.execute({
+        ...validInput,
+        performedAt: 1_700_000_000_000 as never,
+      }),
     ).rejects.toThrow(InvalidAttendance);
     await expect(
       create.execute({ ...validInput, performedAt: "2026-13-45T99:99:99Z" }),
@@ -118,7 +121,11 @@ describe("adversarial — entradas hostis contra os casos de uso", () => {
 
     expect(() => Attendance.restore(snapshot)).toThrow(InvalidAttendance);
     expect(() =>
-      Attendance.restore({ ...snapshot, summary: "ok", performedAt: "não" as never }),
+      Attendance.restore({
+        ...snapshot,
+        summary: "ok",
+        performedAt: "não" as never,
+      }),
     ).toThrow(InvalidAttendance);
   });
 
@@ -151,9 +158,9 @@ describe("adversarial — entradas hostis contra os casos de uso", () => {
     await expect(get.execute(OTHER_PATIENT_ID, ATTENDANCE_ID)).rejects.toThrow(
       AttendanceNotFound,
     );
-    await expect(
-      get.execute(PATIENT_ID, "x".repeat(100_000)),
-    ).rejects.toThrow(AttendanceNotFound);
+    await expect(get.execute(PATIENT_ID, "x".repeat(100_000))).rejects.toThrow(
+      AttendanceNotFound,
+    );
   });
 
   it("não-encontrados nunca ecoam id, paciente ou resumo (mensagens fixas)", async () => {

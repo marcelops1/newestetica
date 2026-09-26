@@ -109,7 +109,8 @@ export class AttendancesController {
   @ApiUnprocessableEntityResponse({ description: "Dados inválidos." })
   async create(
     @Param("patientId", new ZodValidationPipe(IdSchema)) patientId: string,
-    @Body(new ZodValidationPipe(AttendanceInputSchema)) input: AttendanceInputDto,
+    @Body(new ZodValidationPipe(AttendanceInputSchema))
+    input: AttendanceInputDto,
   ): Promise<AttendanceItemResponse> {
     const attendance = await this.createAttendance.execute({
       patientId,

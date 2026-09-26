@@ -22,7 +22,10 @@ export const PATIENT_DIRECTORY = Symbol("PATIENT_DIRECTORY");
 @Module({
   controllers: [AttendancesController],
   providers: [
-    { provide: ATTENDANCE_PRISMA_CLIENT, useFactory: createPrismaClientFromEnv },
+    {
+      provide: ATTENDANCE_PRISMA_CLIENT,
+      useFactory: createPrismaClientFromEnv,
+    },
     {
       provide: ATTENDANCE_REPOSITORY,
       useFactory: (prisma: PrismaClient) =>
