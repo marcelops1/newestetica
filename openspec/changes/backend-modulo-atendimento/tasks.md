@@ -24,8 +24,8 @@
 
 ## 4. Infrastructure — Prisma + Postgres real em container
 
-- [ ] 4.1 Escrever o teste de integração dos repositórios (round-trip; `findVisibleByPatient` exclui histórico de anonimizada mesmo com os registros existindo; `findVisibleById` ignora inexistente/anonimizada e cruzado; ordenação determinística; FK impede órfão) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente
-- [ ] 4.2 Criar o modelo Prisma (com relação FK para `Patient`) + mappers manuais (Data Mapper, nunca Active Record; `PatientDirectory` implementada com o filtro `status: "active"` na query, sem importar domínio de Pacientes) e implementar os repositórios — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado; `resetDatabase` com `attendance.deleteMany()` antes de `patient.deleteMany()` (ordem da FK)
+- [x] 4.1 Escrever o teste de integração dos repositórios (round-trip; `findVisibleByPatient` exclui histórico de anonimizada mesmo com os registros existindo; `findVisibleById` ignora inexistente/anonimizada e cruzado; ordenação determinística; FK impede órfão) e verificar que falha — RED. Verificação: falha de conexão/schema ausente ou módulo inexistente
+- [x] 4.2 Criar o modelo Prisma (com relação FK para `Patient`) + mappers manuais (Data Mapper, nunca Active Record; `PatientDirectory` implementada com o filtro `status: "active"` na query, sem importar domínio de Pacientes) e implementar os repositórios — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado; `resetDatabase` com `attendance.deleteMany()` antes de `patient.deleteMany()` (ordem da FK)
 
 ## 5. Presentation — controller aninhado com guard honesto
 
