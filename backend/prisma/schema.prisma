@@ -75,12 +75,30 @@ model BeforeAfterCase {
  * fisicamente). Nenhum campo clínico/saúde (docs/security/03-seguranca.md §4).
  */
 model Patient {
-  id           String    @id
+  id           String       @id
   fullName     String
   phone        String
   purpose      String
-  status       String    @default("active")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  status       String       @default("active")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   anonymizedAt DateTime?
+  attendances  Attendance[]
+}
+
+/**
+ * Histórico operacional simples do UC 4.2.5: o que foi realizado por paciente.
+ * Imutável (sem update/delete na API), sem snapshot de PII — o vínculo é por FK e a
+ * visibilidade é herdada do Patient (anonimizada nunca é servida — docs/security §4).
+ */
+model Attendance {
+  id          String   @id
+  patientId   String
+  summary     String
+  performedAt DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  patient     Patient  @relation(fields: [patientId], references: [id])
+
+  @@index([patientId, performedAt])
 }

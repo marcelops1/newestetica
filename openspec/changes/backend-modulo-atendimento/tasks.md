@@ -5,8 +5,8 @@
 
 ## 1. Setup de persistência (test-first de wire-up)
 
-- [ ] 1.1 Executar `pnpm --filter backend test` filtrado ao novo módulo e constatar que falha (pacote `attendance/` inexistente) — RED. Verificação: filtro sem arquivos
-- [ ] 1.2 Criar `backend/prisma/schema.prisma` com o modelo `Attendance` (id UUID, `patientId` com FK para `Patient`, `summary`, `performedAt`, `createdAt`/`updatedAt`) + migration inicial + seed fictício (2 atendimentos vinculados às pacientes fictícias do seed) — GREEN parcial. Verificação: `prisma migrate deploy` aplica limpo no banco de teste e o seed popula sem erro
+- [x] 1.1 Executar `pnpm --filter backend test` filtrado ao novo módulo e constatar que falha (pacote `attendance/` inexistente) — RED. Verificação: filtro sem arquivos
+- [x] 1.2 Criar `backend/prisma/schema.prisma` com o modelo `Attendance` (id UUID, `patientId` com FK para `Patient`, `summary`, `performedAt`, `createdAt`/`updatedAt`) + migration inicial + seed fictício (2 atendimentos vinculados às pacientes fictícias do seed) — GREEN parcial. Verificação: `prisma migrate deploy` aplica limpo no banco de teste e o seed popula sem erro
 
 ## 2. Domain — Attendance imutável + porta PatientDirectory (unitários puros)
 
