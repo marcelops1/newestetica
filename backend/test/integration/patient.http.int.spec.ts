@@ -2,7 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { PatientsModule } from "../../src/patients/patients.module";
-import { IdentityPendingGuard } from "../../src/patients/presentation/guards/identity-pending.guard";
+import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
 import {
   createTestPrismaClient,
   resetDatabase,

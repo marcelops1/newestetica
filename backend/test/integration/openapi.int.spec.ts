@@ -62,6 +62,7 @@ const API_TAGS = [
   "Catálogo",
   "Conteúdo Público",
   "Pacientes (bloqueado até a Identidade)",
+  "Atendimento (bloqueado até a Identidade)",
   "Health",
 ];
 
@@ -134,6 +135,26 @@ const EXPECTED_ROUTES: Array<{
     statuses: ["204", "403", "404", "422"],
     pathParams: ["id"],
   },
+  {
+    method: "post",
+    path: "/patients/{patientId}/attendances",
+    statuses: ["201", "403", "404", "422"],
+    pathParams: ["patientId"],
+    hasBody: true,
+  },
+  {
+    method: "get",
+    path: "/patients/{patientId}/attendances",
+    statuses: ["200", "403", "404", "422"],
+    pathParams: ["patientId"],
+    queryParams: ["limit"],
+  },
+  {
+    method: "get",
+    path: "/patients/{patientId}/attendances/{id}",
+    statuses: ["200", "403", "404", "422"],
+    pathParams: ["patientId", "id"],
+  },
 ];
 
 async function fetchDocument(): Promise<OpenApiDocument> {
@@ -154,17 +175,17 @@ type OpenApiOperation = Operation & {
   >;
 };
 
-describe("bloqueio de Pacientes explícito na documentação", () => {
-  it("as 5 rotas de Pacientes documentam o 403 honesto (guard + UC 4.2.1)", async () => {
+describe("bloqueio explícito na documentação (Pacientes + Atendimento)", () => {
+  it("as 8 rotas bloqueadas documentam o 403 honesto (guard + UC 4.2.1)", async () => {
     const document = (await fetchDocument()) as unknown as {
       paths: Record<string, Record<string, OpenApiOperation>>;
     };
-    const patientRoutes = EXPECTED_ROUTES.filter((route) =>
+    const blockedRoutes = EXPECTED_ROUTES.filter((route) =>
       route.path.startsWith("/patients"),
     );
-    expect(patientRoutes).toHaveLength(5);
+    expect(blockedRoutes).toHaveLength(8);
 
-    for (const route of patientRoutes) {
+    for (const route of blockedRoutes) {
       const operation = document.paths[route.path]?.[route.method];
       const label = `${route.method} ${route.path}`;
       const forbidden = operation?.responses?.["403"];
@@ -215,6 +236,15 @@ const CONTRACT_COMPONENTS: Record<string, string[]> = {
     "title",
   ],
   PatientInputDto: ["fullName", "phone", "purpose"],
+  AttendanceInputDto: ["performedAt", "summary"],
+  AttendanceResponseDto: [
+    "createdAt",
+    "id",
+    "patientId",
+    "performedAt",
+    "summary",
+    "updatedAt",
+  ],
   PatientResponseDto: [
     "createdAt",
     "fullName",
@@ -255,7 +285,7 @@ describe("fidelidade dos componentes ao contrato (sem duplicação manual)", () 
 });
 
 describe("cobertura total das rotas implementadas", () => {
-  it("documenta exatamente as 14 rotas (nenhuma ausente, nenhuma fantasma)", async () => {
+  it("documenta exatamente as 17 rotas (nenhuma ausente, nenhuma fantasma)", async () => {
     const document = await fetchDocument();
     const actual = Object.entries(document.paths)
       .flatMap(([path, methods]) =>

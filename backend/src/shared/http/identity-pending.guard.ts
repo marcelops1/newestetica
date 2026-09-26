@@ -4,7 +4,9 @@ import {
   type CanActivate,
 } from "@nestjs/common";
 
-/* Bloqueio honesto até a Identidade (design decisão 8): nega TODAS as requisições com
+/* Kernel técnico compartilhado (docs/architecture/02-arquitetura.md §3, exceção do
+   kernel): plumbing puro, sem vocabulário de domínio — bloqueia módulos administrativos
+   até a Identidade. Bloqueio honesto (design decisão 6): nega TODAS as requisições com
    403 e declara a verdade — não simula autenticação nem finge um token. Quando a
    Identidade existir (UC 4.2.1), este guard é SUBSTITUÍDO pelo guard real de
    Keycloak/RBAC; a troca é próximo passo obrigatório, não implícito. */

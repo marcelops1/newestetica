@@ -45,7 +45,7 @@ import {
   AUTH_NOT_IMPLEMENTED_CODE,
   AUTH_NOT_IMPLEMENTED_MESSAGE,
   IdentityPendingGuard,
-} from "../guards/identity-pending.guard";
+} from "../../../shared/http/identity-pending.guard";
 import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 
 class PatientInputDto extends createZodDto(PatientInputSchema) {}

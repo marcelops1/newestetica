@@ -251,4 +251,4 @@ Toda task que **cria ou altera um endpoint HTTP** SHALL atualizar os decorators 
 - `@ApiOperation` com resumo; respostas por status real provado pelos testes (`@ApiOkResponse`/`@ApiCreatedResponse`/`@ApiNotFoundResponse`/`@ApiForbiddenResponse`/…); parâmetros (`@ApiParam`/`@ApiQuery`) e corpos derivados dos contratos.
 - A fonte dos schemas continua sendo `contracts/` (ponte `nestjs-zod` + `@nestjs/swagger`): **nunca** duplicar campo à mão nos controllers.
 - Rotas bloqueadas por guard documentam o status do bloqueio explicitamente (ex.: 403 `AUTH_NOT_IMPLEMENTED` nas rotas de Pacientes).
-- Verificação automatizada: `backend/test/integration/openapi.int.spec.ts` cobre as 14 rotas, a fidelidade dos componentes ao contrato e os dois modos do gate por ambiente (`docs/security/03-seguranca.md` §8); o checkbox do PR registra a revisão humana.
+- Verificação automatizada: `backend/test/integration/openapi.int.spec.ts` cobre as 17 rotas, a fidelidade dos componentes ao contrato e os dois modos do gate por ambiente (`docs/security/03-seguranca.md` §8); o checkbox do PR registra a revisão humana.
