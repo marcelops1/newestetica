@@ -257,9 +257,10 @@ O uso de ferramentas de memória de sessão (ex.: ai-memory — ver `docs/archit
 O projeto pode ter um grafo de conhecimento em `graphify-out/` (god nodes, estrutura de comunidades, relações entre arquivos), gerado pelo graphify (github.com/Graphify-Labs/graphify) — parsing local via tree-sitter para código, sem custo e sem LLM; docs/PDFs usam o modelo da sessão. Pré-requisito por máquina: skill instalada (`graphify install`; CLI via `uv tool install graphifyy`).
 
 - Quando o usuário digitar `/graphify`, usar a skill instalada.
-- Para perguntas sobre o codebase, rodar `graphify query "<pergunta>"` primeiro quando `graphify-out/graph.json` existir; usar `graphify path "<A>" "<B>"` para relações e `graphify explain "<conceito>"` para conceitos focados — retornam subgrafo escopado, geralmente bem menor que `GRAPH_REPORT.md` ou grep bruto.
+- Para perguntas sobre o codebase, rodar `/home/marcelo/.local/bin/graphify query "<pergunta>"` primeiro quando `graphify-out/graph.json` existir; usar `/home/marcelo/.local/bin/graphify path "<A>" "<B>"` para relações e `/home/marcelo/.local/bin/graphify explain "<conceito>"` para conceitos focados — retornam subgrafo escopado, geralmente bem menor que `GRAPH_REPORT.md` ou grep bruto.
+- **Caminho absoluto obrigatório:** usar sempre o prefixo `/home/marcelo/.local/bin/graphify ...` (nunca `graphify` sozinho) — sessões do opencode (GLM/DeepSeek) não herdam o `PATH` do shell interativo do usuário, então `~/.local/bin` não está disponível nessas sessões e o comando falha silenciosamente. Ajuste o prefixo se a instalação na sua máquina for outra.
 - `graphify-out/` "sujo" após hooks/updates incrementais é esperado, não motivo para pular o graphify — só pular se a tarefa for sobre grafo desatualizado/incorreto, ou se o usuário disser explicitamente para não usar.
 - Se `graphify-out/wiki/index.md` existir, usar para navegação ampla em vez de busca bruta.
 - Ler `GRAPH_REPORT.md` só para revisão ampla de arquitetura ou quando `query`/`path`/`explain` não trouxerem contexto suficiente.
-- Após modificar código, rodar `graphify update .` para manter o grafo atualizado (só AST, sem custo de API).
+- Após modificar código, rodar `/home/marcelo/.local/bin/graphify update .` (atalho: `pnpm graphify:update`) para manter o grafo atualizado (só AST, sem custo de API).
 - Em caso de conflito com este AGENTS.md, este arquivo vence.

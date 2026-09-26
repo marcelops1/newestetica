@@ -348,6 +348,7 @@ Toda nova decisão técnica relevante deve:
 - **Nunca processa dado real de paciente em docs/PDFs** (regra explícita em `docs/security/03-seguranca.md` §4), com reforço técnico obrigatório antes de existir dado real no projeto
 - Adoção não obrigatória: qualquer IA ou pessoa pode trabalhar sem a ferramenta; o fluxo OpenSpec não muda
 - A seção operacional em `AGENTS.md` é o mecanismo no OpenCode (instruction-file platform): `query` primeiro com `graph.json` existente, `GRAPH_REPORT.md` só para revisão ampla, `update .` após modificar código
+- **Caminho absoluto nas instruções e atalho `pnpm graphify:update`:** sessões do opencode (GLM/DeepSeek) não herdam o `PATH` do shell interativo do usuário, então `~/.local/bin` não está disponível nessas sessões e `graphify` sozinho falha — por isso `AGENTS.md` usa o prefixo `/home/marcelo/.local/bin/graphify ...` e existe o script `graphify:update` no `package.json` raiz; ajustar ambos se a instalação mudar de máquina/usuário
 
 ---
 
