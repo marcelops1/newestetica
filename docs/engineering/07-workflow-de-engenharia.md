@@ -241,3 +241,14 @@ Todo Change que cria um módulo de backend novo SHALL satisfazer, antes do Archi
 5. **Aprendizado registrado** — se a sessão teve múltiplas emendas ou grupos, a seção 14 recebeu o padrão observado (agnóstico de modelo, como manda a regra de forma).
 
 > Qualquer prompt futuro que proponha um módulo de backend novo SHALL citar esta seção como parte do escopo da proposta — o lembrete vive no processo, não na memória de quem escreve o prompt.
+
+---
+
+## 17. Manutenção da documentação OpenAPI (Swagger)
+
+Toda task que **cria ou altera um endpoint HTTP** SHALL atualizar os decorators do Swagger na **mesma task**, não depois — mesmo espírito da regra de C2/C3 (seção 3): o esquecimento fica visível no PR e na suíte.
+
+- `@ApiOperation` com resumo; respostas por status real provado pelos testes (`@ApiOkResponse`/`@ApiCreatedResponse`/`@ApiNotFoundResponse`/`@ApiForbiddenResponse`/…); parâmetros (`@ApiParam`/`@ApiQuery`) e corpos derivados dos contratos.
+- A fonte dos schemas continua sendo `contracts/` (ponte `nestjs-zod` + `@nestjs/swagger`): **nunca** duplicar campo à mão nos controllers.
+- Rotas bloqueadas por guard documentam o status do bloqueio explicitamente (ex.: 403 `AUTH_NOT_IMPLEMENTED` nas rotas de Pacientes).
+- Verificação automatizada: `backend/test/integration/openapi.int.spec.ts` cobre as 14 rotas, a fidelidade dos componentes ao contrato e os dois modos do gate por ambiente (`docs/security/03-seguranca.md` §8); o checkbox do PR registra a revisão humana.

@@ -59,6 +59,9 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-newestetica}:${POSTGRES_PASSWORD:-changeme-dev}@postgres:5432/${POSTGRES_DB:-newestetica}
       PORT: "3001"
+      # Stack local = desenvolvimento: habilita /docs mesmo com o NODE_ENV=production
+      # da imagem (o gate de produção exige a flag explícita — 03-seguranca.md §8).
+      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-true}
     ports:
       - "127.0.0.1:${BACKEND_PORT:-3001}:3001"
     depends_on:

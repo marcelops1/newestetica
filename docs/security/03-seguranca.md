@@ -141,6 +141,7 @@ Se não houver consentimento claro, a foto **não aparece**.
 - Registrar eventos de segurança relevantes (login, falhas, etc.)
 - Retornar erros sem expor detalhes internos sensíveis
 - Seguir o princípio do menor privilégio no acesso ao banco
+- Documentação de API (Swagger em `/docs` e `/docs-json`) restrita por ambiente: servida por padrão fora de produção; em produção, **desabilitada por padrão** — só com `SWAGGER_ENABLED=true` explícito. A documentação descreve formatos (sem dados reais) e declara o bloqueio das rotas de Pacientes, mas não substitui o enforcement: o `IdentityPendingGuard` continua sendo a barreira até a Identidade
 
 ---
 

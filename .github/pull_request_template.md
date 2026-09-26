@@ -14,6 +14,7 @@
 - [ ] Gatilho de segurança (docs/07 §7) avaliado e registrado em `verification.md`
 - [ ] `docs/product/08-backlog-produto.md` atualizado, se aplicável
 - [ ] Este change alterou containers ou componentes (frontend/backend)? Se sim, `docs/architecture/c2-container.md` e/ou `c3-component.md` foram atualizados
+- [ ] Este change criou/alterou endpoint HTTP? Se sim, os decorators do Swagger foram atualizados na mesma task (docs/07 §17; cobertura e fidelidade verificadas por `openapi.int.spec.ts`)
 - [ ] Change arquivado via `openspec-archive-change` com specs sincronizadas
 
 ## Checklist de módulo de backend novo (só se este PR cria um módulo de backend)
