@@ -15,13 +15,13 @@
 
 ## 3. Fidelidade ao contrato, sem duplicação (test-first)
 
-- [ ] 3.1 Escrever o teste de divergência (fixtures válidas de cada contexto validam contra os componentes do schema gerado; campos dos contratos sem omissão nem acréscimo) e verificar que falha antes da ponte — RED. Verificação: divergência listada na falha
-- [ ] 3.2 Ligar os componentes do schema aos schemas Zod (ponte, sem campo duplicado à mão) e verificar verde — GREEN. Verificação: teste da task 3.1 passa; `grep` por campo de contrato repetido manualmente retorna vazio
+- [x] 3.1 Escrever o teste de divergência (fixtures válidas de cada contexto validam contra os componentes do schema gerado; campos dos contratos sem omissão nem acréscimo) e verificar que falha antes da ponte — RED. Verificação: divergência listada na falha. Execução: teste de fidelidade com mapa explícito dos 9 componentes × campos do contrato (caracterização — a ponte veio em 2.2 por dependência técnica do requestBody) + **prova de sensibilidade write-then-throw**: expectativa divergente de propósito → `AssertionError: expected [ 'fullName', 'phone', 'purpose' ] to deeply equal [ 'email', 'fullName', 'phone', …(1) ]`; restaurada → verde
+- [x] 3.2 Ligar os componentes do schema aos schemas Zod (ponte, sem campo duplicado à mão) e verificar verde — GREEN. Verificação: teste da task 3.1 passa; `grep` por campo de contrato repetido manualmente retorna vazio. Execução: componentes gerados exatamente dos contratos (`PatientInputDto: fullName,phone,purpose`; `PatientResponseDto` com `status` e **sem `anonymizedAt`**; `PublicBeforeAfterResponseDto` com `hasConsent`); `rg "@ApiProperty"` nos controllers → zero (ponte é a única fonte); 7/7 verdes
 
 ## 4. Gate por ambiente + registro de segurança (test-first)
 
-- [ ] 4.1 Escrever o teste dos dois modos (`NODE_ENV=production` sem flag → 404 nas duas rotas; com `SWAGGER_ENABLED=true` → 200) e verificar que falha antes do gate — RED. Verificação: modo produção servindo docs na falha
-- [ ] 4.2 Implementar o gate em `main.ts` e registrar a regra em `docs/security/03-seguranca.md` (§8, item novo) — GREEN. Verificação: teste da task 4.1 passa; releitura confirma o registro
+- [x] 4.1 Escrever o teste dos dois modos (`NODE_ENV=production` sem flag → 404 nas duas rotas; com `SWAGGER_ENABLED=true` → 200) e verificar que falha antes do gate — RED. Verificação: modo produção servindo docs na falha. Execução: gate já implementado em 1.2 (proteção antecipada); **prova de sensibilidade write-then-throw**: gate forçado aberto de propósito → `AssertionError: expected 200 to be 404`; restaurado → 2/2 verdes
+- [x] 4.2 Implementar o gate em `main.ts` e registrar a regra em `docs/security/03-seguranca.md` (§8, item novo) — GREEN. Verificação: teste da task 4.1 passa; releitura confirma o registro. Execução: `isSwaggerEnabled` em `backend/src/swagger.ts` (chamado pelo `main.ts`); §8 da 03-segurança ganhou o item de docs restritas por ambiente (produção desabilitada por padrão; a doc não substitui o enforcement do guard)
 
 ## 5. Docs de processo (exceção §4)
 

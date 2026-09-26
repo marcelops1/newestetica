@@ -185,6 +185,74 @@ describe("bloqueio de Pacientes explícito na documentação", () => {
   });
 });
 
+type DocumentWithComponents = OpenApiDocument & {
+  components?: {
+    schemas?: Record<string, { properties?: Record<string, unknown> }>;
+  };
+};
+
+const CONTRACT_COMPONENTS: Record<string, string[]> = {
+  SlotResponseDto: ["available", "durationMinutes", "id", "start"],
+  BookingInputDto: ["name", "notes", "phone", "treatment"],
+  ProcedureResponseDto: ["categories", "description", "duration", "id", "name"],
+  TestimonialResponseDto: ["author", "context", "id", "quote"],
+  PostResponseDto: [
+    "category",
+    "content",
+    "excerpt",
+    "id",
+    "publishedAt",
+    "title",
+  ],
+  PublicBeforeAfterResponseDto: [
+    "goal",
+    "hasConsent",
+    "id",
+    "recovery",
+    "sessions",
+    "summary",
+    "title",
+  ],
+  PatientInputDto: ["fullName", "phone", "purpose"],
+  PatientResponseDto: [
+    "createdAt",
+    "fullName",
+    "id",
+    "phone",
+    "purpose",
+    "status",
+    "updatedAt",
+  ],
+  PatientUpdateDto: ["fullName", "phone", "purpose"],
+};
+
+describe("fidelidade dos componentes ao contrato (sem duplicação manual)", () => {
+  it("cada componente gerado tem exatamente os campos do contrato, sem omissão nem acréscimo", async () => {
+    const response = await fetch(`${baseUrl}/docs-json`);
+    const document = (await response.json()) as DocumentWithComponents;
+    const schemas = document.components?.schemas ?? {};
+
+    for (const [name, fields] of Object.entries(CONTRACT_COMPONENTS)) {
+      const component = schemas[name];
+      expect(component, `componente ${name} ausente no schema`).toBeTruthy();
+      expect(
+        Object.keys(component?.properties ?? {}).sort(),
+        `campos do componente ${name}`,
+      ).toEqual([...fields].sort());
+    }
+  });
+
+  it("nenhum componente interno vaza para o wire público", async () => {
+    const response = await fetch(`${baseUrl}/docs-json`);
+    const document = (await response.json()) as DocumentWithComponents;
+    const patientResponse = document.components?.schemas?.PatientResponseDto;
+    expect(
+      Object.keys(patientResponse?.properties ?? {}),
+      "anonymizedAt é detalhe de persistência e não pode aparecer",
+    ).not.toContain("anonymizedAt");
+  });
+});
+
 describe("cobertura total das rotas implementadas", () => {
   it("documenta exatamente as 14 rotas (nenhuma ausente, nenhuma fantasma)", async () => {
     const document = await fetchDocument();
