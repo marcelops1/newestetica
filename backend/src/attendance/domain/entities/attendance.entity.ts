@@ -38,11 +38,16 @@ export class Attendance {
   }
 
   private static validate(props: AttendanceSnapshot): void {
-    if (props.id.trim().length === 0) {
+    /* O núcleo não confia no chamador nem no banco: tipos confundidos (null, número)
+       viram InvalidAttendance, nunca TypeError (adversarial — docs/07 §16d). */
+    if (typeof props.id !== "string" || props.id.trim().length === 0) {
       throw new InvalidAttendance("id não pode ser vazio");
     }
-    if (props.patientId.trim().length === 0) {
+    if (typeof props.patientId !== "string" || props.patientId.trim().length === 0) {
       throw new InvalidAttendance("paciente não pode ser vazia");
+    }
+    if (typeof props.summary !== "string") {
+      throw new InvalidAttendance("resumo deve ser texto");
     }
     const summaryLength = props.summary.trim().length;
     if (summaryLength < 1 || summaryLength > MAX_ATTENDANCE_SUMMARY_LENGTH) {
@@ -50,11 +55,16 @@ export class Attendance {
         `resumo deve ter entre 1 e ${MAX_ATTENDANCE_SUMMARY_LENGTH} caracteres`,
       );
     }
-    if (Number.isNaN(props.performedAt.getTime())) {
+    if (
+      !(props.performedAt instanceof Date) ||
+      Number.isNaN(props.performedAt.getTime())
+    ) {
       throw new InvalidAttendance("data de realização inválida");
     }
     if (
+      !(props.createdAt instanceof Date) ||
       Number.isNaN(props.createdAt.getTime()) ||
+      !(props.updatedAt instanceof Date) ||
       Number.isNaN(props.updatedAt.getTime())
     ) {
       throw new InvalidAttendance("timestamps inválidos");

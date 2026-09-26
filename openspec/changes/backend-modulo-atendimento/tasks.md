@@ -17,10 +17,10 @@
 
 ## 3. Application — casos de uso contra portas com fake em memória
 
-- [ ] 3.1 Escrever o teste de registrar/listar/buscar (create com paciente visível retorna com id; paciente inexistente/anonimizada → não-encontrado idêntico sem criar nada; lista só da paciente consultada em ordem; detalhe encontra; detalhe cruzado → não-encontrado) com fakes e verificar que falha — RED. Verificação: `Cannot find module`
-- [ ] 3.2 Implementar os casos de uso dependendo só das portas e verificar verde — GREEN. Verificação: testes da task 3.1 passam, sem importar `infrastructure/`
-- [ ] 3.3 Escrever o teste adversarial com payload hostil real (resumo gigante, injeção, unicode, `patientId` malformado/gigante, `limit` acima do teto; sondas: histórico de anonimizada ausente em lista e detalhe; detalhe cruzado entre pacientes) e verificar o comportamento seguro — RED. Verificação: teste falha (módulo ausente ou hostil aceito)
-- [ ] 3.4 Implementar o tratamento (validação na fronteira do núcleo + queries parametrizadas + limites; checagem de pertencimento no detalhe) e verificar verde — GREEN. Verificação: hostil rejeitado ou neutralizado sem erro interno vazado
+- [x] 3.1 Escrever o teste de registrar/listar/buscar (create com paciente visível retorna com id; paciente inexistente/anonimizada → não-encontrado idêntico sem criar nada; lista só da paciente consultada em ordem; detalhe encontra; detalhe cruzado → não-encontrado) com fakes e verificar que falha — RED. Verificação: `Cannot find module`
+- [x] 3.2 Implementar os casos de uso dependendo só das portas e verificar verde — GREEN. Verificação: testes da task 3.1 passam, sem importar `infrastructure/`
+- [x] 3.3 Escrever o teste adversarial com payload hostil real (resumo gigante, injeção, unicode, `patientId` malformado/gigante, `limit` acima do teto; sondas: histórico de anonimizada ausente em lista e detalhe; detalhe cruzado entre pacientes) e verificar o comportamento seguro — RED. Verificação: teste falha (módulo ausente ou hostil aceito)
+- [x] 3.4 Implementar o tratamento (validação na fronteira do núcleo + queries parametrizadas + limites; checagem de pertencimento no detalhe) e verificar verde — GREEN. Verificação: hostil rejeitado ou neutralizado sem erro interno vazado
 
 ## 4. Infrastructure — Prisma + Postgres real em container
 
