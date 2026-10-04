@@ -17,4 +17,4 @@
 
 - [x] 4.1 Rodar os quality gates completos nos três workspaces (lint, format, typecheck, test, build) — GREEN. Verificação: todos os comandos com saída 0
 - [x] 4.2 Revisar com `code-review-and-quality` e `security-and-hardening` (foco: nada além de versões/lockfile/aceite mudou; nenhum comportamento de produto) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisões registradas
-- [ ] 4.3 Abrir o PR com o checklist preenchido (link, audit antes/depois, `why`), sem merge — exceção docs/07 §4 só para a escrita do corpo. Verificação: URL do PR e CI rodando
+- [x] 4.3 Abrir o PR com o checklist preenchido (link, audit antes/depois, `why`), sem merge — exceção docs/07 §4 só para a escrita do corpo. Verificação: URL do PR e CI rodando
