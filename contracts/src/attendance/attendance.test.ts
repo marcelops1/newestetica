@@ -10,6 +10,7 @@ const validAttendance = {
   id: "00000000-0000-4000-8000-000000000201",
   patientId: "00000000-0000-4000-8000-000000000101",
   summary: "Limpeza de pele realizada, sem intercorrências.",
+  amountCents: 25_000,
   performedAt: "2026-09-10T14:30:00.000Z",
   createdAt: "2026-09-10T15:00:00.000Z",
   updatedAt: "2026-09-10T15:00:00.000Z",
@@ -90,13 +91,14 @@ describe("contrato de Atendimento (registro operacional + saída)", () => {
     expect(result.success).toBe(true);
   });
 
-  it("Attendance exige id/patientId/resumo/data/timestamps", () => {
+  it("Attendance exige id/patientId/resumo/valor/data/timestamps", () => {
     expect(AttendanceSchema.safeParse(validAttendance).success).toBe(true);
 
     for (const field of [
       "id",
       "patientId",
       "summary",
+      "amountCents",
       "performedAt",
       "createdAt",
       "updatedAt",
@@ -113,6 +115,68 @@ describe("contrato de Atendimento (registro operacional + saída)", () => {
   it("Attendance rejeita id fora do formato UUID do servidor", () => {
     expect(
       AttendanceSchema.safeParse({ ...validAttendance, id: "id-interno-1" })
+        .success,
+    ).toBe(false);
+  });
+});
+
+describe("delta de valor no atendimento (amountCents)", () => {
+  it("AttendanceInput aceita amountCents inteiro de 0 a 10.000.000 e preserva; ausente continua válido", () => {
+    const withValue = AttendanceInputSchema.safeParse({
+      ...validInput,
+      amountCents: 15_000,
+    });
+    expect(withValue.success).toBe(true);
+    if (withValue.success) {
+      expect(withValue.data.amountCents).toBe(15_000);
+    }
+
+    expect(
+      AttendanceInputSchema.safeParse({ ...validInput, amountCents: 0 })
+        .success,
+    ).toBe(true);
+    expect(
+      AttendanceInputSchema.safeParse({
+        ...validInput,
+        amountCents: 10_000_000,
+      }).success,
+    ).toBe(true);
+
+    const withoutValue = AttendanceInputSchema.safeParse(validInput);
+    expect(withoutValue.success).toBe(true);
+    if (withoutValue.success) {
+      expect(withoutValue.data.amountCents).toBeUndefined();
+    }
+  });
+
+  it("rejeita amountCents fracionário, negativo, acima do teto ou não numérico", () => {
+    for (const amountCents of [
+      1.5,
+      -1,
+      10_000_001,
+      "15000",
+      Number.NaN,
+      Number.MAX_SAFE_INTEGER,
+    ]) {
+      expect(
+        AttendanceInputSchema.safeParse({ ...validInput, amountCents }).success,
+        `amountCents hostil: ${String(amountCents)}`,
+      ).toBe(false);
+    }
+  });
+
+  it("Attendance exige amountCents inteiro-ou-nulo (nulo quando não informado)", () => {
+    expect(AttendanceSchema.safeParse(validAttendance).success).toBe(true);
+    expect(
+      AttendanceSchema.safeParse({ ...validAttendance, amountCents: null })
+        .success,
+    ).toBe(true);
+    expect(
+      AttendanceSchema.safeParse({ ...validAttendance, amountCents: 1.5 })
+        .success,
+    ).toBe(false);
+    expect(
+      AttendanceSchema.safeParse({ ...validAttendance, amountCents: "25000" })
         .success,
     ).toBe(false);
   });
