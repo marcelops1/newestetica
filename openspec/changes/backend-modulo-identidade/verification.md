@@ -45,3 +45,18 @@ Contra a cadeia real (JWKS fake local + `JoseTokenValidator` + `JwtAuthGuard`, s
 - **Limitação de CI registrada: a prova de 2FA (`identity.two-factor.int.spec.ts`) NÃO roda no CI** — o pipeline de backend não sobe Keycloak; a suíte detecta a indisponibilidade, marca `skip` com motivo (visível no relatório) e só roda localmente com `make up`. A exigência de 2FA está coberta por dois mecanismos versionados no realm: `requiredActions: ["CONFIGURE_TOTP"]` nos usuários + fluxo `browser-with-required-otp` (OTP REQUIRED) com `browserFlow` apontando para ele.
 - **Prova de 2FA (local, Keycloak real):** RED invertido capturado — com usuários dev e SEM 2FA, o login só-senha **completava** com `code=` no callback (`expected true to be false`, 2/2); depois da configuração versionada, o fluxo para em `login-actions/required-action?execution=CONFIGURE_TOTP` para `fabiana-dev` (admin) e `recepcao-dev` (reception) — 2/2 verdes. A asserção é específica (para no TOTP; `VERIFY_PROFILE` rejeitado explicitamente — o primeiro rascunho pegava esse falso verde).
 
+## 4. Migração dos 3 módulos (tasks 8.1–8.5 + 6.3) — caracterização
+
+Ordem por módulo: trocar o guard no módulo/controller → suíte antiga reprova (RED colado: 401 real onde se esperava o 403 honesto / requests sem token) → converter as suítes com token via verificador fake e atualizar o Swagger (§17) → verde contra o baseline.
+
+| Módulo | RBAC | Baseline (antes) | Depois | Regressão |
+| --- | --- | --- | --- | --- |
+| Pacientes | leitura admin+reception; escrita/anonimização admin | unit 9/36 + integração 5/31 (guard antiga) | unit 9/36 (idêntico) + integração 5/31 (guard-spec convertida p/ 401/403/RBAC) | zero de negócio |
+| Atendimento | admin+reception (operacional) | 11/76 | 11/77 (+1 caso no guard: 401+403+contraste) | zero de negócio |
+| Financeiro | admin-only | 8/36 | 8/35 (guard-spec 4→3 casos, cobrindo 401/403/contraste byte-idêntico; 32 de negócio intactos) | zero de negócio |
+
+- **Suíte completa**: baseline **75 arquivos / 341 testes** → final **85 arquivos / 388 testes** (contratos 100%, cobertura backend 99,7% stmts / 98,17% branches / 100% funcs / 99,69% lines).
+- **Guard honesto removido (task 6.3):** `grep` por `IdentityPendingGuard`/`AUTH_NOT_IMPLEMENTED` em `backend/src` e `backend/test` → **vazio** (arquivo apagado; referências migradas).
+- **Swagger (8.5):** tags sem "bloqueado até a Identidade"; as 9 rotas administrativas documentam 401 (`AUTH_UNAUTHENTICATED`) e 403 (`AUTH_FORBIDDEN`) fixos; `openapi.int.spec.ts` reescrito para travar o contrato real (18 rotas, nenhuma fantasma). Suítes que sobem o `AppModule` (openapi/gate) ganharam o env do Keycloak exigido pelo bootstrap do `IdentityModule`.
+
+

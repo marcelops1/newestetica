@@ -36,7 +36,7 @@
 
 - [x] 6.1 Escrever o teste do guard real (sem token → 401; token fake válido sem papel → 403; com papel → passa; rota sem decorator exige autenticação) e verificar que falha — RED. Verificação: 404 de rota ou `Cannot find module`
 - [x] 6.2 Criar o guard + decorator de papéis no kernel SEM aplicar nos controllers (estado frágil planejado, §14.8) e verificar verde em módulo isolado — GREEN. Verificação: testes passam no módulo de Identidade
-- [ ] 6.3 Apagar o `IdentityPendingGuard` **ao final do grupo 8 (emenda registrada: até a migração dos 3 módulos ele é referenciado)** e provar que nada mais o referencia — RED vira GREEN. Verificação: `grep` por `IdentityPendingGuard` vazio em `backend/src` e `backend/test`; suíte do kernel verde
+- [x] 6.3 Apagar o `IdentityPendingGuard` **ao final do grupo 8 (emenda registrada: até a migração dos 3 módulos ele é referenciado)** e provar que nada mais o referencia — RED vira GREEN. Verificação: `grep` por `IdentityPendingGuard` vazio em `backend/src` e `backend/test`; suíte do kernel verde
 
 ## 7. Realm 2FA versionado + prova contra o realm real
 
@@ -45,11 +45,11 @@
 
 ## 8. Migração dos 3 módulos com caracterização (um por vez, zero regressão)
 
-- [ ] 8.1 Migrar Pacientes para o guard real + decorator e constatar que as guard-specs antigas reprovam (403 honesto sumiu) — RED. Verificação: falhas coladas nas specs do 403 `AUTH_NOT_IMPLEMENTED`
-- [ ] 8.2 Converter as specs de Pacientes para 401/403 reais + atualizar decorators Swagger na mesma task (§17) e verificar verde com respostas de negócio byte-idênticas — GREEN. Verificação: suíte de Pacientes verde contra o baseline da task 0.1
-- [ ] 8.3 Migrar Atendimento (mesmo ciclo RED→GREEN da 8.1→8.2, com Swagger na mesma task) — Verificação: suíte de Atendimento verde contra o baseline
-- [ ] 8.4 Migrar Financeiro (mesmo ciclo RED→GREEN, com Swagger na mesma task) — Verificação: suíte de Financeiro verde contra o baseline
-- [ ] 8.5 Atualizar `openapi.int.spec.ts` (status 401/403 reais, sem `AUTH_NOT_IMPLEMENTED`) e verificar verde — GREEN. Verificação: cobertura de rotas intacta, sem rota fantasma
+- [x] 8.1 Migrar Pacientes para o guard real + decorator e constatar que as guard-specs antigas reprovam (403 honesto sumiu) — RED. Verificação: falhas coladas nas specs do 403 `AUTH_NOT_IMPLEMENTED`
+- [x] 8.2 Converter as specs de Pacientes para 401/403 reais + atualizar decorators Swagger na mesma task (§17) e verificar verde com respostas de negócio byte-idênticas — GREEN. Verificação: suíte de Pacientes verde contra o baseline da task 0.1
+- [x] 8.3 Migrar Atendimento (mesmo ciclo RED→GREEN da 8.1→8.2, com Swagger na mesma task) — Verificação: suíte de Atendimento verde contra o baseline
+- [x] 8.4 Migrar Financeiro (mesmo ciclo RED→GREEN, com Swagger na mesma task) — Verificação: suíte de Financeiro verde contra o baseline
+- [x] 8.5 Atualizar `openapi.int.spec.ts` (status 401/403 reais, sem `AUTH_NOT_IMPLEMENTED`) e verificar verde — GREEN. Verificação: cobertura de rotas intacta, sem rota fantasma
 
 ## 9. Mutation, segurança, registros e backlog
 
