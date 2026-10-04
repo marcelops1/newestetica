@@ -1,11 +1,11 @@
 ## 1. Next 16.3.6 no frontend (RCE em next/og)
 
-- [ ] 1.1 Registrar o RED: `pnpm audit --audit-level high` reprova com o critical do `next` (GHSA-vcvr-r3jv-pc5j) — RED. Verificação: saída com código 1 e o advisory listado (log já capturado no estado inicial)
-- [ ] 1.2 Subir `next` e `eslint-config-next` para `16.3.6` (fixos), reinstalar, e provar build + testes do frontend verdes com o critical zerado — GREEN parcial. Verificação: `pnpm --filter frontend build`, `test`, `typecheck` verdes e o advisory do `next` ausente no audit
+- [x] 1.1 Registrar o RED: `pnpm audit --audit-level high` reprova com o critical do `next` (GHSA-vcvr-r3jv-pc5j) — RED. Verificação: saída com código 1 e o advisory listado (log já capturado no estado inicial)
+- [x] 1.2 Subir `next` e `eslint-config-next` para `16.3.6` (fixos), reinstalar, e provar build + testes do frontend verdes com o critical zerado — GREEN parcial. Verificação: `pnpm --filter frontend build`, `test`, `typecheck` verdes e o advisory do `next` ausente no audit
 
 ## 2. Overrides de brace-expansion por linha
 
-- [ ] 2.1 Registrar o RED: `pnpm --recursive why brace-expansion` mostra `1.1.18` e `5.0.9` (vulneráveis) — RED. Verificação: as duas versões listadas na saída
+- [x] 2.1 Registrar o RED: `pnpm --recursive why brace-expansion` mostra `1.1.18` e `5.0.9` (vulneráveis) — RED. Verificação: as duas versões listadas na saída
 - [ ] 2.2 Adicionar os overrides disjuntos no `package.json` raiz, reinstalar, e provar que nenhuma versão vulnerável resta — GREEN parcial. Verificação: `pnpm --recursive why brace-expansion` só com `>=1.1.20` na linha 1.x e `>=5.0.11` na 5.x
 
 ## 3. Ignore auditável do braces + aceite formal
