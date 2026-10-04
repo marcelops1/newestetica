@@ -4,6 +4,7 @@ import { IdentityPendingGuard } from "../shared/http/identity-pending.guard";
 import { createPrismaClientFromEnv } from "../shared/prisma/client-factory";
 import { GetFinanceSummaryUseCase } from "./application/use-cases/get-finance-summary.use-case";
 import { PrismaFinanceSummaryReader } from "./infrastructure/persistence/finance-summary.reader.impl";
+import { FinanceController } from "./presentation/controllers/finance.controller";
 
 export const FINANCE_PRISMA_CLIENT = Symbol("FINANCE_PRISMA_CLIENT");
 export const FINANCE_SUMMARY_READER = Symbol("FINANCE_SUMMARY_READER");
@@ -13,6 +14,7 @@ export const FINANCE_SUMMARY_READER = Symbol("FINANCE_SUMMARY_READER");
    a leitura do Financeiro é a sua própria porta sobre a tabela. Sem UnitOfWork: o
    módulo só lê. O `IdentityPendingGuard` vem do kernel (uma única definição). */
 @Module({
+  controllers: [FinanceController],
   providers: [
     {
       provide: FINANCE_PRISMA_CLIENT,
