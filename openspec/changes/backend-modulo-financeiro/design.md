@@ -29,9 +29,9 @@ Ver `proposal.md` (Why). Ponto de partida verificado: `backend/src/attendance/` 
 
 `GET /finance/summary?from=&to=` — a única rota do módulo. O domínio expõe função pura `summarize(entries, from, to): { totalCents, count }` (zero import externo — mesma regra dos demais domínios): filtra por período + valor não-nulo, soma em inteiros. A porta `FinanceSummaryReader` (definida no domínio de Financeiro, implementada no Prisma) devolve apenas pares `{ amountCents, performedAt }` de atendimentos de pacientes visíveis — nunca entidades, nunca PII. Rationale: agregado não é entidade (não tem id, não tem ciclo de vida) — entidade de "resumo" seria Active Record disfarçado; função pura é testável sem banco e sem NestJS. Alternativas consideradas: agregação no SQL (`SUM`/`COUNT` direto, rejeitada — esconde a regra no dialeto e impede o teste unitário puro; o dataset por janela é pequeno, sem motivo de performance); reutilizar `AttendanceRepository.findVisibleByPatient` em loop por paciente (rejeitada — N+1 por construção e exige listar pacientes, que é PII na veia da leitura).
 
-### 4. Sem `UnitOfWork`, sem sexto pool (adiado com gatilho)
+### 4. Sem `UnitOfWork`; cliente Prisma próprio (sexto pool, unificação adiada)
 
-Sem `UnitOfWork`: o módulo só lê — não há escrita alguma para atomizar (YAGNI ainda mais barato que no Atendimento). Sem sexto pool: o reader Prisma de Financeiro recebe o `PrismaClient` do módulo de Atendimento via token exportado (`ATTENDANCE_PRISMA_CLIENT`, com `AttendanceModule` passando a exportá-lo; `FinanceModule` importa o módulo SÓ por esse token — nenhum import de domínio, repositório ou caso de uso de Atendimento). Rationale: o Financeiro lê exclusivamente a tabela `Attendance`; um sexto pool para uma query agregada dobra conexões por zero isolamento — e o precedente da decisão 04 §22 manda adiar provider compartilhado para change próprio, não embuti-lo de carona. **Gatilho:** quando o provider compartilhado nascer (ou sob pressão de pools), o wiring migra sem tocar domínio/aplicação — a porta não conhece o cliente. Alternativas consideradas: cliente próprio no `FinanceModule` (rejeitada — sexto pool sem necessidade, exatamente o que as decisões 10 dos 5 módulos adiaram); provider compartilhado agora (rejeitada — pertence a change próprio com trigger, não a carona neste); ler via `AttendanceRepository` (rejeitada — decisão 3: N+1 + PII).
+Sem `UnitOfWork`: o módulo só lê — não há escrita alguma para atomizar (YAGNI ainda mais barato que no Atendimento). Cliente próprio: o `FinanceModule` cria o seu `PrismaClient` com `createPrismaClientFromEnv` do kernel, igual aos outros cinco módulos — sexto pool consciente, mesmo padrão das decisões 10 anteriores (cliente próprio por módulo; adiado é SÓ a unificação em provider compartilhado, em change próprio com o mesmo gatilho). **Gatilho:** quando o provider compartilhado nascer (ou sob pressão de pools), o wiring migra sem tocar domínio/aplicação — a porta não conhece o cliente. Alternativas consideradas: cliente emprestado do Atendimento via token exportado (`ATTENDANCE_PRISMA_CLIENT`, rejeitada — acopla dois bounded contexts no wiring e exige alterar o `AttendanceModule`, já fechado; importar o módulo vizinho pelo cliente é dependência concreta entre contextos, exatamente o que o 02 §3 proíbe); provider compartilhado agora (rejeitada — pertence a change próprio com trigger, não a carona neste); ler via `AttendanceRepository` (rejeitada — decisão 3: N+1 + PII).
 
 ### 5. Visibilidade herdada no agregado, filtro na query
 
@@ -74,16 +74,16 @@ A invariante "anonimizada nunca compõe o agregado" é provada em três pontos, 
 
 ## Risks / Trade-offs
 
-- [Risco] Reutilizar o cliente do Atendimento acopla Financeiro àquele módulo no wiring → Mitigação: acoplamento só no token do cliente (infra), nunca no domínio; gatilho de migração registrado na decisão 4; suíte do Atendimento roda verde como caracterização.
+- [Risco] Sexto pool de conexão (cliente próprio) → Mitigação: mesmo padrão consciente dos 5 módulos; gatilho de unificação registrado na decisão 4 (provider compartilhado em change próprio ou sob pressão de pools).
 - [Risco] Fishing por janelas estreitas revela valor individual → Mitigação: risco declarado no threat model (abuse 4); módulo administrativo sob futuro RBAC; sem breakdown, o vazamento exige adivinhar a janela exata.
 - [Risco] `amountCents` livre recebe dado errado (valor digitado errado, imutável) → Mitigação: teto + tipo inteiro + correção via novo registro; fluxo de correção com trigger se a Fabiana pedir.
 - [Trade-off] Sem breakdown por paciente agora → aceito: nasce com requisito explícito + RBAC, nunca por acidente.
-- [Trade-off] Sexto pool adiado via cliente emprestado → aceito com trigger explícito na decisão 4.
+- [Trade-off] Sexto pool (cliente próprio, mesmo padrão dos 5 módulos) → aceito com trigger explícito na decisão 4.
 - [Trade-off] Sem fiscal/contábil nesta fatia → fora do MVP por definição (UC 2.6.1); estrutura (janela + centavos) não bloqueia evolução.
 
 ## Migration Plan
 
-Sem migração de dados: coluna `amountCents` nullable via migration versionada (nullable = atendimentos existentes continuam válidos, sem backfill inventando valor); rollback = reverter o merge. Nenhum dado existente é tocado. Ordem de `deleteMany` no `resetDatabase` inalterada (sem tabela nova). `AttendanceModule` passa a exportar o token do cliente (adição, sem quebrar consumidores atuais).
+Sem migração de dados: coluna `amountCents` nullable via migration versionada (nullable = atendimentos existentes continuam válidos, sem backfill inventando valor); rollback = reverter o merge. Nenhum dado existente é tocado. Ordem de `deleteMany` no `resetDatabase` inalterada (sem tabela nova). O módulo de Atendimento não é alterado no wiring (só entidade/mappers ganham o campo).
 
 ## Open Questions
 
