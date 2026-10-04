@@ -92,6 +92,92 @@ describe("GetFinanceSummaryUseCase", () => {
     ).resolves.toBeDefined();
   });
 
+  /* Testes de caracterização (comportamento já existente; sem RED — registrados como
+     tal no verification.md): âncoras do formato, data de calendário, from = to e as
+     mensagens que distinguem cada regra de janela. */
+  it("rejeita lixo nas âncoras e data parcial com a mensagem do formato correto", async () => {
+    const reader = new InMemoryFinanceSummaryReader();
+    const useCase = new GetFinanceSummaryUseCase(reader);
+
+    for (const from of [
+      "x2026-09-01",
+      "2026-09-01x",
+      " 2026-09-01",
+      "2026-9-1",
+      "2026-09",
+    ]) {
+      await expect(
+        useCase.execute({ from, to: "2026-09-30" }),
+        `from malformado: ${from}`,
+      ).rejects.toThrow(/from.*YYYY-MM-DD/);
+    }
+    await expect(
+      useCase.execute({ from: "2026-09-01", to: "2026-9-30" }),
+    ).rejects.toThrow(/to.*YYYY-MM-DD/);
+    expect(reader.calls).toHaveLength(0);
+  });
+
+  it("rejeita data de calendário inexistente com a mensagem própria", async () => {
+    const useCase = new GetFinanceSummaryUseCase(
+      new InMemoryFinanceSummaryReader(),
+    );
+
+    await expect(
+      useCase.execute({ from: "2026-02-30", to: "2026-09-30" }),
+    ).rejects.toThrow(/from.*calendário/);
+    await expect(
+      useCase.execute({ from: "2026-09-01", to: "2026-13-01" }),
+    ).rejects.toThrow(/to.*calendário/);
+  });
+
+  it("aceita janela de um único dia (from = to)", async () => {
+    const useCase = new GetFinanceSummaryUseCase(
+      new InMemoryFinanceSummaryReader(),
+    );
+
+    await expect(
+      useCase.execute({ from: "2026-09-10", to: "2026-09-10" }),
+    ).resolves.toBeDefined();
+  });
+
+  it("janela invertida e span acima do teto trazem a mensagem da regra", async () => {
+    const useCase = new GetFinanceSummaryUseCase(
+      new InMemoryFinanceSummaryReader(),
+    );
+
+    await expect(
+      useCase.execute({ from: "2026-12-31", to: "2026-01-01" }),
+    ).rejects.toThrow(/posterior/);
+    await expect(
+      useCase.execute({ from: "2026-01-01", to: "2027-01-03" }),
+    ).rejects.toThrow(/exceder/);
+  });
+
+  it("o erro de janela traz a mensagem de tipo/ISO e o código do contrato de erro, sem eco", async () => {
+    const useCase = new GetFinanceSummaryUseCase(
+      new InMemoryFinanceSummaryReader(),
+    );
+
+    const typeConfused = await useCase
+      .execute({ from: null as never, to: "2026-09-30" })
+      .catch((error: unknown) => error);
+
+    expect(typeConfused).toBeInstanceOf(InvalidFinanceWindow);
+    expect((typeConfused as InvalidFinanceWindow).message).toMatch(
+      /from.*YYYY-MM-DD/,
+    );
+    expect((typeConfused as InvalidFinanceWindow).code).toBe(
+      "INVALID_FINANCE_WINDOW",
+    );
+
+    const inverted = await useCase
+      .execute({ from: "2026-12-31", to: "2026-01-01" })
+      .catch((error: unknown) => error);
+    expect((inverted as InvalidFinanceWindow).code).toBe(
+      "INVALID_FINANCE_WINDOW",
+    );
+  });
+
   it("o teto do núcleo é o teto do contrato (nunca um literal duplicado)", () => {
     expect(MAX_FINANCE_WINDOW_DAYS).toBe(CONTRACT_MAX_WINDOW_DAYS);
   });

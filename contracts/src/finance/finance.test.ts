@@ -69,6 +69,43 @@ describe("contrato da consulta de resumo (FinanceSummaryQuery)", () => {
       }).success,
     ).toBe(false);
   });
+
+  /* Caracterização (comportamento já existente; sem RED): a issue aponta o campo e
+     traz a mensagem da regra — é o que a fronteira HTTP devolve ao cliente. */
+  it("janela invertida reprova apontando from, com a mensagem da regra", () => {
+    const result = FinanceSummaryQuerySchema.safeParse({
+      from: "2026-12-31",
+      to: "2026-01-01",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain("posterior");
+      expect(result.error.issues[0]?.path).toEqual(["from"]);
+    }
+  });
+
+  it("span acima do teto reprova apontando to, com a mensagem da regra", () => {
+    const result = FinanceSummaryQuerySchema.safeParse({
+      from: "2026-01-01",
+      to: "2027-01-03",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain("exceder");
+      expect(result.error.issues[0]?.path).toEqual(["to"]);
+    }
+  });
+
+  it("aceita janela de um único dia (from = to)", () => {
+    expect(
+      FinanceSummaryQuerySchema.safeParse({
+        from: "2026-09-10",
+        to: "2026-09-10",
+      }).success,
+    ).toBe(true);
+  });
 });
 
 describe("contrato do resumo financeiro (FinanceSummary)", () => {

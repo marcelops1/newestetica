@@ -94,12 +94,52 @@ describe("PrismaFinanceSummaryReader (integração com Postgres real)", () => {
     const entries = await reader.readVisibleEntries(FROM, TO);
 
     expect(entries).toEqual([
-      { amountCents: 15_000, performedAt: new Date("2026-09-10T10:00:00.000Z") },
+      {
+        amountCents: 15_000,
+        performedAt: new Date("2026-09-10T10:00:00.000Z"),
+      },
       { amountCents: 1, performedAt: new Date("2026-09-30T23:59:59.999Z") },
     ]);
     for (const entry of entries) {
       expect(Object.keys(entry).sort()).toEqual(["amountCents", "performedAt"]);
     }
+  });
+
+  it("ordena por data asc e id asc no empate (leitura determinística)", async () => {
+    await seedPatient(ALFA);
+    /* Data mais recente inserida primeiro e empate inserido fora da ordem de id:
+       sem a ordenação primária ou sem o desempate, a ordem física/por id apareceria
+       e este teste reprovaria (caracterização do orderBy). */
+    await seedAttendance(
+      "00000000-0000-4000-8000-000000000205",
+      ALFA,
+      500,
+      "2026-09-20T10:00:00.000Z",
+    );
+    await seedAttendance(
+      "00000000-0000-4000-8000-000000000202",
+      ALFA,
+      200,
+      "2026-09-10T10:00:00.000Z",
+    );
+    await seedAttendance(
+      "00000000-0000-4000-8000-000000000201",
+      ALFA,
+      100,
+      "2026-09-10T10:00:00.000Z",
+    );
+    await seedAttendance(
+      "00000000-0000-4000-8000-000000000203",
+      ALFA,
+      300,
+      "2026-09-10T09:00:00.000Z",
+    );
+
+    const entries = await reader.readVisibleEntries(FROM, TO);
+
+    expect(entries.map((entry) => entry.amountCents)).toEqual([
+      300, 100, 200, 500,
+    ]);
   });
 
   it("exclui atendimentos de paciente anonimizada mesmo com valores existindo", async () => {
@@ -121,7 +161,10 @@ describe("PrismaFinanceSummaryReader (integração com Postgres real)", () => {
     const entries = await reader.readVisibleEntries(FROM, TO);
 
     expect(entries).toEqual([
-      { amountCents: 15_000, performedAt: new Date("2026-09-10T10:00:00.000Z") },
+      {
+        amountCents: 15_000,
+        performedAt: new Date("2026-09-10T10:00:00.000Z"),
+      },
     ]);
     expect(JSON.stringify(entries)).not.toContain("99999");
   });
