@@ -29,8 +29,8 @@
 
 ## 5. Infrastructure — validador JWKS real + fake local para testes
 
-- [ ] 5.1 Escrever o teste do validador contra JWKS fake local (round-trip; rotação de chaves; cache sem fetch por requisição; falha dura só após expirar o cache) e verificar que falha — RED. Verificação: `Cannot find module`
-- [ ] 5.2 Implementar o validador (JWKS com cache+TTL, claims, allowlist de `alg`, tolerância de relógio fixa) + fake local configurável e verificar verde — GREEN. Verificação: testes passam sem Keycloak no ar
+- [x] 5.1 Escrever o teste do validador contra JWKS fake local (round-trip; rotação de chaves; cache sem fetch por requisição; falha dura só após expirar o cache) e verificar que falha — RED. Verificação: `Cannot find module`
+- [x] 5.2 Implementar o validador (JWKS com cache+TTL, claims, allowlist de `alg`, tolerância de relógio fixa) + fake local configurável e verificar verde — GREEN. Verificação: testes passam sem Keycloak no ar
 
 ## 6. Presentation — guard real no kernel + decorator (estado frágil planejado)
 
