@@ -15,3 +15,25 @@ Recortes por módulo migrado (caracterização — rede de segurança da troca d
 | Pacientes | 9 | 36 |
 | Atendimento | 11 | 76 |
 | Financeiro | 8 | 36 |
+
+## 1. Emenda de ordem registrada antes do GREEN (padrão §14.9)
+
+- **Tasks 4.x (ataques) executadas após 5.x/6.x:** o RED declarado nas tasks 4.x é o write-then-throw sobre a proteção real ("com a checagem removida de propósito, o forjado passa"); sem o validador (5.2) e o guard (6.2) implementados não existe proteção para remover. Ordem executada: 1 → 2 → 3 → 5 → 6 → 4 → 7 → 8 (test-first preservado: cada ataque tem RED real colado antes do GREEN).
+- **Task 6.3 (apagar o `IdentityPendingGuard`) executa ao final do grupo 8:** até a migração dos 3 módulos (8.1–8.4) eles referenciam o guard honesto — apagá-lo antes quebraria a compilação. A prova de ausência (grep) será feita após a 8.4.
+
+## 2. Ataques do threat model — write-then-throw (tasks 4.1–4.7)
+
+Contra a cadeia real (JWKS fake local + `JoseTokenValidator` + `JwtAuthGuard`, sem override de porta). Cada linha: proteção quebrada de propósito → RED colado → restaurada → GREEN.
+
+| Task | Proteção removida (temporária) | RED colado | GREEN |
+| --- | --- | --- | --- |
+| 4.1 token forjado | verificação de assinatura (decode sem validar) | `expected 200 to be 401` (forjado aceito) | 1 passed |
+| 4.2 expiração/skew | tolerância de relógio → 999.999s | `expected 200 to be 401` (expirado aceito) | 1 passed |
+| 4.3 audience/issuer | opções `issuer`/`audience` do `jwtVerify` | `expected 200 to be 401` (token de outro client/emissor aceito) | 1 passed |
+| 4.4 papel/RBAC | checagem de papel no guard (`if (false)`) | `expected 200 to be 403` (papel insuficiente aceito) | 1 passed |
+| 4.5 allowlist de alg | allowlist → `["RS256","ES256"]` | `expected 200 to be 401` (ES256 assinado por chave do JWKS aceito) | 1 passed |
+| 4.6 confusão de realms | casamento de `issuer` removido | `expected 200 to be 401` (chave compartilhada com emissor estranho aceita) | 1 passed |
+| 4.7 enumeração | mensagem do 401 variável por entrada | corpos 401 diferentes entre entradas | 8 passed (suíte completa) |
+
+**Nota de construção (disciplina §14.5):** `alg: none` e a confusão `HS256` são bloqueados pela própria biblioteca (o jose não verifica token sem assinatura e recusa chave RSA para HMAC); a prova negativa do nosso código é a allowlist (4.5), e o teste com allowlist ampliada demonstra que `none` continua rejeitado mesmo assim — registrado como teste que passa por construção, não como RED.
+

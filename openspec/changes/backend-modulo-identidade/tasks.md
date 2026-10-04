@@ -19,13 +19,13 @@
 
 ## 4. Ataques dedicados, um por task, com write-then-throw (threat model do design)
 
-- [ ] 4.1 Token forjado: semear chave estranha, asserir 401 — RED: com a checagem de assinatura removida de propósito, o forjado passa e o teste reprova; GREEN: restaurada, bloqueia e o teste passa. Verificação: o teste distingue as duas situações
-- [ ] 4.2 Token expirado/`nbf`/skew: `exp` passado, `nbf` futuro e skew além da tolerância → 401; dentro da tolerância passa — RED: sem a checagem temporal, o expirado passa; GREEN: com ela, bloqueia. Verificação: falha sem a checagem, passa com ela
-- [ ] 4.3 Audience/issuer divergentes: token de outro client e de outro emissor → 401 — RED: sem a checagem de claims, o token alheio passa; GREEN: com ela, bloqueia. Verificação: falha sem a checagem, passa com ela
-- [ ] 4.4 Papel ausente/insuficiente + negação por padrão: token sem `roles`, `reception` em rota `admin` e rota sem decorator → 403/401 conforme a regra, com 403 byte-idêntico nos dois casos de papel — RED: sem a checagem de papel, o acesso passa; GREEN: com ela, nega. Verificação: falha sem a checagem, passa com ela
-- [ ] 4.5 Algoritmo `none` e confusão `HS256`/`kid`: token sem assinatura e token `HS256` assinado com a chave pública como segredo HMAC → 401 pela allowlist de `alg` + `kid` só do JWKS confiável — RED: sem a allowlist, o `none` passa; GREEN: com ela, bloqueia. Verificação: falha sem a allowlist, passa com ela
-- [ ] 4.6 Confusão de chaves entre realms: JWKS de outro emissor assinando token válido → 401 pelo casamento `iss`+`kid`+chave — RED: sem o casamento, o token alheio passa; GREEN: com ele, bloqueia. Verificação: falha sem o casamento, passa com ele
-- [ ] 4.7 Enumeração: 401 idêntico para todas as falhas de autenticação e 403 idêntico para sem-papel vs papel-insuficiente, mensagens fixas sem eco de claim/`kid`/detalhe de chave — RED: mensagem que distingue a causa e o teste reprova; GREEN: fixa e idêntica por classe. Verificação: corpos comparados literalmente por classe
+- [x] 4.1 Token forjado: semear chave estranha, asserir 401 — RED: com a checagem de assinatura removida de propósito, o forjado passa e o teste reprova; GREEN: restaurada, bloqueia e o teste passa. Verificação: o teste distingue as duas situações
+- [x] 4.2 Token expirado/`nbf`/skew: `exp` passado, `nbf` futuro e skew além da tolerância → 401; dentro da tolerância passa — RED: sem a checagem temporal, o expirado passa; GREEN: com ela, bloqueia. Verificação: falha sem a checagem, passa com ela
+- [x] 4.3 Audience/issuer divergentes: token de outro client e de outro emissor → 401 — RED: sem a checagem de claims, o token alheio passa; GREEN: com ela, bloqueia. Verificação: falha sem a checagem, passa com ela
+- [x] 4.4 Papel ausente/insuficiente + negação por padrão: token sem `roles`, `reception` em rota `admin` e rota sem decorator → 403/401 conforme a regra, com 403 byte-idêntico nos dois casos de papel — RED: sem a checagem de papel, o acesso passa; GREEN: com ela, nega. Verificação: falha sem a checagem, passa com ela
+- [x] 4.5 Algoritmo `none` e confusão `HS256`/`kid`: token sem assinatura e token `HS256` assinado com a chave pública como segredo HMAC → 401 pela allowlist de `alg` + `kid` só do JWKS confiável — RED: sem a allowlist, o `none` passa; GREEN: com ela, bloqueia. Verificação: falha sem a allowlist, passa com ela
+- [x] 4.6 Confusão de chaves entre realms: JWKS de outro emissor assinando token válido → 401 pelo casamento `iss`+`kid`+chave — RED: sem o casamento, o token alheio passa; GREEN: com ele, bloqueia. Verificação: falha sem o casamento, passa com ele
+- [x] 4.7 Enumeração: 401 idêntico para todas as falhas de autenticação e 403 idêntico para sem-papel vs papel-insuficiente, mensagens fixas sem eco de claim/`kid`/detalhe de chave — RED: mensagem que distingue a causa e o teste reprova; GREEN: fixa e idêntica por classe. Verificação: corpos comparados literalmente por classe
 
 ## 5. Infrastructure — validador JWKS real + fake local para testes
 
@@ -34,9 +34,9 @@
 
 ## 6. Presentation — guard real no kernel + decorator (estado frágil planejado)
 
-- [ ] 6.1 Escrever o teste do guard real (sem token → 401; token fake válido sem papel → 403; com papel → passa; rota sem decorator exige autenticação) e verificar que falha — RED. Verificação: 404 de rota ou `Cannot find module`
-- [ ] 6.2 Criar o guard + decorator de papéis no kernel SEM aplicar nos controllers (estado frágil planejado, §14.8) e verificar verde em módulo isolado — GREEN. Verificação: testes passam no módulo de Identidade
-- [ ] 6.3 Apagar o `IdentityPendingGuard` e provar que nada mais o referencia — RED vira GREEN. Verificação: `grep` por `IdentityPendingGuard` vazio em `backend/src` e `backend/test`; suíte do kernel verde
+- [x] 6.1 Escrever o teste do guard real (sem token → 401; token fake válido sem papel → 403; com papel → passa; rota sem decorator exige autenticação) e verificar que falha — RED. Verificação: 404 de rota ou `Cannot find module`
+- [x] 6.2 Criar o guard + decorator de papéis no kernel SEM aplicar nos controllers (estado frágil planejado, §14.8) e verificar verde em módulo isolado — GREEN. Verificação: testes passam no módulo de Identidade
+- [ ] 6.3 Apagar o `IdentityPendingGuard` **ao final do grupo 8 (emenda registrada: até a migração dos 3 módulos ele é referenciado)** e provar que nada mais o referencia — RED vira GREEN. Verificação: `grep` por `IdentityPendingGuard` vazio em `backend/src` e `backend/test`; suíte do kernel verde
 
 ## 7. Realm 2FA versionado + prova contra o realm real
 
