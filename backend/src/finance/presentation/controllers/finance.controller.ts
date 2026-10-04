@@ -1,7 +1,10 @@
-import { Controller, Get, Query, UseFilters } from "@nestjs/common";
+import { Controller, Get, Query, UseFilters, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiTags, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
 import { FinanceSummaryQuerySchema } from "@newestetica/contracts";
 import { GetFinanceSummaryUseCase } from "../../application/use-cases/get-finance-summary.use-case";
+import {
+  IdentityPendingGuard,
+} from "../../../shared/http/identity-pending.guard";
 import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
 
@@ -11,12 +14,12 @@ type FinanceSummaryScaffoldResponse = {
   count: number;
 };
 
-/* Scaffold frágil PLANEJADO (docs/07 §14.8): a rota nasce sem o guard e com o formato
-   de saída parcial — o guard entra na task 5.4 e a janela ecoada + decorators de
-   Swagger fecham na task 5.6; os REDs de 5.3 e 5.5 provam que proteção e contrato são
-   barreiras reais, não presumidas. */
+/* Scaffold frágil PLANEJADO (docs/07 §14.8): a janela ecoada e os decorators
+   completos de Swagger fecham na task 5.6; o RED da task 5.3 provou que o guard
+   (aplicado na 5.4) é a barreira real do acesso. */
 @ApiTags("Financeiro (bloqueado até a Identidade)")
 @Controller("finance")
+@UseGuards(IdentityPendingGuard)
 @UseFilters(DomainExceptionFilter)
 export class FinanceController {
   constructor(private readonly getFinanceSummary: GetFinanceSummaryUseCase) {}
