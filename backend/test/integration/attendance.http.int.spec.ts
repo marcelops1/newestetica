@@ -2,7 +2,11 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AttendanceModule } from "../../src/attendance/attendance.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import {
+  FAKE_TOKEN_VERIFIER,
+  bearer,
+} from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -51,11 +55,13 @@ async function seedAttendance(
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [AttendanceModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -71,11 +77,27 @@ beforeEach(async () => {
   await resetDatabase(prisma);
 });
 
-describe("Attendance HTTP (contrato da Presentation, com guard desativado por override)", () => {
+
+/* Requisição autenticada (token de admin/reception via verificador fake). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: "test-admin" | "test-reception" } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
+
+describe("Attendance HTTP (contrato da Presentation, com token válido (verificador fake))", () => {
   it("POST /patients/:patientId/attendances cria com 201 e id gerado pelo servidor", async () => {
     await seedPatient(ALFA);
 
-    const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
+    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -100,7 +122,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
   it("POST com payload inválido responde 422 sem ecoar o resumo", async () => {
     await seedPatient(ALFA);
 
-    const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
+    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -117,7 +139,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
   it("POST com amountCents válido responde 201 com o valor; sem valor responde nulo — leitura posterior confirma", async () => {
     await seedPatient(ALFA);
 
-    const withValue = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
+    const withValue = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -134,7 +156,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     expect(withValue.status).toBe(201);
     expect(createdWithValue.amountCents).toBe(15_000);
 
-    const withoutValue = await fetch(
+    const withoutValue = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances`,
       {
         method: "POST",
@@ -152,7 +174,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     expect(withoutValue.status).toBe(201);
     expect(createdWithoutValue.amountCents).toBeNull();
 
-    const detail = await fetch(
+    const detail = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances/${createdWithValue.id}`,
     );
     const detailBody = (await detail.json()) as { amountCents: number | null };
@@ -164,7 +186,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     await seedPatient(ALFA);
 
     for (const amountCents of [1.5, -1, 10_000_001]) {
-      const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
+      const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -186,7 +208,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
   it("POST para paciente inexistente ou anonimizada responde 404 idêntico sem criar nada", async () => {
     await seedPatient(ANONYMIZED, false);
 
-    const missing = await fetch(
+    const missing = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000999/attendances`,
       {
         method: "POST",
@@ -197,7 +219,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
         }),
       },
     );
-    const anonymized = await fetch(
+    const anonymized = await authFetch(
       `${baseUrl}/patients/${ANONYMIZED}/attendances`,
       {
         method: "POST",
@@ -239,7 +261,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
       "2026-09-11T09:00:00.000Z",
     );
 
-    const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`);
+    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`);
 
     expect(response.status).toBe(200);
     const body = (await response.json()) as Array<{ id: string }>;
@@ -262,24 +284,24 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
       "2026-08-01T10:00:00.000Z",
     );
 
-    const limited = await fetch(
+    const limited = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances?limit=1`,
     );
     expect(limited.status).toBe(200);
     await expect(limited.json()).resolves.toHaveLength(1);
 
-    const midLimit = await fetch(
+    const midLimit = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances?limit=2`,
     );
     expect(midLimit.status).toBe(200);
     await expect(midLimit.json()).resolves.toHaveLength(2);
 
-    const overLimit = await fetch(
+    const overLimit = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances?limit=501`,
     );
     expect(overLimit.status).toBe(422);
 
-    const nonNumeric = await fetch(
+    const nonNumeric = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances?limit=abc`,
     );
     expect(nonNumeric.status).toBe(422);
@@ -288,10 +310,10 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
   it("GET para paciente inexistente ou anonimizada responde 404 idêntico", async () => {
     await seedPatient(ANONYMIZED, false);
 
-    const missing = await fetch(
+    const missing = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000999/attendances`,
     );
-    const anonymized = await fetch(
+    const anonymized = await authFetch(
       `${baseUrl}/patients/${ANONYMIZED}/attendances`,
     );
 
@@ -317,18 +339,18 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
       "2026-09-11T09:00:00.000Z",
     );
 
-    const found = await fetch(
+    const found = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances/00000000-0000-4000-8000-000000000201`,
     );
     expect(found.status).toBe(200);
 
-    const crossed = await fetch(
+    const crossed = await authFetch(
       `${baseUrl}/patients/${BRAVO}/attendances/00000000-0000-4000-8000-000000000201`,
     );
-    const missingAttendance = await fetch(
+    const missingAttendance = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances/00000000-0000-4000-8000-000000000299`,
     );
-    const anonymizedPatient = await fetch(
+    const anonymizedPatient = await authFetch(
       `${baseUrl}/patients/${ANONYMIZED}/attendances/00000000-0000-4000-8000-000000000202`,
     );
 
@@ -362,7 +384,7 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     const url = `${baseUrl}/patients/${ALFA}/attendances/00000000-0000-4000-8000-000000000201`;
 
     for (const method of ["PUT", "PATCH", "DELETE"]) {
-      const response = await fetch(url, {
+      const response = await authFetch(url, {
         method,
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ summary: "tentativa fictícia" }),

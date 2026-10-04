@@ -2,7 +2,11 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AttendanceModule } from "../../src/attendance/attendance.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import {
+  FAKE_TOKEN_VERIFIER,
+  bearer,
+} from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -64,11 +68,13 @@ async function seedAttendance(
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [AttendanceModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -83,6 +89,22 @@ afterAll(async () => {
 beforeEach(async () => {
   await resetDatabase(prisma);
 });
+
+
+/* Requisição autenticada (token de admin/reception via verificador fake). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: "test-admin" | "test-reception" } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
 
 describe("histórico de paciente anonimizada nunca é servido (invariante herdada)", () => {
   it("a lista da ativa contém exatamente o histórico dela — a anonimizada nunca aparece", async () => {
@@ -101,7 +123,7 @@ describe("histórico de paciente anonimizada nunca é servido (invariante herdad
       "2026-09-11T09:00:00.000Z",
     );
 
-    const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`);
+    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`);
     const body = (await response.json()) as Array<{ id: string }>;
 
     expect(response.status).toBe(200);
@@ -119,16 +141,16 @@ describe("histórico de paciente anonimizada nunca é servido (invariante herdad
       "2026-09-11T09:00:00.000Z",
     );
 
-    const anonymizedList = await fetch(
+    const anonymizedList = await authFetch(
       `${baseUrl}/patients/${ANONYMIZED}/attendances`,
     );
-    const missingList = await fetch(
+    const missingList = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000999/attendances`,
     );
-    const anonymizedDetail = await fetch(
+    const anonymizedDetail = await authFetch(
       `${baseUrl}/patients/${ANONYMIZED}/attendances/${ANONYMIZED_ATTENDANCE}`,
     );
-    const missingDetail = await fetch(
+    const missingDetail = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000999/attendances/${ANONYMIZED_ATTENDANCE}`,
     );
 
@@ -154,7 +176,7 @@ describe("histórico de paciente anonimizada nunca é servido (invariante herdad
   it("registro para anonimizada responde 404 e não cria nada", async () => {
     await seedPatient(ANONYMIZED, false);
 
-    const response = await fetch(
+    const response = await authFetch(
       `${baseUrl}/patients/${ANONYMIZED}/attendances`,
       {
         method: "POST",
@@ -182,10 +204,10 @@ describe("histórico de paciente anonimizada nunca é servido (invariante herdad
       "2026-09-11T09:00:00.000Z",
     );
 
-    const viaAlfa = await fetch(
+    const viaAlfa = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances/${ANONYMIZED_ATTENDANCE}`,
     );
-    const viaAnonymized = await fetch(
+    const viaAnonymized = await authFetch(
       `${baseUrl}/patients/${ANONYMIZED}/attendances/${ANONYMIZED_ATTENDANCE}`,
     );
 
@@ -212,7 +234,7 @@ describe("histórico de paciente anonimizada nunca é servido (invariante herdad
       "2026-09-11T09:00:00.000Z",
     );
 
-    const response = await fetch(`${baseUrl}/patients/${BRAVO}/attendances`);
+    const response = await authFetch(`${baseUrl}/patients/${BRAVO}/attendances`);
     const body = (await response.json()) as Array<unknown>;
 
     expect(response.status).toBe(200);
