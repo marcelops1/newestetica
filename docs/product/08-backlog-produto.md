@@ -450,7 +450,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API agrega o resumo financeiro essencial.
 - **Critérios de aceite:**
   - Escopo limitado ao essencial; sem fiscal/contábil.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (resumo agregado por janela entregue no módulo `backend/src/finance` — `GET /finance/summary?from=&to=` com janela obrigatória (teto de 366 dias), `currency: "BRL"`, `totalCents` e `count`, **sem PII e sem breakdown por construção**; agregação pura no domínio + porta própria de leitura (`FinanceSummaryReader`) com **visibilidade herdada da paciente na query** (`patient: { status: "active" }` — valor de anonimizada nunca compõe o agregado, provado por write-then-throw); valor do atendimento em `amountCents` opcional e imutável no Atendimento (coluna nullable + migration, contrato estendido); guard honesto do kernel na rota (403 `AUTH_NOT_IMPLEMENTED`); cliente Prisma próprio (sexto pool consciente); pendentes com trigger: breakdown por paciente (nasce com RBAC real), fluxo de correção de valor (novo registro, trigger se a Fabiana pedir), unificação de pools e substituição do guard pelo Keycloak/RBAC no módulo de Identidade).
 
 **Use Case 4.2.7 — Conteúdo Público (API)**
 

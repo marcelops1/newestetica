@@ -7,6 +7,7 @@ import type { PatientDirectory } from "../../domain/ports/patient-directory";
 export type CreateAttendanceInput = {
   patientId: string;
   summary: string;
+  amountCents?: number | null;
   performedAt: string;
 };
 
@@ -44,6 +45,7 @@ export class CreateAttendanceUseCase {
       id: randomUUID(),
       patientId: patient.id,
       summary: input.summary,
+      amountCents: input.amountCents ?? null,
       performedAt: parsePerformedAt(input.performedAt),
     });
     await this.attendances.save(attendance);

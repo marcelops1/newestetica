@@ -90,11 +90,15 @@ model Patient {
  * Histórico operacional simples do UC 4.2.5: o que foi realizado por paciente.
  * Imutável (sem update/delete na API), sem snapshot de PII — o vínculo é por FK e a
  * visibilidade é herdada do Patient (anonimizada nunca é servida — docs/security §4).
+ * `amountCents` (UC 4.2.6) é o valor opcional do atendimento em centavos inteiros:
+ * coluna nullable para não inventar valor em registros existentes; imutável depois
+ * de criado (a API não expõe update).
  */
 model Attendance {
   id          String   @id
   patientId   String
   summary     String
+  amountCents Int?
   performedAt DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

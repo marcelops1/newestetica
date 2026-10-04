@@ -21,7 +21,7 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle("Newestetica API")
     .setDescription(
       "API do sistema da clínica — reflete somente os módulos implementados até agora. " +
-        "As rotas de Pacientes e de Atendimento estão bloqueadas pelo IdentityPendingGuard até o módulo de Identidade.",
+        "As rotas de Pacientes, Atendimento e Financeiro estão bloqueadas pelo IdentityPendingGuard até o módulo de Identidade.",
     )
     .setVersion("0.1.0")
     .addTag("Agendamento")
@@ -29,6 +29,7 @@ export function setupSwagger(app: INestApplication): void {
     .addTag("Conteúdo Público")
     .addTag("Pacientes (bloqueado até a Identidade)")
     .addTag("Atendimento (bloqueado até a Identidade)")
+    .addTag("Financeiro (bloqueado até a Identidade)")
     .addTag("Health")
     .build();
 

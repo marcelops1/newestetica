@@ -221,18 +221,22 @@ const patients = [
 ];
 
 /* Atendimentos fictícios (histórico operacional — nunca dado clínico):
-   dois registros simples vinculados às pacientes ilustrativas acima (FK). */
+   dois registros simples vinculados às pacientes ilustrativas acima (FK); um com
+   valor fictício arredondado (R$ 150,00) e um SEM valor, exercitando os dois
+   caminhos do resumo financeiro (design decisão 9). */
 const attendances = [
   {
     id: "00000000-0000-4000-8000-000000000201",
     patientId: "00000000-0000-4000-8000-000000000101",
     summary: "Limpeza de pele realizada, sem intercorrências.",
+    amountCents: 15000,
     performedAt: "2026-08-12T14:30:00.000Z",
   },
   {
     id: "00000000-0000-4000-8000-000000000202",
     patientId: "00000000-0000-4000-8000-000000000102",
     summary: "Hidratação facial realizada, pele bem tolerada.",
+    amountCents: null,
     performedAt: "2026-09-02T10:00:00.000Z",
   },
 ];
@@ -358,23 +362,25 @@ try {
 
   for (const attendance of attendances) {
     await client.query(
-      `INSERT INTO "Attendance" (id, "patientId", summary, "performedAt", "updatedAt")
-       VALUES ($1, $2, $3, $4, now())
+      `INSERT INTO "Attendance" (id, "patientId", summary, "amountCents", "performedAt", "updatedAt")
+       VALUES ($1, $2, $3, $4, $5, now())
        ON CONFLICT (id) DO UPDATE SET
          "patientId" = EXCLUDED."patientId",
          summary = EXCLUDED.summary,
+         "amountCents" = EXCLUDED."amountCents",
          "performedAt" = EXCLUDED."performedAt",
          "updatedAt" = now()`,
       [
         attendance.id,
         attendance.patientId,
         attendance.summary,
+        attendance.amountCents,
         attendance.performedAt,
       ],
     );
   }
   console.log(
-    `Seed de atendimentos aplicado: ${attendances.length} fictícios (histórico operacional, sem dado clínico).`,
+    `Seed de atendimentos aplicado: ${attendances.length} fictícios (histórico operacional, sem dado clínico; um com valor fictício, um sem).`,
   );
 } finally {
   await client.end();

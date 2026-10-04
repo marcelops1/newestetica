@@ -1,15 +1,19 @@
 import { InvalidAttendance } from "../errors/errors";
 
 export const MAX_ATTENDANCE_SUMMARY_LENGTH = 500;
+/** Teto do valor em centavos (R$ 100.000): bound do núcleo, espelhado no contrato. */
+export const MAX_ATTENDANCE_AMOUNT_CENTS = 10_000_000;
 
 export type AttendanceProps = {
   id: string;
   patientId: string;
   summary: string;
+  amountCents?: number | null;
   performedAt: Date;
 };
 
 export type AttendanceSnapshot = AttendanceProps & {
+  amountCents: number | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -24,7 +28,12 @@ export class Attendance {
   static create(props: AttendanceProps): Attendance {
     const now = new Date();
     const snapshot: AttendanceSnapshot = {
-      ...props,
+      id: props.id,
+      patientId: props.patientId,
+      summary: props.summary,
+      /* Ausente = sem valor fechado: normaliza para nulo, nunca 0 (0 é um valor). */
+      amountCents: props.amountCents ?? null,
+      performedAt: props.performedAt,
       createdAt: now,
       updatedAt: now,
     };
@@ -64,6 +73,19 @@ export class Attendance {
     ) {
       throw new InvalidAttendance("data de realização inválida");
     }
+    /* Valor é dinheiro: centavos inteiros no intervalo do teto, ou nulo (não
+       informado). Tipo confundido (string, NaN, objeto) vira InvalidAttendance. */
+    if (
+      props.amountCents !== null &&
+      (typeof props.amountCents !== "number" ||
+        !Number.isInteger(props.amountCents) ||
+        props.amountCents < 0 ||
+        props.amountCents > MAX_ATTENDANCE_AMOUNT_CENTS)
+    ) {
+      throw new InvalidAttendance(
+        `valor deve ser inteiro entre 0 e ${MAX_ATTENDANCE_AMOUNT_CENTS} centavos, ou nulo`,
+      );
+    }
     if (
       !(props.createdAt instanceof Date) ||
       Number.isNaN(props.createdAt.getTime()) ||
@@ -84,6 +106,10 @@ export class Attendance {
 
   get summary(): string {
     return this.props.summary;
+  }
+
+  get amountCents(): number | null {
+    return this.props.amountCents;
   }
 
   get performedAt(): Date {

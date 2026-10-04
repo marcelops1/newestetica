@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Attendance } from "./attendance.entity";
+import { MAX_ATTENDANCE_AMOUNT_CENTS as CONTRACT_MAX_AMOUNT_CENTS } from "@newestetica/contracts";
+import { Attendance, MAX_ATTENDANCE_AMOUNT_CENTS } from "./attendance.entity";
 import { InvalidAttendance } from "../errors/errors";
 
 const validProps = {
@@ -71,6 +72,7 @@ describe("Attendance (entidade imutável)", () => {
   it("restore valida snapshot corrompido vindo da persistência", () => {
     const snapshot = {
       ...validProps,
+      amountCents: null,
       summary: "   ",
       createdAt: new Date("2026-09-10T15:00:00.000Z"),
       updatedAt: new Date("2026-09-10T15:00:00.000Z"),
@@ -82,6 +84,7 @@ describe("Attendance (entidade imutável)", () => {
   it("restore rejeita timestamps inválidos ou de tipo errado (banco não é fonte confiável)", () => {
     const base = {
       ...validProps,
+      amountCents: null,
       createdAt: new Date("2026-09-10T15:00:00.000Z"),
       updatedAt: new Date("2026-09-10T15:00:00.000Z"),
     };
@@ -118,11 +121,82 @@ describe("Attendance (entidade imutável)", () => {
 
     const attendance = Attendance.restore({
       ...validProps,
+      amountCents: null,
       createdAt,
       updatedAt,
     });
 
     expect(attendance.createdAt.toISOString()).toBe(createdAt.toISOString());
     expect(attendance.updatedAt.toISOString()).toBe(updatedAt.toISOString());
+  });
+});
+
+describe("Attendance — valor opcional em centavos (amountCents)", () => {
+  it("create preserva valor válido e normaliza ausente para nulo", () => {
+    const withValue = Attendance.create({ ...validProps, amountCents: 15_000 });
+    expect(withValue.amountCents).toBe(15_000);
+
+    const zero = Attendance.create({ ...validProps, amountCents: 0 });
+    expect(zero.amountCents).toBe(0);
+
+    const without = Attendance.create(validProps);
+    expect(without.amountCents).toBeNull();
+  });
+
+  it("o teto do valor no núcleo é o teto do contrato (nunca um literal duplicado)", () => {
+    expect(MAX_ATTENDANCE_AMOUNT_CENTS).toBe(CONTRACT_MAX_AMOUNT_CENTS);
+  });
+
+  it("rejeita valor fracionário, negativo, acima do teto ou de tipo errado", () => {
+    for (const amountCents of [
+      1.5,
+      -1,
+      10_000_001,
+      "15000",
+      Number.NaN,
+      Number.MAX_SAFE_INTEGER,
+    ]) {
+      expect(
+        () =>
+          Attendance.create({
+            ...validProps,
+            amountCents: amountCents as never,
+          }),
+        `valor hostil: ${String(amountCents)}`,
+      ).toThrow(InvalidAttendance);
+    }
+  });
+
+  it("restore valida valor corrompido vindo da persistência (só inteiro ou nulo)", () => {
+    const base = {
+      ...validProps,
+      createdAt: new Date("2026-09-10T15:00:00.000Z"),
+      updatedAt: new Date("2026-09-10T15:00:00.000Z"),
+    };
+
+    expect(
+      Attendance.restore({ ...base, amountCents: null }).amountCents,
+    ).toBeNull();
+    expect(
+      Attendance.restore({ ...base, amountCents: 15_000 }).amountCents,
+    ).toBe(15_000);
+    for (const amountCents of [1.5, -1, 10_000_001, "15000", Number.NaN]) {
+      expect(
+        () =>
+          Attendance.restore({ ...base, amountCents: amountCents as never }),
+        `valor hostil vindo do banco: ${String(amountCents)}`,
+      ).toThrow(InvalidAttendance);
+    }
+  });
+
+  it("não expõe setter de valor — imutabilidade estrutural", () => {
+    const attendance = Attendance.create(validProps) as unknown as Record<
+      string,
+      unknown
+    >;
+
+    expect(attendance.setAmountCents).toBeUndefined();
+    expect(attendance.updateAmountCents).toBeUndefined();
+    expect(attendance.amountCents).toBeNull();
   });
 });

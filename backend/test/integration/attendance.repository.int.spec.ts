@@ -32,11 +32,13 @@ function makeAttendance(
   id: string,
   patientId: string,
   performedAt: string,
+  amountCents: number | null = null,
 ): Attendance {
   return Attendance.create({
     id,
     patientId,
     summary: `Atendimento fictício ${id}.`,
+    amountCents,
     performedAt: new Date(performedAt),
   });
 }
@@ -45,8 +47,9 @@ async function seedAttendance(
   id: string,
   patientId: string,
   performedAt: string,
+  amountCents: number | null = null,
 ): Promise<Attendance> {
-  const attendance = makeAttendance(id, patientId, performedAt);
+  const attendance = makeAttendance(id, patientId, performedAt, amountCents);
   await repository.save(attendance);
   return attendance;
 }
@@ -80,6 +83,31 @@ describe("PrismaAttendanceRepository (integração com Postgres real)", () => {
     expect(found[0]?.createdAt.toISOString()).toBe(
       created.createdAt.toISOString(),
     );
+  });
+
+  it("faz round-trip do valor em centavos: com valor persiste e devolve; sem valor devolve nulo", async () => {
+    await seedPatient(ALFA);
+    await seedAttendance(
+      "00000000-0000-4000-8000-000000000201",
+      ALFA,
+      "2026-09-10T14:30:00.000Z",
+      15_000,
+    );
+    await seedAttendance(
+      "00000000-0000-4000-8000-000000000202",
+      ALFA,
+      "2026-09-11T09:00:00.000Z",
+    );
+
+    const found = await repository.findVisibleByPatient(ALFA, 100);
+    const byId = new Map(found.map((item) => [item.id, item]));
+
+    expect(byId.get("00000000-0000-4000-8000-000000000201")?.amountCents).toBe(
+      15_000,
+    );
+    expect(
+      byId.get("00000000-0000-4000-8000-000000000202")?.amountCents,
+    ).toBeNull();
   });
 
   it("save de novo com o mesmo id não duplica (upsert)", async () => {
@@ -214,6 +242,7 @@ describe("PrismaAttendanceRepository (integração com Postgres real)", () => {
 
     expect(record?.patientId).toBe(ALFA);
     expect(Object.keys(record ?? {}).sort()).toEqual([
+      "amountCents",
       "createdAt",
       "id",
       "patientId",

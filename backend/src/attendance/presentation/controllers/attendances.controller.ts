@@ -73,6 +73,7 @@ function toResponse(attendance: Attendance): AttendanceItemResponse {
     id: attendance.id,
     patientId: attendance.patientId,
     summary: attendance.summary,
+    amountCents: attendance.amountCents,
     performedAt: attendance.performedAt.toISOString(),
     createdAt: attendance.createdAt.toISOString(),
     updatedAt: attendance.updatedAt.toISOString(),

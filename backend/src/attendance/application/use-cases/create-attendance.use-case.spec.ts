@@ -141,4 +141,42 @@ describe("CreateAttendanceUseCase", () => {
       attendances.findVisibleByPatient(PATIENT_ID, 100),
     ).resolves.toEqual([]);
   });
+
+  it("valor válido é aceito, persistido e devolvido; sem valor o registro fica nulo", async () => {
+    const { useCase, attendances } = makeUseCase();
+
+    const withValue = await useCase.execute({
+      ...validInput,
+      amountCents: 15_000,
+    });
+    expect(withValue.amountCents).toBe(15_000);
+
+    const withoutValue = await useCase.execute(validInput);
+    expect(withoutValue.amountCents).toBeNull();
+
+    const persisted = await attendances.findVisibleByPatient(PATIENT_ID, 100);
+    expect(persisted.some((item) => item.amountCents === 15_000)).toBe(true);
+    expect(persisted.some((item) => item.amountCents === null)).toBe(true);
+  });
+
+  it("valor hostil é rejeitado no núcleo sem persistir (defesa em profundidade)", async () => {
+    const { useCase, attendances } = makeUseCase();
+
+    for (const amountCents of [
+      1.5,
+      -1,
+      10_000_001,
+      Number.NaN,
+      "15000",
+      Number.MAX_SAFE_INTEGER,
+    ]) {
+      await expect(
+        useCase.execute({ ...validInput, amountCents: amountCents as never }),
+        `valor hostil: ${String(amountCents)}`,
+      ).rejects.toThrow(InvalidAttendance);
+    }
+    await expect(
+      attendances.findVisibleByPatient(PATIENT_ID, 100),
+    ).resolves.toEqual([]);
+  });
 });

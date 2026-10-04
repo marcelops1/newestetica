@@ -4,5 +4,6 @@ export * from "./attendance/index";
 export * from "./catalog/index";
 export * from "./content/index";
 export * from "./errors";
+export * from "./finance/index";
 export * from "./patients/index";
 export * from "./scheduling/index";

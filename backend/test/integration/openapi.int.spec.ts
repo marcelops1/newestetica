@@ -63,6 +63,7 @@ const API_TAGS = [
   "Conteúdo Público",
   "Pacientes (bloqueado até a Identidade)",
   "Atendimento (bloqueado até a Identidade)",
+  "Financeiro (bloqueado até a Identidade)",
   "Health",
 ];
 
@@ -155,6 +156,12 @@ const EXPECTED_ROUTES: Array<{
     statuses: ["200", "403", "404", "422"],
     pathParams: ["patientId", "id"],
   },
+  {
+    method: "get",
+    path: "/finance/summary",
+    statuses: ["200", "403", "422"],
+    queryParams: ["from", "to"],
+  },
 ];
 
 async function fetchDocument(): Promise<OpenApiDocument> {
@@ -175,15 +182,16 @@ type OpenApiOperation = Operation & {
   >;
 };
 
-describe("bloqueio explícito na documentação (Pacientes + Atendimento)", () => {
-  it("as 8 rotas bloqueadas documentam o 403 honesto (guard + UC 4.2.1)", async () => {
+describe("bloqueio explícito na documentação (Pacientes + Atendimento + Financeiro)", () => {
+  it("as 9 rotas bloqueadas documentam o 403 honesto (guard + UC 4.2.1)", async () => {
     const document = (await fetchDocument()) as unknown as {
       paths: Record<string, Record<string, OpenApiOperation>>;
     };
-    const blockedRoutes = EXPECTED_ROUTES.filter((route) =>
-      route.path.startsWith("/patients"),
+    const blockedRoutes = EXPECTED_ROUTES.filter(
+      (route) =>
+        route.path.startsWith("/patients") || route.path.startsWith("/finance"),
     );
-    expect(blockedRoutes).toHaveLength(8);
+    expect(blockedRoutes).toHaveLength(9);
 
     for (const route of blockedRoutes) {
       const operation = document.paths[route.path]?.[route.method];
@@ -236,8 +244,9 @@ const CONTRACT_COMPONENTS: Record<string, string[]> = {
     "title",
   ],
   PatientInputDto: ["fullName", "phone", "purpose"],
-  AttendanceInputDto: ["performedAt", "summary"],
+  AttendanceInputDto: ["amountCents", "performedAt", "summary"],
   AttendanceResponseDto: [
+    "amountCents",
     "createdAt",
     "id",
     "patientId",
@@ -255,6 +264,7 @@ const CONTRACT_COMPONENTS: Record<string, string[]> = {
     "updatedAt",
   ],
   PatientUpdateDto: ["fullName", "phone", "purpose"],
+  FinanceSummaryResponseDto: ["count", "currency", "from", "to", "totalCents"],
 };
 
 describe("fidelidade dos componentes ao contrato (sem duplicação manual)", () => {
@@ -285,7 +295,7 @@ describe("fidelidade dos componentes ao contrato (sem duplicação manual)", () 
 });
 
 describe("cobertura total das rotas implementadas", () => {
-  it("documenta exatamente as 17 rotas (nenhuma ausente, nenhuma fantasma)", async () => {
+  it("documenta exatamente as 18 rotas (nenhuma ausente, nenhuma fantasma)", async () => {
     const document = await fetchDocument();
     const actual = Object.entries(document.paths)
       .flatMap(([path, methods]) =>
