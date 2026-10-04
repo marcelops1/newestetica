@@ -2,7 +2,11 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { FinanceModule } from "../../src/finance/finance.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import {
+  FAKE_TOKEN_VERIFIER,
+  bearer,
+} from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -55,11 +59,13 @@ async function seedAttendance(
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [FinanceModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -75,7 +81,23 @@ beforeEach(async () => {
   await resetDatabase(prisma);
 });
 
-describe("Finance HTTP (rota de resumo, com guard desativado por override)", () => {
+
+/* Requisição autenticada (token de admin via verificador fake — o guard é o real). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: string } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
+
+describe("Finance HTTP (rota de resumo, com token válido (verificador fake))", () => {
   it("GET /finance/summary com janela válida responde 200 com o agregado (só com valor e na janela)", async () => {
     await seedPatient(ALFA);
     await seedAttendance(
@@ -97,7 +119,7 @@ describe("Finance HTTP (rota de resumo, com guard desativado por override)", () 
       "2026-08-31T23:59:59.999Z",
     );
 
-    const response = await fetch(
+    const response = await authFetch(
       `${baseUrl}/finance/summary?from=2026-09-01&to=2026-09-30`,
     );
     const body = (await response.json()) as Record<string, unknown>;
@@ -110,7 +132,7 @@ describe("Finance HTTP (rota de resumo, com guard desativado por override)", () 
   it("janela sem atendimentos valorados responde 200 com zeros", async () => {
     await seedPatient(ALFA);
 
-    const response = await fetch(
+    const response = await authFetch(
       `${baseUrl}/finance/summary?from=2026-09-01&to=2026-09-30`,
     );
     const body = (await response.json()) as Record<string, unknown>;
@@ -132,7 +154,7 @@ describe("Finance HTTP (rota de resumo, com guard desativado por override)", () 
     ];
 
     for (const query of hostiles) {
-      const response = await fetch(
+      const response = await authFetch(
         `${baseUrl}/finance/summary${query ? `?${query}` : ""}`,
       );
       const body = (await response.json()) as { code: string };
