@@ -40,8 +40,8 @@
 
 ## 7. Realm 2FA versionado + prova contra o realm real
 
-- [ ] 7.1 Escrever o teste que tenta o fluxo só-senha contra o Keycloak do compose e verificar que HOJE ele passa (2FA ausente — RED invertido: a ausência da proteção é a falha). Verificação: fluxo só-senha obtém token aceito
-- [ ] 7.2 Versionar fluxo OTP + política + usuários de teste no `realm-newestetica.json` e verificar que o teste agora falha fechado (só-senha não obtém acesso) — GREEN. Verificação: 2FA exigido para `admin` e `reception`, sem segredo commitado
+- [x] 7.1 Escrever o teste que tenta o fluxo só-senha contra o Keycloak do compose e verificar que HOJE ele passa (2FA ausente — RED invertido: a ausência da proteção é a falha). Verificação: fluxo só-senha obtém token aceito
+- [x] 7.2 Versionar fluxo OTP + política + usuários de teste no `realm-newestetica.json` e verificar que o teste agora falha fechado (só-senha não obtém acesso) — GREEN. Verificação: 2FA exigido para `admin` e `reception`, sem segredo commitado
 
 ## 8. Migração dos 3 módulos com caracterização (um por vez, zero regressão)
 

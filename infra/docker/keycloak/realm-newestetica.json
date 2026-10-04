@@ -19,5 +19,96 @@
       "redirectUris": ["http://localhost:3000/*"],
       "webOrigins": ["http://localhost:3000"]
     }
+  ],
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyInitialCounter": 0,
+  "otpPolicyDigits": 6,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyPeriod": 30,
+  "otpPolicyCodeReusable": false,
+  "authenticationFlows": [
+    {
+      "alias": "browser-with-required-otp",
+      "description": "Browser flow with required OTP (2FA) for the admin panel",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "authenticatorFlow": false
+        },
+        {
+          "authenticator": "identity-provider-redirector",
+          "requirement": "ALTERNATIVE",
+          "priority": 20,
+          "userSetupAllowed": false,
+          "authenticatorFlow": false
+        },
+        {
+          "flowAlias": "forms-with-required-otp",
+          "requirement": "ALTERNATIVE",
+          "priority": 30,
+          "userSetupAllowed": false,
+          "authenticatorFlow": true
+        }
+      ]
+    },
+    {
+      "alias": "forms-with-required-otp",
+      "description": "Username/password followed by required OTP",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-username-password-form",
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "authenticatorFlow": false
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false,
+          "authenticatorFlow": false
+        }
+      ]
+    }
+  ],
+  "browserFlow": "browser-with-required-otp",
+  "users": [
+    {
+      "username": "fabiana-dev",
+      "enabled": true,
+      "email": "fabiana-dev@example.test",
+      "emailVerified": true,
+      "firstName": "Fabiana",
+      "lastName": "Dev",
+      "credentials": [
+        { "type": "password", "value": "dev-fabiana-2fa", "temporary": false }
+      ],
+      "realmRoles": ["admin"],
+      "requiredActions": ["CONFIGURE_TOTP"]
+    },
+    {
+      "username": "recepcao-dev",
+      "enabled": true,
+      "email": "recepcao-dev@example.test",
+      "emailVerified": true,
+      "firstName": "Recepcao",
+      "lastName": "Dev",
+      "credentials": [
+        { "type": "password", "value": "dev-recepcao-2fa", "temporary": false }
+      ],
+      "realmRoles": ["reception"],
+      "requiredActions": ["CONFIGURE_TOTP"]
+    }
   ]
 }
