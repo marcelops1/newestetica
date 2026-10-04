@@ -17,6 +17,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
 import {
@@ -35,24 +36,17 @@ import {
 import type { Attendance } from "../../domain/entities/attendance.entity";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
 import {
-  AUTH_NOT_IMPLEMENTED_CODE,
-  AUTH_NOT_IMPLEMENTED_MESSAGE,
-  IdentityPendingGuard,
-} from "../../../shared/http/identity-pending.guard";
+  AUTH_401_DESCRIPTION,
+  AUTH_401_SCHEMA,
+  AUTH_403_DESCRIPTION,
+  AUTH_403_SCHEMA,
+} from "../../../shared/http/auth/auth-swagger";
+import { Roles } from "../../../shared/http/auth/roles.decorator";
+import { JwtAuthGuard } from "../../../shared/http/auth/jwt-auth.guard";
 import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 
 class AttendanceInputDto extends createZodDto(AttendanceInputSchema) {}
 class AttendanceResponseDto extends createZodDto(AttendanceSchema) {}
-
-const FORBIDDEN_DESCRIPTION =
-  "Bloqueado pelo IdentityPendingGuard: autenticação ainda não implementada para este módulo (UC 4.2.1).";
-const FORBIDDEN_SCHEMA = {
-  type: "object",
-  properties: {
-    code: { type: "string", example: AUTH_NOT_IMPLEMENTED_CODE },
-    message: { type: "string", example: AUTH_NOT_IMPLEMENTED_MESSAGE },
-  },
-};
 
 const IdSchema = z.string().min(1).max(200);
 
@@ -80,9 +74,12 @@ function toResponse(attendance: Attendance): AttendanceItemResponse {
   };
 }
 
-@ApiTags("Atendimento (bloqueado até a Identidade)")
+/* Autenticação real (UC 4.2.1): guard do kernel — sem token válido 401, papel
+   insuficiente 403 — e RBAC operacional: `admin` e `reception` (dia a dia da
+   recepção registra e consulta o histórico). */
+@ApiTags("Atendimento")
 @Controller("patients/:patientId/attendances")
-@UseGuards(IdentityPendingGuard)
+@UseGuards(JwtAuthGuard)
 @UseFilters(DomainExceptionFilter)
 export class AttendancesController {
   constructor(
@@ -92,13 +89,16 @@ export class AttendancesController {
   ) {}
 
   @Post()
-  @ApiOperation({
-    summary: "Registra um atendimento (bloqueado até a Identidade)",
-  })
+  @Roles("admin", "reception")
+  @ApiOperation({ summary: "Registra um atendimento" })
   @ApiParam({ name: "patientId", description: "Identificador da paciente." })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiCreatedResponse({
     description: "Atendimento registrado.",
@@ -121,9 +121,8 @@ export class AttendancesController {
   }
 
   @Get()
-  @ApiOperation({
-    summary: "Lista o histórico da paciente (bloqueado até a Identidade)",
-  })
+  @Roles("admin", "reception")
+  @ApiOperation({ summary: "Lista o histórico da paciente" })
   @ApiParam({ name: "patientId", description: "Identificador da paciente." })
   @ApiQuery({
     name: "limit",
@@ -131,9 +130,13 @@ export class AttendancesController {
     description: "Limite de itens (padrão 100, máximo 500).",
     schema: { type: "integer", minimum: 1, maximum: 500 },
   })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiOkResponse({
     description:
@@ -158,14 +161,17 @@ export class AttendancesController {
   }
 
   @Get(":id")
-  @ApiOperation({
-    summary: "Consulta um atendimento pelo id (bloqueado até a Identidade)",
-  })
+  @Roles("admin", "reception")
+  @ApiOperation({ summary: "Consulta um atendimento pelo id" })
   @ApiParam({ name: "patientId", description: "Identificador da paciente." })
   @ApiParam({ name: "id", description: "Identificador do atendimento." })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiOkResponse({ description: "Atendimento.", type: AttendanceResponseDto })
   @ApiNotFoundResponse({
