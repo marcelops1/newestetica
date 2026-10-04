@@ -236,8 +236,9 @@ const CONTRACT_COMPONENTS: Record<string, string[]> = {
     "title",
   ],
   PatientInputDto: ["fullName", "phone", "purpose"],
-  AttendanceInputDto: ["performedAt", "summary"],
+  AttendanceInputDto: ["amountCents", "performedAt", "summary"],
   AttendanceResponseDto: [
+    "amountCents",
     "createdAt",
     "id",
     "patientId",
