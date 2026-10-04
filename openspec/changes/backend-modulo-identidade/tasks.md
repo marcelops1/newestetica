@@ -14,8 +14,8 @@
 
 ## 3. Application — autenticação como caso de uso contra a porta com fake
 
-- [ ] 3.1 Escrever o teste do caso de uso (token válido via fake retorna identidade com papéis; token inválido/expirado → erro sem tocar rede) com fake em memória e verificar que falha — RED. Verificação: `Cannot find module`
-- [ ] 3.2 Implementar o caso de uso dependendo só da porta e verificar verde — GREEN. Verificação: testes da task 3.1 passam, sem importar `infrastructure/`
+- [x] 3.1 Escrever o teste do caso de uso (token válido via fake retorna identidade com papéis; token inválido/expirado → erro sem tocar rede) com fake em memória e verificar que falha — RED. Verificação: `Cannot find module`
+- [x] 3.2 Implementar o caso de uso dependendo só da porta e verificar verde — GREEN. Verificação: testes da task 3.1 passam, sem importar `infrastructure/`
 
 ## 4. Ataques dedicados, um por task, com write-then-throw (threat model do design)
 
