@@ -31,6 +31,9 @@ async function bootDocs(
     process.env.SWAGGER_ENABLED = swaggerEnabled;
   }
   process.env.DATABASE_URL = testDatabaseUrl();
+  /* IdentityModule instancia o validador real no bootstrap (env obrigatório). */
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();

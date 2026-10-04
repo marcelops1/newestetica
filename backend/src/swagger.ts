@@ -21,7 +21,7 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle("Newestetica API")
     .setDescription(
       "API do sistema da clínica — reflete somente os módulos implementados até agora. " +
-        "As rotas de Pacientes, Atendimento e Financeiro estão bloqueadas pelo IdentityPendingGuard até o módulo de Identidade.",
+        "As rotas administrativas (Pacientes, Atendimento e Financeiro) exigem autenticação Keycloak (JWT Bearer; 2FA exigido no realm) e autorização RBAC por papel.",
     )
     .setVersion("0.1.0")
     .addTag("Agendamento")
