@@ -42,7 +42,9 @@ describe("summarize (agregação pura do domínio)", () => {
   });
 
   it("soma em centavos inteiros sem erro de ponto flutuante", () => {
-    const entries = Array.from({ length: 100 }, () => entry(10, "2026-09-10T10:00:00.000Z"));
+    const entries = Array.from({ length: 100 }, () =>
+      entry(10, "2026-09-10T10:00:00.000Z"),
+    );
 
     const result = summarize(entries, FROM, TO);
 

@@ -18,6 +18,7 @@ export default {
     "src/shared/**/*.ts",
     "src/patients/**/*.ts",
     "src/attendance/**/*.ts",
+    "src/finance/**/*.ts",
     "!src/**/*.spec.ts",
     "!src/**/*.module.ts",
   ],

@@ -52,7 +52,10 @@ describe("adversarial — janela hostil contra o caso de uso", () => {
       { from: "x".repeat(100_000), to: validWindow.to },
       { from: validWindow.from, to: "y".repeat(100_000) },
       { from: "2026-09-01' OR '1'='1", to: validWindow.to },
-      { from: validWindow.from, to: '2026-09-30"; DROP TABLE "Attendance"; --' },
+      {
+        from: validWindow.from,
+        to: '2026-09-30"; DROP TABLE "Attendance"; --',
+      },
       { from: "2026-09-01T00:00:00Z", to: validWindow.to },
       { from: " 2026-09-01", to: validWindow.to },
       { from: "2026-09-01 ", to: validWindow.to },

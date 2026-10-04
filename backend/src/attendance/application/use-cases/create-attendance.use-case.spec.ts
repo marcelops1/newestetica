@@ -155,9 +155,7 @@ describe("CreateAttendanceUseCase", () => {
     expect(withoutValue.amountCents).toBeNull();
 
     const persisted = await attendances.findVisibleByPatient(PATIENT_ID, 100);
-    expect(
-      persisted.some((item) => item.amountCents === 15_000),
-    ).toBe(true);
+    expect(persisted.some((item) => item.amountCents === 15_000)).toBe(true);
     expect(persisted.some((item) => item.amountCents === null)).toBe(true);
   });
 

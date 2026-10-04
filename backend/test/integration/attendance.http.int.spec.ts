@@ -134,14 +134,17 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     expect(withValue.status).toBe(201);
     expect(createdWithValue.amountCents).toBe(15_000);
 
-    const withoutValue = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        summary: "Avaliação sem valor fechado.",
-        performedAt: "2026-09-11T10:00:00.000Z",
-      }),
-    });
+    const withoutValue = await fetch(
+      `${baseUrl}/patients/${ALFA}/attendances`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          summary: "Avaliação sem valor fechado.",
+          performedAt: "2026-09-11T10:00:00.000Z",
+        }),
+      },
+    );
     const createdWithoutValue = (await withoutValue.json()) as {
       amountCents: number | null;
     };

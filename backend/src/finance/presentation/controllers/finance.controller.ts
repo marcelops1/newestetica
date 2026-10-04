@@ -62,7 +62,8 @@ export class FinanceController {
 
   @Get("summary")
   @ApiOperation({
-    summary: "Resumo financeiro essencial por janela (bloqueado até a Identidade)",
+    summary:
+      "Resumo financeiro essencial por janela (bloqueado até a Identidade)",
   })
   @ApiQuery({
     name: "from",

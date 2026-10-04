@@ -14,6 +14,7 @@ export default {
     "src/content/**/*.ts",
     "src/patients/**/*.ts",
     "src/attendance/**/*.ts",
+    "src/finance/**/*.ts",
     "!src/**/*.test.ts",
   ],
   concurrency: 2,

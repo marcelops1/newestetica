@@ -264,13 +264,7 @@ const CONTRACT_COMPONENTS: Record<string, string[]> = {
     "updatedAt",
   ],
   PatientUpdateDto: ["fullName", "phone", "purpose"],
-  FinanceSummaryResponseDto: [
-    "count",
-    "currency",
-    "from",
-    "to",
-    "totalCents",
-  ],
+  FinanceSummaryResponseDto: ["count", "currency", "from", "to", "totalCents"],
 };
 
 describe("fidelidade dos componentes ao contrato (sem duplicação manual)", () => {

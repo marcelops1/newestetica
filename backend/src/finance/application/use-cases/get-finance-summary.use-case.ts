@@ -41,10 +41,7 @@ function parseDay(value: string, label: "from" | "to"): Date {
   const [year, month, day] = parts.map(Number);
   const time = Date.UTC(year, month - 1, day);
   const date = new Date(time);
-  if (
-    Number.isNaN(time) ||
-    date.toISOString().slice(0, 10) !== value
-  ) {
+  if (Number.isNaN(time) || date.toISOString().slice(0, 10) !== value) {
     throw new InvalidFinanceWindow(
       `${label} não é uma data de calendário válida`,
     );

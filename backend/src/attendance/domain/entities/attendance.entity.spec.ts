@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MAX_ATTENDANCE_AMOUNT_CENTS as CONTRACT_MAX_AMOUNT_CENTS } from "@newestetica/contracts";
-import {
-  Attendance,
-  MAX_ATTENDANCE_AMOUNT_CENTS,
-} from "./attendance.entity";
+import { Attendance, MAX_ATTENDANCE_AMOUNT_CENTS } from "./attendance.entity";
 import { InvalidAttendance } from "../errors/errors";
 
 const validProps = {
@@ -160,7 +157,11 @@ describe("Attendance — valor opcional em centavos (amountCents)", () => {
       Number.MAX_SAFE_INTEGER,
     ]) {
       expect(
-        () => Attendance.create({ ...validProps, amountCents: amountCents as never }),
+        () =>
+          Attendance.create({
+            ...validProps,
+            amountCents: amountCents as never,
+          }),
         `valor hostil: ${String(amountCents)}`,
       ).toThrow(InvalidAttendance);
     }
@@ -173,11 +174,16 @@ describe("Attendance — valor opcional em centavos (amountCents)", () => {
       updatedAt: new Date("2026-09-10T15:00:00.000Z"),
     };
 
-    expect(Attendance.restore({ ...base, amountCents: null }).amountCents).toBeNull();
-    expect(Attendance.restore({ ...base, amountCents: 15_000 }).amountCents).toBe(15_000);
+    expect(
+      Attendance.restore({ ...base, amountCents: null }).amountCents,
+    ).toBeNull();
+    expect(
+      Attendance.restore({ ...base, amountCents: 15_000 }).amountCents,
+    ).toBe(15_000);
     for (const amountCents of [1.5, -1, 10_000_001, "15000", Number.NaN]) {
       expect(
-        () => Attendance.restore({ ...base, amountCents: amountCents as never }),
+        () =>
+          Attendance.restore({ ...base, amountCents: amountCents as never }),
         `valor hostil vindo do banco: ${String(amountCents)}`,
       ).toThrow(InvalidAttendance);
     }
