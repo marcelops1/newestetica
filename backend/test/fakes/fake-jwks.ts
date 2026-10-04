@@ -6,13 +6,15 @@ import {
   type JWK,
 } from "jose";
 
-/* JWKS fake local (design decisão 3): chaves RSA de verdade geradas em memória,
-   servidas num HTTP local — os testes de validação/guarda usam tokens assinados de
-   verdade contra este JWKS, sem Keycloak no ar. Conta requisições para provar cache
-   (sem fetch por requisição) e permite rotação de chave e "queda" do servidor. */
+/* JWKS fake local (design decisão 3): chaves de verdade geradas em memória (RSA para
+   o caso legítimo, EC para o ataque de allowlist de algoritmo), servidas num HTTP
+   local — os testes de validação/guarda usam tokens assinados de verdade contra este
+   JWKS, sem Keycloak no ar. Conta requisições para provar cache (sem fetch por
+   requisição) e permite rotação de chave e "queda" do servidor. */
 
 export type FakeJwksKey = {
   kid: string;
+  alg: string;
   privateKey: Awaited<ReturnType<typeof generateKeyPair>>["privateKey"];
   publicJwk: JWK;
 };
@@ -23,6 +25,7 @@ export type FakeJwks = {
   jwksUrl: string;
   requestCount(): number;
   currentKey(): FakeJwksKey;
+  addKey(alg: string): Promise<FakeJwksKey>;
   rotate(): Promise<FakeJwksKey>;
   respond: (up: boolean) => void;
   sign: (
@@ -35,23 +38,24 @@ export type FakeJwks = {
       audience?: string;
       expiresIn?: string | number;
       notBefore?: string | number;
-      noSignature?: boolean;
+      secret?: Uint8Array;
     },
   ) => Promise<string>;
+  noSignatureToken: (claims: Record<string, unknown>) => string;
   close: () => Promise<void>;
 };
 
-async function generateKey(kid: string): Promise<FakeJwksKey> {
-  const { privateKey, publicKey } = await generateKeyPair("RS256");
+async function generateKey(kid: string, alg: string): Promise<FakeJwksKey> {
+  const { privateKey, publicKey } = await generateKeyPair(alg);
   const publicJwk = await exportJWK(publicKey);
-  return { kid, privateKey, publicJwk };
+  return { kid, alg, privateKey, publicJwk };
 }
 
 export async function startFakeJwks(options?: {
   audience?: string;
 }): Promise<FakeJwks> {
   const audience = options?.audience ?? "newestetica-frontend";
-  let keys: FakeJwksKey[] = [await generateKey("key-1")];
+  let keys: FakeJwksKey[] = [await generateKey("key-1", "RS256")];
   let requests = 0;
   let responding = true;
 
@@ -69,9 +73,8 @@ export async function startFakeJwks(options?: {
       keys: keys.map((key) => ({
         ...key.publicJwk,
         kid: key.kid,
-        alg: "RS256",
+        alg: key.alg,
         use: "sig",
-        kty: "RSA",
       })),
     });
     response.writeHead(200, { "content-type": "application/json" }).end(body);
@@ -91,8 +94,13 @@ export async function startFakeJwks(options?: {
     jwksUrl: `${base}/protocol/openid-connect/certs`,
     requestCount: () => requests,
     currentKey: () => keys[keys.length - 1]!,
+    async addKey(alg) {
+      const added = await generateKey(`attacker-${keys.length + 1}`, alg);
+      keys = [...keys, added];
+      return added;
+    },
     async rotate() {
-      const rotated = await generateKey(`key-${keys.length + 1}`);
+      const rotated = await generateKey(`key-${keys.length + 1}`, "RS256");
       keys = [rotated];
       return rotated;
     },
@@ -100,8 +108,8 @@ export async function startFakeJwks(options?: {
       responding = up;
     },
     async sign(claims, signOptions = {}) {
-      const key = signOptions.key ?? keys[keys.length - 1]!;
-      const alg = signOptions.alg ?? "RS256";
+      const key = signOptions.key ?? keys[0]!;
+      const alg = signOptions.alg ?? key.alg;
       let builder = new SignJWT(claims).setProtectedHeader({
         alg,
         ...(signOptions.kid === null
@@ -115,15 +123,14 @@ export async function startFakeJwks(options?: {
       if (signOptions.notBefore !== undefined) {
         builder = builder.setNotBefore(signOptions.notBefore);
       }
-      if (signOptions.noSignature) {
-        /* Token "alg: none": header sem assinatura real. */
-        const header = Buffer.from(
-          JSON.stringify({ alg: "none", typ: "JWT" }),
-        ).toString("base64url");
-        const body = Buffer.from(JSON.stringify(claims)).toString("base64url");
-        return `${header}.${body}.`;
-      }
-      return builder.sign(key.privateKey);
+      return builder.sign(signOptions.secret ?? key.privateKey);
+    },
+    noSignatureToken(claims) {
+      const header = Buffer.from(
+        JSON.stringify({ alg: "none", typ: "JWT" }),
+      ).toString("base64url");
+      const body = Buffer.from(JSON.stringify(claims)).toString("base64url");
+      return `${header}.${body}.`;
     },
     async close() {
       await new Promise<void>((resolve, reject) =>
