@@ -9,8 +9,8 @@
 
 ## 2. Domain — vocabulário de identidade puro (unitários puros)
 
-- [ ] 2.1 Escrever o teste do núcleo de identidade (papéis `admin`/`reception`, decisão negar-por-padrão como tipo, mapeamento puro de claims → identidade sem framework) e verificar que falha porque o domínio não existe — RED. Verificação: `Cannot find module`
-- [ ] 2.2 Criar o domínio de Identidade + porta `TokenValidator` (só valida, zero implementação, sem importar domínio de nenhum outro módulo) e verificar verde + auditoria de imports (`domain/` sem imports externos e cruzados) — GREEN. Verificação: testes passam, typecheck limpo e `grep` de imports externos vazio
+- [x] 2.1 Escrever o teste do núcleo de identidade (papéis `admin`/`reception`, decisão negar-por-padrão como tipo, mapeamento puro de claims → identidade sem framework) e verificar que falha porque o domínio não existe — RED. Verificação: `Cannot find module`
+- [x] 2.2 Criar o domínio de Identidade + porta `TokenValidator` (só valida, zero implementação, sem importar domínio de nenhum outro módulo) e verificar verde + auditoria de imports (`domain/` sem imports externos e cruzados) — GREEN. Verificação: testes passam, typecheck limpo e `grep` de imports externos vazio
 
 ## 3. Application — autenticação como caso de uso contra a porta com fake
 
