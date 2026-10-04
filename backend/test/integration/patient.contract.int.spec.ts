@@ -3,7 +3,11 @@ import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { PatientSchema } from "@newestetica/contracts";
 import { PatientsModule } from "../../src/patients/patients.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import {
+  FAKE_TOKEN_VERIFIER,
+  bearer,
+} from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -27,11 +31,15 @@ const PATIENT_KEYS = [
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  /* Env do validador real (instanciado no bootstrap do IdentityModule; a verificação
+     é substituída pelo fake abaixo); requests levam Bearer de admin por padrão. */
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [PatientsModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -57,9 +65,25 @@ beforeEach(async () => {
   });
 });
 
+
+/* Requisição autenticada (token de admin via verificador fake — o guard é o real). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: string } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
+
 describe("saída de pacientes conforme o contrato (verificação nas duas pontas)", () => {
   it("o detalhe responde no PatientSchema, com chaves exatas (status incluso)", async () => {
-    const response = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`);
+    const response = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`);
     const body = (await response.json()) as Record<string, unknown>;
 
     expect(response.status).toBe(200);
@@ -70,7 +94,7 @@ describe("saída de pacientes conforme o contrato (verificação nas duas pontas
   });
 
   it("a listagem responde no PatientSchema, com chaves exatas em cada item", async () => {
-    const response = await fetch(`${baseUrl}/patients`);
+    const response = await authFetch(`${baseUrl}/patients`);
     const body = (await response.json()) as Array<Record<string, unknown>>;
 
     expect(response.status).toBe(200);
@@ -84,7 +108,7 @@ describe("saída de pacientes conforme o contrato (verificação nas duas pontas
   });
 
   it("a criação responde no PatientSchema", async () => {
-    const response = await fetch(`${baseUrl}/patients`, {
+    const response = await authFetch(`${baseUrl}/patients`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -103,7 +127,7 @@ describe("saída de pacientes conforme o contrato (verificação nas duas pontas
   });
 
   it("a atualização responde no PatientSchema com os campos preservados", async () => {
-    const response = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
+    const response = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ phone: "(11) 5555-0009" }),
