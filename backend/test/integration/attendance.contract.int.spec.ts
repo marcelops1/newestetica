@@ -17,6 +17,7 @@ let baseUrl: string;
 const ALFA = "00000000-0000-4000-8000-000000000101";
 const ATTENDANCE_ID = "00000000-0000-4000-8000-000000000201";
 const ATTENDANCE_KEYS = [
+  "amountCents",
   "createdAt",
   "id",
   "patientId",
@@ -95,12 +96,13 @@ describe("saída de atendimentos conforme o contrato (verificação nas duas pon
     }
   });
 
-  it("o registro responde no AttendanceSchema com o vínculo do path", async () => {
+  it("o registro responde no AttendanceSchema com o vínculo do path e o valor informado", async () => {
     const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         summary: "Hidratação facial realizada, pele bem tolerada.",
+        amountCents: 20_000,
         performedAt: "2026-09-12T10:00:00.000Z",
       }),
     });
@@ -112,6 +114,7 @@ describe("saída de atendimentos conforme o contrato (verificação nas duas pon
     );
     expect(Object.keys(body).sort()).toEqual(ATTENDANCE_KEYS);
     expect(body.patientId).toBe(ALFA);
+    expect(body.amountCents).toBe(20_000);
   });
 
   it("nenhum campo interno vaza para o wire (sem nome de paciente, sem timestamps extras)", async () => {

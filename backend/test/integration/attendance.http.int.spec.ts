@@ -114,6 +114,72 @@ describe("Attendance HTTP (contrato da Presentation, com guard desativado por ov
     expect(body.code).toBe("VALIDATION_ERROR");
   });
 
+  it("POST com amountCents válido responde 201 com o valor; sem valor responde nulo — leitura posterior confirma", async () => {
+    await seedPatient(ALFA);
+
+    const withValue = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        summary: "Limpeza de pele com valor fechado.",
+        amountCents: 15_000,
+        performedAt: "2026-09-10T14:30:00.000Z",
+      }),
+    });
+    const createdWithValue = (await withValue.json()) as {
+      id: string;
+      amountCents: number | null;
+    };
+
+    expect(withValue.status).toBe(201);
+    expect(createdWithValue.amountCents).toBe(15_000);
+
+    const withoutValue = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        summary: "Avaliação sem valor fechado.",
+        performedAt: "2026-09-11T10:00:00.000Z",
+      }),
+    });
+    const createdWithoutValue = (await withoutValue.json()) as {
+      amountCents: number | null;
+    };
+
+    expect(withoutValue.status).toBe(201);
+    expect(createdWithoutValue.amountCents).toBeNull();
+
+    const detail = await fetch(
+      `${baseUrl}/patients/${ALFA}/attendances/${createdWithValue.id}`,
+    );
+    const detailBody = (await detail.json()) as { amountCents: number | null };
+    expect(detail.status).toBe(200);
+    expect(detailBody.amountCents).toBe(15_000);
+  });
+
+  it("POST com amountCents fracionário/negativo/acima do teto responde 422 sem ecoar", async () => {
+    await seedPatient(ALFA);
+
+    for (const amountCents of [1.5, -1, 10_000_001]) {
+      const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          summary: "Tentativa hostil fictícia.",
+          amountCents,
+          performedAt: "2026-09-10T14:30:00.000Z",
+        }),
+      });
+
+      expect(response.status, `amountCents hostil: ${amountCents}`).toBe(422);
+      const body = (await response.json()) as { code: string };
+      expect(body.code).toBe("VALIDATION_ERROR");
+      expect(JSON.stringify(body)).not.toContain("Tentativa hostil");
+    }
+
+    expect(await prisma.attendance.count()).toBe(0);
+  });
+
   it("POST para paciente inexistente ou anonimizada responde 404 idêntico sem criar nada", async () => {
     await seedPatient(ANONYMIZED, false);
 
