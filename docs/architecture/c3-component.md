@@ -346,6 +346,48 @@ flowchart LR
 - **Bloqueio honesto:** `IdentityPendingGuard` (agora no kernel `backend/src/shared/http/`) nega todas as rotas com 403 `AUTH_NOT_IMPLEMENTED`; o contraste com os testes de rota com bypass prova que o guard é a única barreira. Substituição obrigatória no módulo de Identidade.
 - **Wiring:** `AttendanceModule` com cliente próprio (factory do kernel compartilhado; quinto pool adiado como decisão consciente) e guard nos providers; wireado no `AppModule`.
 
+## Backend (real — módulo Financeiro)
+
+Sexto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **resumo financeiro essencial por janela** (UC 4.2.6) — `GET /finance/summary?from=&to=` (janela obrigatória, teto de 366 dias), só leitura, agregado **sem PII e sem breakdown por construção** (a resposta não tem campo para vazar). O valor mora no Atendimento como `amountCents` opcional (centavos inteiros, teto de R$ 100.000, imutável depois de criado — sem entidade de cobrança e sem preço no catálogo). **Visibilidade herdada no agregado:** o reader filtra a relação `patient: { status: "active" }` na query; valor de paciente anonimizada nunca compõe total/contagem (prova write-then-throw no `verification.md`). **Autorização real diferida:** rota sob o `IdentityPendingGuard` do kernel (403 `AUTH_NOT_IMPLEMENTED`). Sem `UnitOfWork` (só leitura) e cliente Prisma próprio (sexto pool consciente; factory do kernel).
+
+```mermaid
+flowchart LR
+    subgraph Presentation
+        GUARD[IdentityPendingGuard<br/>kernel compartilhado<br/>403 AUTH_NOT_IMPLEMENTED]
+        CTRL[finance.controller.ts<br/>GET /finance/summary?from=&to=]
+        PIPE[ZodValidationPipe<br/>422 estruturado]
+        FILTER[DomainExceptionFilter<br/>422 janela inválida]
+    end
+    subgraph Application
+        UC[GetFinanceSummaryUseCase<br/>janela ≤ 366d / currency BRL]
+    end
+    subgraph Domain
+        S[summarize pura<br/>janela inclusiva / centavos inteiros]
+        P[FinanceSummaryReader<br/>readVisibleEntries → só pares]
+    end
+    subgraph Infrastructure
+        R[PrismaFinanceSummaryReader<br/>patient.status active na QUERY<br/>amountCents not null / janela no banco]
+        MAP[toSummaryEntry<br/>Data Mapper]
+    end
+    CONTRACTS[contracts/<br/>FinanceSummaryQuery / FinanceSummary]
+    CTRL --> GUARD
+    CTRL --> PIPE
+    CTRL --> FILTER
+    CTRL --> UC
+    PIPE -.->|valida entrada| CONTRACTS
+    CTRL -.->|saída = FinanceSummary do contrato| CONTRACTS
+    UC --> S
+    UC --> P
+    R -.->|implementa| P
+    R --> MAP
+```
+
+- Pastas verificadas: `backend/src/finance/` com `domain/` (`summarize` pura + erros locais + porta `FinanceSummaryReader`), `application/use-cases/` (caso de uso do resumo), `infrastructure/persistence/` (reader Prisma + mapper) e `presentation/` (controller, pipe/filtro locais).
+- **Agregado sem PII:** a porta devolve apenas `{ amountCents, performedAt }`; o mapper não materializa nome/vínculo/resumo; a resposta tem exatamente janela/moeda/total/contagem (auditado por inspeção e por chaves exatas nos testes).
+- **Centavos inteiros:** sem float; teto de entrada espelhado no contrato (assertado); soma de 100 mil registros no teto permanece inteira e segura.
+- **Bloqueio honesto:** `IdentityPendingGuard` do kernel nega a rota com 403 `AUTH_NOT_IMPLEMENTED`; o contraste com os testes de rota com bypass prova que o guard é a única barreira. Substituição obrigatória no módulo de Identidade.
+- **Wiring:** `FinanceModule` com cliente próprio (factory do kernel compartilhado; sexto pool adiado como decisão consciente), sem `UnitOfWork`; wireado no `AppModule`.
+
 ## Backend (kernel técnico compartilhado)
 
 Plumbing puro compartilhado entre os módulos, em exceção explícita à regra de bounded contexts não compartilharem apresentação (`docs/architecture/02-arquitetura.md` §3; decisão em `04-decisoes-tecnicas.md` §22). **Regra de filiação:** o kernel nunca importa de módulos nem conhece vocabulário de domínio; módulos importam do kernel só o plumbing técnico.
@@ -365,36 +407,42 @@ flowchart LR
         CT[Conteúdo Público<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
         PA[Pacientes<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
         AT[Atendimento<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
+        FI[Financeiro<br/>subclasse fina do filtro 422<br/>union + subclasse fina de erro]
     end
     S -.->|importa| PIPE
     C -.->|importa| PIPE
     CT -.->|importa| PIPE
     PA -.->|importa| PIPE
     AT -.->|importa| PIPE
+    FI -.->|importa| PIPE
     S -.->|estende| FILTER
     C -.->|estende| FILTER
     CT -.->|estende| FILTER
     PA -.->|estende| FILTER
     AT -.->|estende| FILTER
+    FI -.->|estende| FILTER
     S -.->|estende| ERR
     C -.->|estende| ERR
     CT -.->|estende| ERR
     PA -.->|estende| ERR
     AT -.->|estende| ERR
+    FI -.->|estende| ERR
     S -.->|usa no provider| FACTORY
     C -.->|usa no provider| FACTORY
     CT -.->|usa no provider| FACTORY
     PA -.->|usa no provider| FACTORY
     AT -.->|usa no provider| FACTORY
+    FI -.->|usa no provider| FACTORY
     PA -.->|usa nas rotas| GUARD
     AT -.->|usa nas rotas| GUARD
+    FI -.->|usa nas rotas| GUARD
 ```
 
 - Pastas verificadas: `backend/src/shared/http/` (pipe + base do filtro + `identity-pending.guard.ts`), `backend/src/shared/errors/` (base genérica) e `backend/src/shared/prisma/` (factory) — cada uma com spec unitário próprio.
 - **Mapeamentos continuam locais:** cada módulo mantém a subclasse fina do filtro com o seu status por código e o seu union `DomainErrorCode`; o kernel não conhece código de domínio nenhum.
-- **Guard honesto compartilhado:** `IdentityPendingGuard` (plumbing puro, sem vocabulário de domínio) tem **uma única definição** no kernel e é importado por Pacientes e Atendimento — replicá-lo por módulo foi rejeitado na decisão 6 do change `backend-modulo-atendimento`. Substituição pelo guard Keycloak/RBAC é próximo passo obrigatório do módulo de Identidade (UC 4.2.1).
-- **Instâncias de PrismaClient continuam por módulo:** a factory compartilha apenas a construção (trigger de provider compartilhado segue adiado — decisão 10 do change `backend-modulo-atendimento`).
-- **Histórico:** extraído no change `resolver-duplicacao-sonar-backend` (SonarCloud reprovava por duplicação em 3 PRs seguidos; kernel + exclusão de CPD para testes zeram a causa no gate); ampliado no change `backend-modulo-atendimento` (guard).
+- **Guard honesto compartilhado:** `IdentityPendingGuard` (plumbing puro, sem vocabulário de domínio) tem **uma única definição** no kernel e é importado por Pacientes, Atendimento e Financeiro — replicá-lo por módulo foi rejeitado na decisão 6 do change `backend-modulo-atendimento`. Substituição pelo guard Keycloak/RBAC é próximo passo obrigatório do módulo de Identidade (UC 4.2.1).
+- **Instâncias de PrismaClient continuam por módulo:** a factory compartilha apenas a construção (triggers de unificação adiados — decisões 4 do change `backend-modulo-atendimento` e 4 do `backend-modulo-financeiro`; o Financeiro é o sexto consumidor).
+- **Histórico:** extraído no change `resolver-duplicacao-sonar-backend` (SonarCloud reprovava por duplicação em 3 PRs seguidos; kernel + exclusão de CPD para testes zeram a causa no gate); ampliado no change `backend-modulo-atendimento` (guard) e no `backend-modulo-financeiro` (Financeiro como sexto módulo consumidor).
 
 ## Backend (placeholder normatizado)
 

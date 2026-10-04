@@ -52,6 +52,21 @@ describe("summarize (agregação pura do domínio)", () => {
     expect(Number.isInteger(result.totalCents)).toBe(true);
   });
 
+  it("a soma máxima teórica permanece inteira e segura (sem overflow/float)", () => {
+    /* 100 mil atendimentos no teto (R$ 100.000 cada) = R$ 100 bilhões em centavos,
+       ordens de grandeza abaixo de Number.MAX_SAFE_INTEGER — o teto de entrada e os
+       inteiros mantêm a soma exata (threat model, abuse case 6). */
+    const entries = Array.from({ length: 100_000 }, () =>
+      entry(10_000_000, "2026-09-10T10:00:00.000Z"),
+    );
+
+    const result = summarize(entries, FROM, TO);
+
+    expect(result.totalCents).toBe(1_000_000_000_000);
+    expect(Number.isSafeInteger(result.totalCents)).toBe(true);
+    expect(result.count).toBe(100_000);
+  });
+
   it("não altera o array de entrada (função pura)", () => {
     const entries = [entry(100, "2026-09-10T10:00:00.000Z")];
     const before = [...entries];
