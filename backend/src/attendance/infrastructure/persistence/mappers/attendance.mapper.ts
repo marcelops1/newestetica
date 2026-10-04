@@ -9,6 +9,7 @@ export function toAttendanceDomain(record: AttendanceRecord): Attendance {
     id: record.id,
     patientId: record.patientId,
     summary: record.summary,
+    amountCents: record.amountCents,
     performedAt: record.performedAt,
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
@@ -19,6 +20,7 @@ export function toAttendancePersistence(attendance: Attendance): {
   id: string;
   patientId: string;
   summary: string;
+  amountCents: number | null;
   performedAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -27,6 +29,7 @@ export function toAttendancePersistence(attendance: Attendance): {
     id: attendance.id,
     patientId: attendance.patientId,
     summary: attendance.summary,
+    amountCents: attendance.amountCents,
     performedAt: attendance.performedAt,
     createdAt: attendance.createdAt,
     updatedAt: attendance.updatedAt,
