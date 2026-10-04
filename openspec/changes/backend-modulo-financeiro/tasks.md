@@ -14,8 +14,8 @@
 
 - [x] 2.1 Escrever o teste do valor na entidade (`create`/`restore` aceitam `amountCents` válido e ausente; fracionário/negativo/acima de 10.000.000 rejeitados; sem setter — imutabilidade estrutural) e verificar que falha porque a entidade não conhece o campo — RED. Verificação: valor ignorado ou `Cannot find` no acesso
 - [x] 2.2 Estender `domain/entities/attendance.entity.ts` + erros locais (sem eco) com `amountCents` e verificar que o teste passa — GREEN. Verificação: teste da task 2.1 passa
-- [ ] 2.3 Escrever o teste da agregação pura (`summarize` sobre entradas mistas: com/sem valor, dentro/fora da janela → total e contagem exatos; janela vazia → zeros; soma sem float) e verificar que falha porque a função não existe — RED. Verificação: `Cannot find module`
-- [ ] 2.4 Criar a função `summarize` no domínio de Financeiro + porta `FinanceSummaryReader` (só pares `{ amountCents, performedAt }`, zero implementação, sem importar domínio de Atendimento nem de Pacientes) e verificar verde + auditoria de imports (`domain/` sem imports externos e cruzados) — GREEN. Verificação: typecheck limpo e `grep` de imports externos e cruzados vazio
+- [x] 2.3 Escrever o teste da agregação pura (`summarize` sobre entradas mistas: com/sem valor, dentro/fora da janela → total e contagem exatos; janela vazia → zeros; soma sem float) e verificar que falha porque a função não existe — RED. Verificação: `Cannot find module`
+- [x] 2.4 Criar a função `summarize` no domínio de Financeiro + porta `FinanceSummaryReader` (só pares `{ amountCents, performedAt }`, zero implementação, sem importar domínio de Atendimento nem de Pacientes) e verificar verde + auditoria de imports (`domain/` sem imports externos e cruzados) — GREEN. Verificação: typecheck limpo e `grep` de imports externos e cruzados vazio
 
 ## 3. Application — caso de uso de resumo contra a porta com fake em memória
 
@@ -41,8 +41,8 @@
 
 ## 6. Mutation, segurança, registros e backlog
 
-- [ ] 6.1 Rodar Stryker contra o módulo (`pnpm --filter backend mutation`, banco de teste no ar; estender o escopo `mutate` para `src/finance/**`) e contra `contracts/src/finance/` + delta de `contracts/src/attendance/`, e registrar score real + triagem de sobreviventes em `verification.md` — GREEN. Verificação: relatório completo no registro (meta docs/07 §13)
-- [ ] 6.2 Revisar segurança com `security-and-hardening` contra `docs/security/03-seguranca.md` (gatilhos: entrada de usuário, **agregado monetário com PII herdada via join**, ausência de auth com guard honesto, fishing por janelas estreitas, DoS de varredura) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada, com os abuse cases do threat model um a um
-- [ ] 6.3 Revisar com `code-review-and-quality` e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada
-- [ ] 6.4 Atualizar `docs/product/08-backlog-produto.md` (UC 4.2.6 → Em andamento) e avaliar `c2/c3-component.md` — exceção docs/07 §4 (verificação por releitura). Verificação: releitura confirma os status
-- [ ] 6.5 Avaliar a complexidade da sessão (emendas? padrões reutilizáveis?) e alimentar a seção 14 de docs/07 ou registrar a dispensa com motivo — exceção docs/07 §4. Verificação: seção 14 atualizada ou dispensa justificada em `verification.md`
+- [x] 6.1 Rodar Stryker contra o módulo (`pnpm --filter backend mutation`, banco de teste no ar; estender o escopo `mutate` para `src/finance/**`) e contra `contracts/src/finance/` + delta de `contracts/src/attendance/`, e registrar score real + triagem de sobreviventes em `verification.md` — GREEN. Verificação: relatório completo no registro (meta docs/07 §13)
+- [x] 6.2 Revisar segurança com `security-and-hardening` contra `docs/security/03-seguranca.md` (gatilhos: entrada de usuário, **agregado monetário com PII herdada via join**, ausência de auth com guard honesto, fishing por janelas estreitas, DoS de varredura) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada, com os abuse cases do threat model um a um
+- [x] 6.3 Revisar com `code-review-and-quality` e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada
+- [x] 6.4 Atualizar `docs/product/08-backlog-produto.md` (UC 4.2.6 → Em andamento) e avaliar `c2/c3-component.md` — exceção docs/07 §4 (verificação por releitura). Verificação: releitura confirma os status
+- [x] 6.5 Avaliar a complexidade da sessão (emendas? padrões reutilizáveis?) e alimentar a seção 14 de docs/07 ou registrar a dispensa com motivo — exceção docs/07 §4. Verificação: seção 14 atualizada ou dispensa justificada em `verification.md`
