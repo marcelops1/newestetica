@@ -19,10 +19,10 @@
 
 ## 3. Application — caso de uso de resumo contra a porta com fake em memória
 
-- [ ] 3.1 Escrever o teste do caso de uso (janela válida retorna janela + `BRL` + total + contagem via fake; janela vazia → zeros; janela inválida/span estourado → erro de validação sem tocar a porta) com fake e verificar que falha — RED. Verificação: `Cannot find module`
-- [ ] 3.2 Implementar o caso de uso dependendo só da porta e verificar verde — GREEN. Verificação: testes da task 3.1 passam, sem importar `infrastructure/`
-- [ ] 3.3 Escrever o teste adversarial com payload hostil real (janela malformada/gigante/invertida, span estourado, `amountCents` fracionário/negativo/gigante na criação, injeção em query; sondas: anonimizada fora do agregado; resposta sem PII/breakdown) e verificar o comportamento seguro — RED. Verificação: teste falha (módulo ausente ou hostil aceito)
-- [ ] 3.4 Implementar o tratamento (validação na fronteira do núcleo + queries parametrizadas + teto de span; visibilidade na query, decisão 5 do design) e verificar verde — GREEN. Verificação: hostil rejeitado ou neutralizado sem erro interno vazado
+- [x] 3.1 Escrever o teste do caso de uso (janela válida retorna janela + `BRL` + total + contagem via fake; janela vazia → zeros; janela inválida/span estourado → erro de validação sem tocar a porta) com fake e verificar que falha — RED. Verificação: `Cannot find module`
+- [x] 3.2 Implementar o caso de uso dependendo só da porta e verificar verde — GREEN. Verificação: testes da task 3.1 passam, sem importar `infrastructure/`
+- [x] 3.3 Escrever o teste adversarial com payload hostil real (janela malformada/gigante/invertida, span estourado, `amountCents` fracionário/negativo/gigante na criação, injeção em query; sondas: anonimizada fora do agregado; resposta sem PII/breakdown) e verificar o comportamento seguro — RED. Verificação: teste falha (módulo ausente ou hostil aceito)
+- [x] 3.4 Implementar o tratamento (validação na fronteira do núcleo + queries parametrizadas + teto de span; visibilidade na query, decisão 5 do design) e verificar verde — GREEN. Verificação: hostil rejeitado ou neutralizado sem erro interno vazado
 
 ## 4. Infrastructure — reader Prisma + Postgres real em container (cliente próprio, mesmo padrão)
 
