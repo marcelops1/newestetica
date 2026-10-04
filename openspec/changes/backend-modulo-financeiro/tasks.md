@@ -12,8 +12,8 @@
 
 ## 2. Domain — valor imutável no Atendimento + agregação pura (unitários puros)
 
-- [ ] 2.1 Escrever o teste do valor na entidade (`create`/`restore` aceitam `amountCents` válido e ausente; fracionário/negativo/acima de 10.000.000 rejeitados; sem setter — imutabilidade estrutural) e verificar que falha porque a entidade não conhece o campo — RED. Verificação: valor ignorado ou `Cannot find` no acesso
-- [ ] 2.2 Estender `domain/entities/attendance.entity.ts` + erros locais (sem eco) com `amountCents` e verificar que o teste passa — GREEN. Verificação: teste da task 2.1 passa
+- [x] 2.1 Escrever o teste do valor na entidade (`create`/`restore` aceitam `amountCents` válido e ausente; fracionário/negativo/acima de 10.000.000 rejeitados; sem setter — imutabilidade estrutural) e verificar que falha porque a entidade não conhece o campo — RED. Verificação: valor ignorado ou `Cannot find` no acesso
+- [x] 2.2 Estender `domain/entities/attendance.entity.ts` + erros locais (sem eco) com `amountCents` e verificar que o teste passa — GREEN. Verificação: teste da task 2.1 passa
 - [ ] 2.3 Escrever o teste da agregação pura (`summarize` sobre entradas mistas: com/sem valor, dentro/fora da janela → total e contagem exatos; janela vazia → zeros; soma sem float) e verificar que falha porque a função não existe — RED. Verificação: `Cannot find module`
 - [ ] 2.4 Criar a função `summarize` no domínio de Financeiro + porta `FinanceSummaryReader` (só pares `{ amountCents, performedAt }`, zero implementação, sem importar domínio de Atendimento nem de Pacientes) e verificar verde + auditoria de imports (`domain/` sem imports externos e cruzados) — GREEN. Verificação: typecheck limpo e `grep` de imports externos e cruzados vazio
 

@@ -114,6 +114,7 @@ describe("adversarial — entradas hostis contra os casos de uso", () => {
       id: ATTENDANCE_ID,
       patientId: PATIENT_ID,
       summary: null as never,
+      amountCents: null,
       performedAt: new Date("2026-09-10T14:30:00.000Z"),
       createdAt: new Date("2026-09-10T15:00:00.000Z"),
       updatedAt: new Date("2026-09-10T15:00:00.000Z"),
