@@ -7,8 +7,8 @@
 
 ## 1. Setup de persistência (test-first de wire-up)
 
-- [ ] 1.1 Executar `pnpm --filter backend test` filtrado ao novo módulo e constatar que falha (pacote `finance/` inexistente) — RED. Verificação: filtro sem arquivos
-- [ ] 1.2 Adicionar `amountCents Int?` ao modelo `Attendance` + migration + seed fictício (um atendimento com valor fictício, um sem) — GREEN parcial. Verificação: `prisma migrate deploy` aplica limpo no banco de teste e o seed popula sem erro
+- [x] 1.1 Executar `pnpm --filter backend test` filtrado ao novo módulo e constatar que falha (pacote `finance/` inexistente) — RED. Verificação: filtro sem arquivos
+- [x] 1.2 Adicionar `amountCents Int?` ao modelo `Attendance` + migration + seed fictício (um atendimento com valor fictício, um sem) — GREEN parcial. Verificação: `prisma migrate deploy` aplica limpo no banco de teste e o seed popula sem erro
 
 ## 2. Domain — valor imutável no Atendimento + agregação pura (unitários puros)
 
