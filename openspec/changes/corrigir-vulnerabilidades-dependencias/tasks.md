@@ -6,7 +6,7 @@
 ## 2. Overrides de brace-expansion por linha
 
 - [x] 2.1 Registrar o RED: `pnpm --recursive why brace-expansion` mostra `1.1.18` e `5.0.9` (vulneráveis) — RED. Verificação: as duas versões listadas na saída
-- [ ] 2.2 Adicionar os overrides disjuntos no `package.json` raiz, reinstalar, e provar que nenhuma versão vulnerável resta — GREEN parcial. Verificação: `pnpm --recursive why brace-expansion` só com `>=1.1.20` na linha 1.x e `>=5.0.11` na 5.x
+- [x] 2.2 Adicionar os overrides disjuntos no `package.json` raiz, reinstalar, e provar que nenhuma versão vulnerável resta — GREEN parcial. Verificação: `pnpm --recursive why brace-expansion` só com `>=1.1.20` na linha 1.x e `>=5.0.11` na 5.x
 
 ## 3. Ignore auditável do braces + aceite formal
 
