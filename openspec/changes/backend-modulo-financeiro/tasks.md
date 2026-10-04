@@ -26,8 +26,8 @@
 
 ## 4. Infrastructure — reader Prisma + Postgres real em container (cliente próprio, mesmo padrão)
 
-- [ ] 4.1 Escrever o teste de integração do reader (round-trip; exclui atendimentos de anonimizada mesmo com valores existindo; ignora `amountCents` nulo; respeita a janela) e verificar que falha — RED. Verificação: falha de schema ausente ou módulo inexistente
-- [ ] 4.2 Criar o provider de cliente próprio no `FinanceModule` (`createPrismaClientFromEnv` do kernel, mesmo padrão dos 5 módulos — sexto pool consciente, design decisão 4) + mappers (Data Mapper, nunca Active Record) e implementar o reader com o filtro `patient: { status: "active" }` na query (sem `UnitOfWork` — só leitura, design decisão 4) — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado; `grep` confirma que `FinanceModule` não importa nada do módulo de Atendimento; módulo de Atendimento intocado no wiring
+- [x] 4.1 Escrever o teste de integração do reader (round-trip; exclui atendimentos de anonimizada mesmo com valores existindo; ignora `amountCents` nulo; respeita a janela) e verificar que falha — RED. Verificação: falha de schema ausente ou módulo inexistente
+- [x] 4.2 Criar o provider de cliente próprio no `FinanceModule` (`createPrismaClientFromEnv` do kernel, mesmo padrão dos 5 módulos — sexto pool consciente, design decisão 4) + mappers (Data Mapper, nunca Active Record) e implementar o reader com o filtro `patient: { status: "active" }` na query (sem `UnitOfWork` — só leitura, design decisão 4) — GREEN. Verificação: testes passam contra Postgres real em container, banco de teste isolado; `grep` confirma que `FinanceModule` não importa nada do módulo de Atendimento; módulo de Atendimento intocado no wiring
 
 ## 5. Presentation — controller de resumo com guard honesto
 
