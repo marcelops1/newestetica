@@ -1,6 +1,6 @@
 ## 0. Baseline de caracterização (antes de qualquer mudança)
 
-- [ ] 0.1 Rodar a suíte completa do backend e registrar o baseline (arquivos/testes e cobertura por módulo) como rede de segurança da migração — Verificação: números colados no `verification.md` (observação, sem RED — padrão §14.10)
+- [x] 0.1 Rodar a suíte completa do backend e registrar o baseline (arquivos/testes e cobertura por módulo) como rede de segurança da migração — Verificação: números colados no `verification.md` (observação, sem RED — padrão §14.10)
 
 ## 1. Setup de dependência e realm (test-first de wire-up)
 
