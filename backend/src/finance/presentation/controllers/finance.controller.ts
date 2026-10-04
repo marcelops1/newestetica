@@ -5,6 +5,7 @@ import {
   ApiOperation,
   ApiQuery,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
 import {
@@ -19,24 +20,17 @@ import {
   type FinanceSummaryResult,
 } from "../../application/use-cases/get-finance-summary.use-case";
 import {
-  AUTH_NOT_IMPLEMENTED_CODE,
-  AUTH_NOT_IMPLEMENTED_MESSAGE,
-  IdentityPendingGuard,
-} from "../../../shared/http/identity-pending.guard";
+  AUTH_401_DESCRIPTION,
+  AUTH_401_SCHEMA,
+  AUTH_403_DESCRIPTION,
+  AUTH_403_SCHEMA,
+} from "../../../shared/http/auth/auth-swagger";
+import { Roles } from "../../../shared/http/auth/roles.decorator";
+import { JwtAuthGuard } from "../../../shared/http/auth/jwt-auth.guard";
 import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
 
 class FinanceSummaryResponseDto extends createZodDto(FinanceSummarySchema) {}
-
-const FORBIDDEN_DESCRIPTION =
-  "Bloqueado pelo IdentityPendingGuard: autenticação ainda não implementada para este módulo (UC 4.2.1).";
-const FORBIDDEN_SCHEMA = {
-  type: "object",
-  properties: {
-    code: { type: "string", example: AUTH_NOT_IMPLEMENTED_CODE },
-    message: { type: "string", example: AUTH_NOT_IMPLEMENTED_MESSAGE },
-  },
-};
 
 /* Allowlist explícita do contrato: o resultado do caso de uso nunca cruza o wire
    direto; o tipo de retorno é o do próprio `@newestetica/contracts` — divergência
@@ -51,20 +45,19 @@ function toResponse(result: FinanceSummaryResult): FinanceSummaryResponse {
   };
 }
 
-/* Guard honesto do kernel em todas as rotas (design decisão 6), sem exceção e sem
-   duplicar a classe; bloqueio total até a Identidade. */
-@ApiTags("Financeiro (bloqueado até a Identidade)")
+/* Autenticação real (UC 4.2.1): guard do kernel — sem token válido 401, papel
+   insuficiente 403 — e RBAC: rota financeira só `admin` (menor privilégio; a
+   recepção não acessa o agregado monetário). */
+@ApiTags("Financeiro")
 @Controller("finance")
-@UseGuards(IdentityPendingGuard)
+@UseGuards(JwtAuthGuard)
 @UseFilters(DomainExceptionFilter)
 export class FinanceController {
   constructor(private readonly getFinanceSummary: GetFinanceSummaryUseCase) {}
 
   @Get("summary")
-  @ApiOperation({
-    summary:
-      "Resumo financeiro essencial por janela (bloqueado até a Identidade)",
-  })
+  @Roles("admin")
+  @ApiOperation({ summary: "Resumo financeiro essencial por janela" })
   @ApiQuery({
     name: "from",
     required: true,
@@ -78,9 +71,13 @@ export class FinanceController {
       "Fim da janela (data ISO, YYYY-MM-DD; no máximo 366 dias após from).",
     schema: { type: "string", format: "date", example: "2026-09-30" },
   })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiOkResponse({
     description:
