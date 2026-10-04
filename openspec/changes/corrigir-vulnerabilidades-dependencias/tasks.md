@@ -10,8 +10,8 @@
 
 ## 3. Ignore auditável do braces + aceite formal
 
-- [ ] 3.1 Decidir por experimento o local efetivo do `ignoreGhsas` na 9.15.0 (`package.json` sob `pnpm` vs `pnpm-workspace.yaml`) e provar que só o `braces` é ignorado — RED vira GREEN. Verificação: antes da regra o audit lista GHSA-vfj7-8cjw-p6xm; depois, não lista, sem nenhum outro advisory sumido
-- [ ] 3.2 Registrar o aceite formal em `docs/security/03-seguranca.md` (ID, severidade, justificativa, gatilho de revisão) e provar `pnpm audit --audit-level high` com saída 0 — GREEN. Verificação: saída 0 e contagem `0 high/critical` (moderate fora do gate, registrados como FYI)
+- [x] 3.1 Decidir por experimento o local efetivo do `ignoreGhsas` na 9.15.0 (`package.json` sob `pnpm` vs `pnpm-workspace.yaml`) e provar que só o `braces` é ignorado — RED vira GREEN. Verificação: antes da regra o audit lista GHSA-vfj7-8cjw-p6xm; depois, não lista, sem nenhum outro advisory sumido
+- [x] 3.2 Registrar o aceite formal em `docs/security/03-seguranca.md` (ID, severidade, justificativa, gatilho de revisão) e provar `pnpm audit --audit-level high` com saída 0 — GREEN. Verificação: saída 0 e contagem `0 high/critical` (moderate fora do gate, registrados como FYI)
 
 ## 4. Gates, registros e PR
 

@@ -185,6 +185,12 @@ Itens que poderão ser aprofundados depois do MVP:
 - Criptografia em repouso de campos específicos
 - Processos formais de resposta a incidentes
 
+### Aceites formais de risco (dependências sem correção publicada)
+
+Quando um advisory sem versão corrigida impede o gate do CI, o projeto registra aqui o aceite explícito — nunca silencioso:
+
+- **GHSA-vfj7-8cjw-p6xm (`braces <= 3.0.3`, high — DoS por stack-exhaustion via padrões de glob profundamente aninhados).** Sem correção publicada (`patched <0.0.0`). Chega via `@fission-ai/openspec > fast-glob > micromatch` e `eslint-config-next > fast-glob` — só ferramentas de desenvolvimento, nunca runtime de produção. O padrão de glob vem da nossa própria configuração, nunca de entrada externa (usuária, arquivo ou rede), de modo que o vetor de exploração não existe neste projeto. Ignorado de forma explícita e auditável em `auditConfig.ignoreGhsas` no `package.json` raiz (pnpm 9.15.0 lê a chave `pnpm` do manifesto; nomes novos `audit.ignore` só valem a partir da v11.16.0). **Gatilho de revisão:** quando sair versão corrigida do `braces`/`micromatch`, ou ao atualizar `@fission-ai/openspec`/`eslint-config-next` — o que ocorrer primeiro (change `corrigir-vulnerabilidades-dependencias`, 2026-10-04).
+
 ---
 
 ## 13. Referências cruzadas
