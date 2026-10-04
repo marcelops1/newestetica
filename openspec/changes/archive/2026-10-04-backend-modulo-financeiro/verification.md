@@ -16,9 +16,9 @@
 | Unit — aplicação (Atendimento, delta) | Criação com valor válido/ausente/hostil (núcleo rejeita sem persistir) | 1 (+2) | 8 |
 | Integração — persistência | Reader Prisma contra Postgres real (round-trip, janela nas bordas, nulos, anonimizada, ordem determinística, sem PII); repositório de Atendimento com round-trip do valor | 2 (+1 att.) | 5 + 9 (att.) |
 | Integração — HTTP | Rotas com bypass (3), **guard honesto sem bypass (4 casos)**, contrato de saída em duas pontas (2), **não-vazamento no agregado write-then-throw (2)**; Atendimento ganhou 2 casos de valor | 5 (+1 att.) | 14 (fin.) + 10 (att. http/contract) |
-| **Total do change** | | **15 novas/alteradas** | **+91 (backend 295→340; contracts 68→80)** |
+| **Total do change** | | **15 novas/alteradas** | **+58 (backend 295→341 = +46; contracts 68→80 = +12)** |
 
-Suíte completa no Verify: **backend 75 arquivos / 340 testes** (baseline do passo 2: 67/295); **contracts 15/80**; **frontend 15/109 (intocado)**; todas verdes.
+Suíte completa no Verify: **backend 75 arquivos / 341 testes** (baseline do passo 2: 67/295); **contracts 15/80**; **frontend 15/109 (intocado)**; todas verdes.
 
 **REDs reais colados (não apenas "testes verdes"):**
 
@@ -91,9 +91,9 @@ Abuse cases do threat model do `design.md`, um a um:
 - **Legibilidade/simplicidade:** arquivos pequenos (maior de produção: controller 98 linhas; total 963), nomes consistentes com os módulos anteriores; `toResponse` é a única allowlist; scaffold provisório removido (grep de `Scaffold`/`TODO`/cast: vazio); sem abstração além do necessário (sem entidade de resumo, sem `UnitOfWork`, sem provider compartilhado).
 - **Arquitetura:** `domain/` sem imports externos/cruzados (grep: só tipos do próprio domínio); `application/` só domínio (`summarize` + porta); `infrastructure/` implementa a porta com Data Mapper e filtro de visibilidade na query; `presentation/` fina com guard/pipe/filtro do kernel/local; `FinanceModule` wireado no `AppModule`; sexto pool consciente (decisão 4) com trigger de unificação registrado. **Módulo de Atendimento intocado no wiring** (`git diff` do módulo: vazio).
 - **Segurança:** seção 3 (revisão dedicada).
-- **Performance:** leitura única bounded por janela (sem N+1), seleção de 2 campos, índice existente `(patientId, performedAt)` aproveitável; agregado sem paginação por desenho (não é listagem).
+- **Performance:** leitura única bounded por janela (sem N+1) e seleção de 2 campos; agregado sem paginação por desenho (não é listagem). **Correção pós-revisão (R1):** o índice existente `(patientId, performedAt)` **NÃO serve** a esta leitura — a coluna líder `patientId` não é restringida pela query do resumo (filtro é `performedAt` + relação `patient.status`); não há índice em `performedAt` e não há teto de linhas dentro da janela (sem `take`). O volume do MVP não exige nenhum dos dois; **gatilho:** criar índice em `performedAt` ou agregar com `SUM`/`COUNT` no SQL se o volume crescer (design, decisão 3).
 - **Verificação documentada:** REDs colados; gates completos (seção 5).
-- **FYIs:** (1) a resposta ecoa `from`/`to` — string de data, não PII; (2) `fishing` por janelas estreitas declarado como risco residual, com trigger no RBAC; (3) pool próprio do Financeiro é o sexto — unificação adiada com trigger.
+- **FYIs:** (1) a resposta ecoa `from`/`to` — string de data, não PII; (2) `fishing` por janelas estreitas declarado como risco residual, com trigger no RBAC; (3) pool próprio do Financeiro é o sexto — unificação adiada com trigger; (4) **primeiro módulo do backend sem `domain/ports/ports.spec.ts`** (os 5 anteriores têm): o fake `InMemoryFinanceSummaryReader` é exercitado pelos specs de caso de uso/adversarial (janela, nulos, zeros) — **sem lacuna de comportamento**; retomar o spec de porta se o padrão for reativado.
 
 ## 5. Gates (docs/07 §6)
 
@@ -103,13 +103,15 @@ Abuse cases do threat model do `design.md`, um a um:
 | `pnpm format` | ✅ limpo (após `format:write` nos arquivos do change) |
 | `pnpm build` | ✅ limpo (contracts + frontend + backend) |
 | `pnpm typecheck` | ✅ limpo (build antes do typecheck, como no CI — tipos do Next são gerados no build) |
-| `pnpm test` | ✅ **backend 75/340** (cobertura 99,66% stmts / 98,08% branches / 100% funcs / 99,65% lines); **contracts 15/80 (100%)**; **frontend 15/109 (100%)** |
+| `pnpm test` | ✅ **backend 75/341** (cobertura 99,66% stmts / 98,08% branches / 100% funcs / 99,65% lines); **contracts 15/80 (100%)**; **frontend 15/109 (100%)** |
 | `pnpm audit --audit-level high` | ⚠️ exit 1 — 6 moderate/5 high/1 critical **pré-existentes** (lockfile idêntico ao `main`; advisories publicados depois do último merge). Fora do escopo deste change; registrado como FYI para o CI/PR |
+
+> **Nota de processo (R4):** o hook de pre-commit (lint-staged) cobre apenas `frontend/**` — não cobre `backend/` nem `contracts/` — e **não barrou nenhum commit** neste Apply; os gates manuais compensaram (o drift de formatação foi pego pelo `format` e corrigido com `format:write`). Precedente: o change do Catálogo registra a mesma observação ("husky não rodou nas execuções não interativas").
 
 ## 6. Regressão do Atendimento (rede de segurança do passo 2)
 
 - **Baseline registrado antes de qualquer mudança:** suíte completa do backend 67 arquivos / 295 testes verdes (cobertura 99,62/97,82/100/99,62); recorte do Atendimento 11 arquivos / 66 testes.
-- **Após adicionar `amountCents` ao Atendimento (entidade, caso de uso, mapper, controller):** recorte do Atendimento **11 arquivos / 76 testes verdes** (66 originais preservados + 10 novos) — **zero regressão**; suíte completa final 75/340 verdes.
+- **Após adicionar `amountCents` ao Atendimento (entidade, caso de uso, mapper, controller):** recorte do Atendimento **11 arquivos / 76 testes verdes** (66 originais preservados + 10 novos) — **zero regressão**; suíte completa final 75/341 verdes.
 - Contrato vigente preservado fora do delta: criação sem valor continua válida (`amountCents` nulo), imutabilidade intacta, visibilidade herdada intacta.
 
 ## 7. Documentação atualizada (task 6.4)
