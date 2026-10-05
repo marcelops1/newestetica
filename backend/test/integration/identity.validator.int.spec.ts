@@ -178,6 +178,31 @@ describe("JoseTokenValidator (JWKS real contra servidor fake)", () => {
     }
   });
 
+  it("configuração parcial (só issuer ou só audience) também falha rápido", () => {
+    const previousIssuer = process.env.KEYCLOAK_ISSUER;
+    const previousAudience = process.env.KEYCLOAK_AUDIENCE;
+    try {
+      process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:9/realms/x";
+      delete process.env.KEYCLOAK_AUDIENCE;
+      expect(() => createJoseTokenValidatorFromEnv()).toThrow(/KEYCLOAK/);
+
+      delete process.env.KEYCLOAK_ISSUER;
+      process.env.KEYCLOAK_AUDIENCE = "client";
+      expect(() => createJoseTokenValidatorFromEnv()).toThrow(/KEYCLOAK/);
+    } finally {
+      if (previousIssuer === undefined) {
+        delete process.env.KEYCLOAK_ISSUER;
+      } else {
+        process.env.KEYCLOAK_ISSUER = previousIssuer;
+      }
+      if (previousAudience === undefined) {
+        delete process.env.KEYCLOAK_AUDIENCE;
+      } else {
+        process.env.KEYCLOAK_AUDIENCE = previousAudience;
+      }
+    }
+  });
+
   it("configuração por ambiente: issuer+audience derivam a URL do JWKS do realm", () => {
     const previousIssuer = process.env.KEYCLOAK_ISSUER;
     const previousAudience = process.env.KEYCLOAK_AUDIENCE;

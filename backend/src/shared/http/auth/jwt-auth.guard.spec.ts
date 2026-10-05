@@ -197,4 +197,59 @@ describe("JwtAuthGuard (kernel)", () => {
       "reception",
     ]);
   });
+
+  /* Caracterização (comportamento já existente; sem RED — registrado como tal):
+     rodeiam os sobreviventes do mutation — âncoras do regex, tipo do header,
+     espaçamento, teto exato e request degenerado. */
+  it("headers hostis: prefixo antes do esquema e array de headers dão 401; espaçamento duplo é aceito", async () => {
+    const { guard } = makeGuard(async () => ADMIN);
+
+    const prefixed = makeContext({ authorization: "xBearer token-bom" });
+    await expect(guard.canActivate(prefixed.context)).rejects.toMatchObject({
+      status: 401,
+    });
+
+    const arrayHeader = makeContext({
+      authorization: ["Bearer token-bom"] as unknown as string,
+    });
+    await expect(guard.canActivate(arrayHeader.context)).rejects.toMatchObject({
+      status: 401,
+    });
+
+    const doubleSpace = makeContext({ authorization: "Bearer  token-bom" });
+    await expect(guard.canActivate(doubleSpace.context)).resolves.toBe(true);
+  });
+
+  it("teto exato do token (8192) é aceito; um caractere a mais responde 401", async () => {
+    const { guard } = makeGuard(async () => ADMIN);
+
+    const exact = makeContext({
+      authorization: `Bearer ${"x".repeat(8_192)}`,
+    });
+    await expect(guard.canActivate(exact.context)).resolves.toBe(true);
+
+    const over = makeContext({
+      authorization: `Bearer ${"x".repeat(8_193)}`,
+    });
+    await expect(guard.canActivate(over.context)).rejects.toMatchObject({
+      status: 401,
+    });
+  });
+
+  it("request degenerado (sem headers ou indefinido) responde 401, nunca TypeError", async () => {
+    const { guard } = makeGuard(async () => ADMIN);
+
+    for (const request of [{}, undefined]) {
+      const context = {
+        switchToHttp: () => ({ getRequest: () => request }),
+        getHandler: () => function handler() {},
+        getClass: () => class Controller {},
+      } as unknown as ExecutionContext;
+
+      await expect(
+        guard.canActivate(context),
+        `request hostil: ${JSON.stringify(request)}`,
+      ).rejects.toMatchObject({ status: 401 });
+    }
+  });
 });

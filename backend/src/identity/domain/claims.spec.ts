@@ -48,6 +48,15 @@ describe("mapeamento de claims do token para identidade", () => {
     }
   });
 
+  it("realm_access nulo ou roles de tipo errado viram identidade sem papéis, sem TypeError", () => {
+    for (const realmAccess of [null, 42, { roles: null }, { roles: 42 }]) {
+      expect(
+        fromTokenClaims({ sub: "user-1", realm_access: realmAccess }),
+        `realm_access hostil: ${JSON.stringify(realmAccess)}`,
+      ).toEqual({ subject: "user-1", roles: [] });
+    }
+  });
+
   it("filtra papéis de tipo errado e duplicados dentro do array", () => {
     const identity = fromTokenClaims({
       sub: "user-1",
