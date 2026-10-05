@@ -6,4 +6,4 @@
 ## 2. Tags legadas + sync (sem comportamento)
 
 - [x] 2.1 Remover os 3 `.addTag("... (bloqueado até a Identidade)")` de `backend/src/swagger.ts` e provar que nada os referencia — exceção docs/07 §4 (remoção de código morto sem comportamento observável). Verificação: grep vazio + suíte `openapi` verde
-- [ ] 2.2 Sincronizar o delta de `api-documentation` para `openspec/specs/` no archive e validar — exceção docs/07 §4. Verificação: `pnpm exec openspec validate --all` passa
+- [x] 2.2 Sincronizar o delta de `api-documentation` para `openspec/specs/` no archive e validar — exceção docs/07 §4. Verificação: `pnpm exec openspec validate --all` passa
