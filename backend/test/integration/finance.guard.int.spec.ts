@@ -71,7 +71,11 @@ describe("guard real + RBAC no módulo Financeiro", () => {
     expect(noRoles.status).toBe(403);
     expect(insufficient.status).toBe(403);
     expect(await noRoles.text()).toBe(await insufficient.text());
-    expect(JSON.parse(await call(SUMMARY_PATH, "test-noroles").then((r) => r.text()))).toEqual({
+    expect(
+      JSON.parse(
+        await call(SUMMARY_PATH, "test-noroles").then((r) => r.text()),
+      ),
+    ).toEqual({
       code: AUTH_FORBIDDEN_CODE,
       message: AUTH_FORBIDDEN_MESSAGE,
     });

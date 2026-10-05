@@ -2,10 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { FinanceModule } from "../../src/finance/finance.module";
-import {
-  FAKE_TOKEN_VERIFIER,
-  bearer,
-} from "../fakes/fake-token-verifier";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
 import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
@@ -80,7 +77,6 @@ afterAll(async () => {
 beforeEach(async () => {
   await resetDatabase(prisma);
 });
-
 
 /* Requisição autenticada (token de admin via verificador fake — o guard é o real). */
 function authFetch(

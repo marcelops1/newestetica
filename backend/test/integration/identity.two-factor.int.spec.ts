@@ -123,7 +123,10 @@ async function loginPasswordOnly(
     );
   }
 
-  const actionUrl = new URL(actionMatch[1].replaceAll("&amp;", "&"), KEYCLOAK_URL);
+  const actionUrl = new URL(
+    actionMatch[1].replaceAll("&amp;", "&"),
+    KEYCLOAK_URL,
+  );
   const afterCredentials = await fetch(actionUrl, {
     method: "POST",
     redirect: "manual",
@@ -164,9 +167,8 @@ afterAll(() => {
 });
 
 describe("2FA obrigatório no realm (prova contra o Keycloak real)", () => {
-  it.each(USERS)(
-    "login só com senha de $username ($role) não conclui e para no segundo fator",
-    async (user, context) => {
+  for (const user of USERS) {
+    it(`login só com senha de ${user.username} (${user.role}) não conclui e para no segundo fator`, async (context) => {
       if (!keycloakUp) {
         context.skip();
         return;
@@ -179,10 +181,10 @@ describe("2FA obrigatório no realm (prova contra o Keycloak real)", () => {
         false,
       );
       /* E parou no SEGUNDO FATOR (não em outra ação obrigatória qualquer). */
-      expect(
-        outcome.finalUrl + outcome.body,
-      ).toMatch(/totp|otp|CONFIGURE_TOTP/i);
+      expect(outcome.finalUrl + outcome.body).toMatch(
+        /totp|otp|CONFIGURE_TOTP/i,
+      );
       expect(outcome.finalUrl).not.toMatch(/VERIFY_PROFILE/i);
-    },
-  );
+    });
+  }
 });

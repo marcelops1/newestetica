@@ -46,8 +46,7 @@ export class JoseTokenValidator implements TokenValidator {
   constructor(options: JoseTokenValidatorOptions) {
     this.jwks = createRemoteJWKSet(new URL(options.jwksUrl), {
       cacheMaxAge: options.cacheMaxAgeMs ?? DEFAULT_CACHE_TTL_MS,
-      cooldownDuration:
-        options.cooldownDurationMs ?? DEFAULT_JWKS_COOLDOWN_MS,
+      cooldownDuration: options.cooldownDurationMs ?? DEFAULT_JWKS_COOLDOWN_MS,
     });
     this.issuer = options.issuer;
     this.audience = options.audience;
@@ -91,7 +90,6 @@ export function createJoseTokenValidatorFromEnv(): JoseTokenValidator {
     );
   }
   const jwksUrl =
-    process.env.KEYCLOAK_JWKS_URL ??
-    `${issuer}/protocol/openid-connect/certs`;
+    process.env.KEYCLOAK_JWKS_URL ?? `${issuer}/protocol/openid-connect/certs`;
   return new JoseTokenValidator({ jwksUrl, issuer, audience });
 }

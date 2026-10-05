@@ -63,6 +63,9 @@ describe("mapeamento de claims do token para identidade", () => {
       realm_access: { roles: ["admin", "admin", 42, null, "reception"] },
     });
 
-    expect(identity).toEqual({ subject: "user-1", roles: ["admin", "reception"] });
+    expect(identity).toEqual({
+      subject: "user-1",
+      roles: ["admin", "reception"],
+    });
   });
 });

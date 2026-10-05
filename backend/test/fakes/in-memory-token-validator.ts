@@ -8,7 +8,10 @@ export class InMemoryTokenValidator implements TokenValidator {
   public readonly calls: string[] = [];
 
   constructor(
-    private readonly tokens: ReadonlyMap<string, AuthenticatedIdentity> = new Map(),
+    private readonly tokens: ReadonlyMap<
+      string,
+      AuthenticatedIdentity
+    > = new Map(),
   ) {}
 
   async validate(token: string): Promise<AuthenticatedIdentity | null> {

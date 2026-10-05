@@ -1,10 +1,5 @@
 import { createServer, type Server } from "node:http";
-import {
-  SignJWT,
-  exportJWK,
-  generateKeyPair,
-  type JWK,
-} from "jose";
+import { SignJWT, exportJWK, generateKeyPair, type JWK } from "jose";
 
 /* JWKS fake local (design decisão 3): chaves de verdade geradas em memória (RSA para
    o caso legítimo, EC para o ataque de allowlist de algoritmo), servidas num HTTP

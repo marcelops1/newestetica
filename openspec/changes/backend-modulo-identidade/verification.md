@@ -55,7 +55,7 @@ Ordem por módulo: trocar o guard no módulo/controller → suíte antiga reprov
 | Atendimento | admin+reception (operacional) | 11/76 | 11/77 (+1 caso no guard: 401+403+contraste) | zero de negócio |
 | Financeiro | admin-only | 8/36 | 8/35 (guard-spec 4→3 casos, cobrindo 401/403/contraste byte-idêntico; 32 de negócio intactos) | zero de negócio |
 
-- **Suíte completa**: baseline **75 arquivos / 341 testes** → final **85 arquivos / 388 testes** (contratos 100%, cobertura backend 99,7% stmts / 98,17% branches / 100% funcs / 99,69% lines).
+- **Suíte completa**: baseline **75 arquivos / 341 testes** → migração em **85 arquivos / 388 testes** → árvore final com a caracterização do mutation em **85 arquivos / 393 testes** (contratos 100%, cobertura backend 99,7% stmts / 98,17% branches / 100% funcs / 99,69% lines).
 - **Guard honesto removido (task 6.3):** `grep` por `IdentityPendingGuard`/`AUTH_NOT_IMPLEMENTED` em `backend/src` e `backend/test` → **vazio** (arquivo apagado; referências migradas).
 - **Swagger (8.5):** tags sem "bloqueado até a Identidade"; as 9 rotas administrativas documentam 401 (`AUTH_UNAUTHENTICATED`) e 403 (`AUTH_FORBIDDEN`) fixos; `openapi.int.spec.ts` reescrito para travar o contrato real (18 rotas, nenhuma fantasma). Suítes que sobem o `AppModule` (openapi/gate) ganharam o env do Keycloak exigido pelo bootstrap do `IdentityModule`.
 
@@ -98,6 +98,28 @@ Abuse cases do threat model do `design.md`, um a um (todos com prova de write-th
 - **Verificação documentada:** REDs colados (seções 1–2), gates e mutation (seções 7–8).
 - **Verdict: Approve.**
 - **FYIs:** (1) a matriz RBAC por rota é a interpretação MVP do "acesso operacional limitado" da recepção — revisitar com a Fabiana/Identidade quando houver UI; (2) o bootstrap do `IdentityModule` exige `KEYCLOAK_ISSUER`/`KEYCLOAK_AUDIENCE` (fail-fast) — todo teste que sobe módulo administrativo seta env dummy no `beforeAll` (padrão registrado); (3) a remoção do guard honesto foi commitada junto do commit do OpenAPI por um `git rm` já staged (higiene de commit, sem impacto de conteúdo); (4) rate-limit de autenticação e trilha de auditoria persistida ficam para changes futuros com trigger.
+
+## 7. Mutation testing (task 9.1 — docs/07 §16.c)
+
+- **Escopo:** `pnpm --filter backend exec stryker run --mutate 'src/identity/**/*.ts,!src/identity/**/*.spec.ts,!src/identity/**/*.module.ts,src/shared/http/auth/**/*.ts,!src/shared/http/auth/**/*.spec.ts'` (escopo também estendido no `backend/stryker.config.mjs`). **187 mutantes**:
+  1. **1ª rodada: 83,96%** (157 mortos / 30 sobreviventes, 0 sem cobertura, 0 timeout).
+  2. **Triagem:** claims nulas/tipo errado, env parcial de configuração, headers hostis (prefixo/array/espaçamento), teto exato do token e request degenerado → **testes de caracterização adicionados** (comportamento já existia; passam direto — **sem RED**, registrados como tal).
+- **Árvore final: 89,84%** — **168 mortos / 19 sobreviventes**, 0 sem cobertura, 0 timeout (medição final na árvore com a caracterização; relatório em `backend/reports/mutation/`).
+- **Sobreviventes finais aceitos (19, todos justificados):**
+  - **6 equivalentes:** `roles.ts:11` (remover `typeof value === "string"` é indistinguível — nenhum valor não-string pertence ao Set de papéis); `jwt-auth.guard.ts:44` ×2 (`token.length > 0` → `true`/`>= 0` — o regex `(\S+)` garante ≥ 1 caractere antes da expressão); `jwt-auth.guard.ts:67` (`if (request)` → `if (true)` — a requisição indefinida já falhou no 401 antes da atribuição); `jwt-auth.guard.ts:93` (remover o `return null` do catch — o fallthrough devolve `undefined`, tratado igual a nulo por `if (!identity)`); `roles.decorator.ts:6` (literal do metadado — decorator e guard leem a MESMA constante; trocar o literal muda a chave de forma consistente).
+  - **5 de defesa em profundidade no validador** (`jose-token.validator.ts:61-64` + fronteira `>=`): os pré-checks de tipo/vazio/teto existem para não parsear lixo (anti-DoS) e são redundantes com a camada seguinte — qualquer um removido cai no `jwtVerify` (que rejeita não-string/vazio/malformado) e no `catch` → mesmo `null` observável; o teto TAMBÉM é aplicado no guard (com teste provando que o verificador nem é chamado acima de 8.192). O mutante de fronteira (`>` → `>=`) só separaria um token válido de exatamente 8.192 caracteres — não construível sem chaves/padding artificiais.
+  - **8 literais de documentação** (`auth-swagger.ts`): tipos/exemplos do descritor de Swagger do 401/403; o teste OpenAPI asserta o que importa (`code.example`), e mexer no `type` do exemplo não muda comportamento (mesmo racional aceito nos módulos Atendimento e Financeiro).
+
+## 8. Gates (docs/07 §6)
+
+| Gate | Resultado |
+| --- | --- |
+| `pnpm lint` | ✅ limpo (1 warning pré-existente em `frontend/stryker.config.mjs`) |
+| `pnpm format` | ✅ limpo |
+| `pnpm typecheck` | ✅ limpo (build antes, como no CI) |
+| `pnpm build` | ✅ limpo (contracts + frontend + backend) |
+| `pnpm test` | ✅ **backend 85/393** (cobertura 99,7% stmts / 98,17% branches / 100% funcs / 99,69% lines); **contracts 15/80 (100%)**; **frontend 15/109 (100%)** |
+| `pnpm audit --audit-level high` | ✅ saída 0 (4 moderate + 1 high ignorado — os mesmos pré-existentes; `jose` não trouxe advisory) |
 
 ## 9. Documentação atualizada (task 9.4)
 

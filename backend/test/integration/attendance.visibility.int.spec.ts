@@ -2,10 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AttendanceModule } from "../../src/attendance/attendance.module";
-import {
-  FAKE_TOKEN_VERIFIER,
-  bearer,
-} from "../fakes/fake-token-verifier";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
 import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
@@ -89,7 +86,6 @@ afterAll(async () => {
 beforeEach(async () => {
   await resetDatabase(prisma);
 });
-
 
 /* Requisição autenticada (token de admin/reception via verificador fake). */
 function authFetch(
@@ -234,7 +230,9 @@ describe("histórico de paciente anonimizada nunca é servido (invariante herdad
       "2026-09-11T09:00:00.000Z",
     );
 
-    const response = await authFetch(`${baseUrl}/patients/${BRAVO}/attendances`);
+    const response = await authFetch(
+      `${baseUrl}/patients/${BRAVO}/attendances`,
+    );
     const body = (await response.json()) as Array<unknown>;
 
     expect(response.status).toBe(200);

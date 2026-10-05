@@ -3,10 +3,7 @@ import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AttendanceSchema } from "@newestetica/contracts";
 import { AttendanceModule } from "../../src/attendance/attendance.module";
-import {
-  FAKE_TOKEN_VERIFIER,
-  bearer,
-} from "../fakes/fake-token-verifier";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
 import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
@@ -73,7 +70,6 @@ beforeEach(async () => {
   });
 });
 
-
 /* Requisição autenticada (token de admin/reception via verificador fake). */
 function authFetch(
   url: string,
@@ -119,15 +115,18 @@ describe("saída de atendimentos conforme o contrato (verificação nas duas pon
   });
 
   it("o registro responde no AttendanceSchema com o vínculo do path e o valor informado", async () => {
-    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        summary: "Hidratação facial realizada, pele bem tolerada.",
-        amountCents: 20_000,
-        performedAt: "2026-09-12T10:00:00.000Z",
-      }),
-    });
+    const response = await authFetch(
+      `${baseUrl}/patients/${ALFA}/attendances`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          summary: "Hidratação facial realizada, pele bem tolerada.",
+          amountCents: 20_000,
+          performedAt: "2026-09-12T10:00:00.000Z",
+        }),
+      },
+    );
     const body = (await response.json()) as Record<string, unknown>;
 
     expect(response.status).toBe(201);

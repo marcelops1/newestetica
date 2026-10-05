@@ -53,7 +53,7 @@
 
 ## 9. Mutation, segurança, registros e backlog
 
-- [ ] 9.1 Rodar Stryker contra o módulo (`pnpm --filter backend mutation`, banco de teste no ar; estender o escopo `mutate` para `src/identity/**`) e contra os deltas dos 3 módulos, e registrar score real + triagem de sobreviventes em `verification.md` — GREEN. Verificação: relatório completo no registro (meta docs/07 §13)
+- [x] 9.1 Rodar Stryker contra o módulo (`pnpm --filter backend mutation`, banco de teste no ar; estender o escopo `mutate` para `src/identity/**`) e contra os deltas dos 3 módulos, e registrar score real + triagem de sobreviventes em `verification.md` — GREEN. Verificação: relatório completo no registro (meta docs/07 §13)
 - [x] 9.2 Revisar segurança com `security-and-hardening` contra `docs/security/03-seguranca.md` (gatilhos: autenticação, autorização/RBAC, 2FA, dados de paciente via rotas agora abertas, segredos de teste) e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada, com os abuse cases do threat model um a um
 - [x] 9.3 Revisar com `code-review-and-quality` e registrar em `verification.md` — exceção docs/07 §4 só para a escrita do registro. Verificação: revisão registrada
 - [x] 9.4 Atualizar `docs/product/08-backlog-produto.md` (UC 4.2.1 e Épico 3 → Em andamento), `docs/security/03-seguranca.md` §8 (enforcement real) e avaliar `c2/c3-component.md` — exceção docs/07 §4 (verificação por releitura). Verificação: releitura confirma os status

@@ -7,7 +7,10 @@ import { isAuthorized } from "./authorization";
    interseção; sem interseção, nega. */
 describe("autorização RBAC (negação por padrão)", () => {
   const admin: AuthenticatedIdentity = { subject: "u1", roles: ["admin"] };
-  const reception: AuthenticatedIdentity = { subject: "u2", roles: ["reception"] };
+  const reception: AuthenticatedIdentity = {
+    subject: "u2",
+    roles: ["reception"],
+  };
   const noRoles: AuthenticatedIdentity = { subject: "u3", roles: [] };
 
   it("rota sem papel declarado exige apenas autenticação (qualquer identidade passa)", () => {

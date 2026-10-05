@@ -2,10 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AttendanceModule } from "../../src/attendance/attendance.module";
-import {
-  FAKE_TOKEN_VERIFIER,
-  bearer,
-} from "../fakes/fake-token-verifier";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
 import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
@@ -77,7 +74,6 @@ beforeEach(async () => {
   await resetDatabase(prisma);
 });
 
-
 /* Requisição autenticada (token de admin/reception via verificador fake). */
 function authFetch(
   url: string,
@@ -97,14 +93,17 @@ describe("Attendance HTTP (contrato da Presentation, com token válido (verifica
   it("POST /patients/:patientId/attendances cria com 201 e id gerado pelo servidor", async () => {
     await seedPatient(ALFA);
 
-    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        summary: "Limpeza de pele realizada, sem intercorrências.",
-        performedAt: "2026-09-10T14:30:00.000Z",
-      }),
-    });
+    const response = await authFetch(
+      `${baseUrl}/patients/${ALFA}/attendances`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          summary: "Limpeza de pele realizada, sem intercorrências.",
+          performedAt: "2026-09-10T14:30:00.000Z",
+        }),
+      },
+    );
 
     expect(response.status).toBe(201);
     const body = (await response.json()) as {
@@ -122,14 +121,17 @@ describe("Attendance HTTP (contrato da Presentation, com token válido (verifica
   it("POST com payload inválido responde 422 sem ecoar o resumo", async () => {
     await seedPatient(ALFA);
 
-    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        summary: "   ",
-        performedAt: "10/09/2026 14:30",
-      }),
-    });
+    const response = await authFetch(
+      `${baseUrl}/patients/${ALFA}/attendances`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          summary: "   ",
+          performedAt: "10/09/2026 14:30",
+        }),
+      },
+    );
 
     expect(response.status).toBe(422);
     const body = (await response.json()) as { code: string };
@@ -139,15 +141,18 @@ describe("Attendance HTTP (contrato da Presentation, com token válido (verifica
   it("POST com amountCents válido responde 201 com o valor; sem valor responde nulo — leitura posterior confirma", async () => {
     await seedPatient(ALFA);
 
-    const withValue = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        summary: "Limpeza de pele com valor fechado.",
-        amountCents: 15_000,
-        performedAt: "2026-09-10T14:30:00.000Z",
-      }),
-    });
+    const withValue = await authFetch(
+      `${baseUrl}/patients/${ALFA}/attendances`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          summary: "Limpeza de pele com valor fechado.",
+          amountCents: 15_000,
+          performedAt: "2026-09-10T14:30:00.000Z",
+        }),
+      },
+    );
     const createdWithValue = (await withValue.json()) as {
       id: string;
       amountCents: number | null;
@@ -186,15 +191,18 @@ describe("Attendance HTTP (contrato da Presentation, com token válido (verifica
     await seedPatient(ALFA);
 
     for (const amountCents of [1.5, -1, 10_000_001]) {
-      const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          summary: "Tentativa hostil fictícia.",
-          amountCents,
-          performedAt: "2026-09-10T14:30:00.000Z",
-        }),
-      });
+      const response = await authFetch(
+        `${baseUrl}/patients/${ALFA}/attendances`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            summary: "Tentativa hostil fictícia.",
+            amountCents,
+            performedAt: "2026-09-10T14:30:00.000Z",
+          }),
+        },
+      );
 
       expect(response.status, `amountCents hostil: ${amountCents}`).toBe(422);
       const body = (await response.json()) as { code: string };
