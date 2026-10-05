@@ -1,5 +1,6 @@
 import { Controller, Get, Query, UseFilters, UseGuards } from "@nestjs/common";
 import {
+  ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
@@ -49,6 +50,7 @@ function toResponse(result: FinanceSummaryResult): FinanceSummaryResponse {
    insuficiente 403 — e RBAC: rota financeira só `admin` (menor privilégio; a
    recepção não acessa o agregado monetário). */
 @ApiTags("Financeiro")
+@ApiBearerAuth()
 @Controller("finance")
 @UseGuards(JwtAuthGuard)
 @UseFilters(DomainExceptionFilter)

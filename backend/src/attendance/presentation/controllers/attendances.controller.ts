@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -78,6 +79,7 @@ function toResponse(attendance: Attendance): AttendanceItemResponse {
    insuficiente 403 — e RBAC operacional: `admin` e `reception` (dia a dia da
    recepção registra e consulta o histórico). */
 @ApiTags("Atendimento")
+@ApiBearerAuth()
 @Controller("patients/:patientId/attendances")
 @UseGuards(JwtAuthGuard)
 @UseFilters(DomainExceptionFilter)

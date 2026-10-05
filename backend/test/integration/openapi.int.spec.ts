@@ -183,6 +183,13 @@ type OpenApiOperation = Operation & {
       >;
     }
   >;
+  security?: Array<Record<string, string[]>>;
+};
+
+type OpenApiDocumentWithSecurity = OpenApiDocument & {
+  components?: {
+    securitySchemes?: Record<string, { type?: string; scheme?: string }>;
+  };
 };
 
 describe("autenticação real documentada (Pacientes + Atendimento + Financeiro)", () => {
@@ -228,6 +235,33 @@ describe("autenticação real documentada (Pacientes + Atendimento + Financeiro)
         operation?.summary ?? "",
         `${label} ainda sugere bloqueio honesto`,
       ).not.toContain("bloqueado");
+    }
+  });
+
+  it("o documento declara o esquema bearer e as 9 rotas administrativas o exigem", async () => {
+    const document = (await fetchDocument()) as unknown as {
+      paths: Record<string, Record<string, OpenApiOperation>>;
+    } & OpenApiDocumentWithSecurity;
+
+    const schemes = document.components?.securitySchemes ?? {};
+    expect(schemes.bearer, "sem esquema bearer declarado").toMatchObject({
+      type: "http",
+      scheme: "bearer",
+    });
+
+    const protectedRoutes = EXPECTED_ROUTES.filter(
+      (route) =>
+        route.path.startsWith("/patients") || route.path.startsWith("/finance"),
+    );
+    expect(protectedRoutes).toHaveLength(9);
+
+    for (const route of protectedRoutes) {
+      const operation = document.paths[route.path]?.[route.method];
+      const label = `${route.method} ${route.path}`;
+      expect(
+        operation?.security ?? [],
+        `${label} não exige o esquema bearer`,
+      ).toContainEqual({ bearer: [] });
     }
   });
 });

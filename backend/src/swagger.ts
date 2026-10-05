@@ -27,10 +27,11 @@ export function setupSwagger(app: INestApplication): void {
     .addTag("Agendamento")
     .addTag("Catálogo")
     .addTag("Conteúdo Público")
-    .addTag("Pacientes (bloqueado até a Identidade)")
-    .addTag("Atendimento (bloqueado até a Identidade)")
-    .addTag("Financeiro (bloqueado até a Identidade)")
+    .addTag("Pacientes")
+    .addTag("Atendimento")
+    .addTag("Financeiro")
     .addTag("Health")
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
