@@ -42,6 +42,8 @@ Garantir que qualquer IA ou desenvolvedor entenda e aplique:
 - Tokens devem ser tratados com cuidado (nunca expostos no frontend de forma insegura)
 - Autorização deve ser baseada em papéis/permissões (RBAC)
 
+> **Enforcement atual (change `backend-modulo-identidade`):** o backend valida o JWT do Keycloak por JWKS (com allowlist `RS256`, tolerância de relógio de 30 s e cache de 10 min) e aplica RBAC com negação por padrão; o 2FA é exigido na configuração versionada do realm (`infra/docker/keycloak/realm-newestetica.json` — fluxo com OTP obrigatório + `CONFIGURE_TOTP` nos usuários) e provado por teste contra o Keycloak real, que roda localmente (`make up`) e é pulado no CI de backend com motivo visível (o pipeline não sobe Keycloak).
+
 ### Papéis iniciais previstos
 
 | Papel | Descrição |
@@ -141,7 +143,7 @@ Se não houver consentimento claro, a foto **não aparece**.
 - Registrar eventos de segurança relevantes (login, falhas, etc.)
 - Retornar erros sem expor detalhes internos sensíveis
 - Seguir o princípio do menor privilégio no acesso ao banco
-- Documentação de API (Swagger em `/docs` e `/docs-json`) restrita por ambiente: servida por padrão fora de produção; em produção, **desabilitada por padrão** — só com `SWAGGER_ENABLED=true` explícito. A documentação descreve formatos (sem dados reais) e declara o bloqueio das rotas de Pacientes, mas não substitui o enforcement: o `IdentityPendingGuard` continua sendo a barreira até a Identidade
+- Documentação de API (Swagger em `/docs` e `/docs-json`) restrita por ambiente: servida por padrão fora de produção; em produção, **desabilitada por padrão** — só com `SWAGGER_ENABLED=true` explícito. A documentação descreve formatos (sem dados reais) e declara o 401/403 da autenticação real, mas não substitui o enforcement: o guard do kernel (`backend/src/shared/http/auth/`) valida o JWT do Keycloak (assinatura via JWKS, emissor, audiência, expiração, allowlist `RS256`) e aplica RBAC por papel em todas as rotas administrativas — 401 `AUTH_UNAUTHENTICATED` sem token válido, 403 `AUTH_FORBIDDEN` sem papel, respostas fixas e idênticas por classe (change `backend-modulo-identidade`; o antigo `IdentityPendingGuard` foi removido)
 
 ---
 
