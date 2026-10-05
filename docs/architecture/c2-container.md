@@ -19,11 +19,9 @@ flowchart TB
         R9[/blog<br/>conteúdo educativo/]
         R10[/blog/[slug]<br/>artigo/]
         CONTRACTS[contracts/<br/>schemas Zod]
-        BE[Backend NestJS<br/>módulos Agendamento, Catálogo,<br/>Conteúdo Público, Pacientes,<br/>Atendimento<br/>e Financeiro<br/>Clean Architecture]
+        BE[Backend NestJS<br/>módulos Agendamento, Catálogo,<br/>Conteúdo Público, Pacientes,<br/>Atendimento, Financeiro<br/>e Identidade e Acesso<br/>Clean Architecture]
         DB[(PostgreSQL)]
-    end
-    subgraph Planejado
-        K[Keycloak + 2FA]
+        K[Keycloak + 2FA<br/>realm versionado no compose]
     end
     P -->|HTTPS| FE
     F -->|HTTPS| FE
@@ -40,13 +38,13 @@ flowchart TB
     FE -.->|API REST futura — Épico 5| BE
     BE -->|valida entrada/saída| CONTRACTS
     BE -->|Repository + Data Mapper| DB
-    BE -.->|OIDC futuro| K
-    F -->|login| K
+    BE -->|valida JWT via JWKS<br/>RBAC por papel| K
+    F -.->|login do painel — Épico 5| K
 ```
 
-- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` —, os contratos de API em `contracts/` (schemas Zod dos contextos já mockados), o **Backend NestJS** com o primeiro módulo real (Agendamento: `POST /slots/:slotId/bookings` e `GET /slots/available`, Clean Architecture com TDD por camada), o segundo módulo real (Catálogo: `GET /procedures` e `GET /procedures/:slug`, leitura só de itens ativos, com `isActive` interno e fora do contrato de saída), o terceiro módulo real (Conteúdo Público: `GET /testimonials`, `GET /posts`, `GET /posts/:slug` e `GET /before-after`, leitura pública com antes/depois somente com consentimento explícito — invariante em três camadas: default `false` no banco, filtro na query e validação de saída contra o contrato público), o quarto módulo real (Pacientes: `POST /patients`, `GET /patients`, `GET /patients/:id`, `PATCH /patients/:id` e `DELETE /patients/:id` — CRUD administrativo com PII mínima, anonimização via delete e **guard honesto de bloqueio**: todas as rotas respondem 403 `AUTH_NOT_IMPLEMENTED` até a Identidade), o quinto módulo real (Atendimento/Histórico: `POST /patients/:patientId/attendances`, `GET /patients/:patientId/attendances` e `GET /patients/:patientId/attendances/:id` — registro e leitura do histórico simples por paciente, **imutável** e com visibilidade herdada do paciente: histórico de anonimizada nunca é servido, provado por write-then-throw em duas camadas — porta `PatientDirectory` + filtro de relação na query), o sexto módulo real (Financeiro Básico: `GET /finance/summary?from=&to=` — resumo agregado por janela (teto de 366 dias) com `currency: "BRL"`, `totalCents` e `count`, **sem PII/breakdown por construção**, agregação pura no domínio e leitura pela porta própria com **visibilidade herdada na query** — valor de anonimizada nunca compõe o agregado, provado por write-then-throw; valor opcional `amountCents` no Atendimento, coluna nullable + migration) e o **PostgreSQL** (persistência dos módulos, com índice único parcial anti-overbooking, FK de Atendimento para Pacientes e coluna `amountCents` no Atendimento).
-- **Planejado:** Keycloak + 2FA e os demais módulos do backend; o frontend ainda não consome a API (troca dos mocks — Épico 5).
-- **Planejado:** Keycloak + 2FA e os demais módulos do backend; o frontend ainda não consome a API (troca dos mocks — Épico 5).
+- **Real:** o Frontend com mocks e a camada de dados isolada pronta para a troca — rotas `/`, `/tratamentos`, `/tratamentos/[slug]`, `/sobre`, `/antes-depois`, `/depoimentos`, `/orcamento`, `/contato`, `/blog` e `/blog/[slug]` —, os contratos de API em `contracts/` (schemas Zod dos contextos já mockados) e o **Backend NestJS** com os módulos reais, todos em Clean Architecture com TDD por camada: **(1) Agendamento** (`POST /slots/:slotId/bookings` e `GET /slots/available`), **(2) Catálogo** (`GET /procedures` e `GET /procedures/:slug`, leitura só de itens ativos, com `isActive` interno e fora do contrato de saída), **(3) Conteúdo Público** (`GET /testimonials`, `GET /posts`, `GET /posts/:slug` e `GET /before-after`, leitura pública com antes/depois somente com consentimento explícito — invariante em três camadas: default `false` no banco, filtro na query e validação de saída contra o contrato público), **(4) Pacientes** (`POST /patients`, `GET /patients`, `GET /patients/:id`, `PATCH /patients/:id` e `DELETE /patients/:id` — CRUD administrativo com PII mínima, anonimização via delete e **autenticação real** — JWT do Keycloak e RBAC: leitura para `admin`/`reception`, escrita/anonimização só `admin`), **(5) Atendimento/Histórico** (`POST /patients/:patientId/attendances`, `GET /patients/:patientId/attendances` e `GET /patients/:patientId/attendances/:id` — histórico **imutável** com visibilidade herdada do paciente, provada por write-then-throw em duas camadas — porta `PatientDirectory` + filtro de relação na query — e autenticação real com RBAC operacional `admin`/`reception`), **(6) Financeiro Básico** (`GET /finance/summary?from=&to=` — resumo agregado por janela (teto de 366 dias) com `currency: "BRL"`, `totalCents` e `count`, **sem PII/breakdown por construção**, agregação pura no domínio e leitura pela porta própria com **visibilidade herdada na query**; autenticação real, RBAC **`admin`-only**), **(7) Identidade e Acesso** (validação do JWT do Keycloak por JWKS — assinatura, emissor, audiência, expiração e allowlist `RS256` — com **RBAC por papel e negação por padrão**; guard no kernel substituiu o `IdentityPendingGuard` nos três módulos administrativos; **2FA exigido no realm versionado e provado** contra o Keycloak real) e o **PostgreSQL** (persistência dos módulos, índice único parcial anti-overbooking, FK de Atendimento para Pacientes e coluna `amountCents` no Atendimento).
+- **Real (infra local):** **Keycloak + 2FA** sobe no compose (`infra/docker/keycloak/realm-newestetica.json`) com papéis `admin`/`reception`, client público e fluxo de autenticação com OTP obrigatório; o backend valida os tokens reais — o login do painel no frontend é o que falta (Épico 5).
+- **Planejado:** login do painel no frontend (Épico 5), troca dos mocks pela API e demais módulos do backend.
 - Nenhum outro contêiner existe ou está previsto no MVP (sem microserviços, sem app nativo).
 
 > Este diagrama deve ser atualizado como parte do Verify de qualquer Change que altere sua camada.

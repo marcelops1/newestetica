@@ -10,6 +10,9 @@ let baseUrl: string;
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  /* IdentityModule instancia o validador real no bootstrap (env obrigatório). */
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();
@@ -61,9 +64,9 @@ const API_TAGS = [
   "Agendamento",
   "Catálogo",
   "Conteúdo Público",
-  "Pacientes (bloqueado até a Identidade)",
-  "Atendimento (bloqueado até a Identidade)",
-  "Financeiro (bloqueado até a Identidade)",
+  "Pacientes",
+  "Atendimento",
+  "Financeiro",
   "Health",
 ];
 
@@ -108,58 +111,58 @@ const EXPECTED_ROUTES: Array<{
   {
     method: "post",
     path: "/patients",
-    statuses: ["201", "403", "422"],
+    statuses: ["201", "401", "403", "422"],
     hasBody: true,
   },
   {
     method: "get",
     path: "/patients",
-    statuses: ["200", "403", "422"],
+    statuses: ["200", "401", "403", "422"],
     queryParams: ["limit"],
   },
   {
     method: "get",
     path: "/patients/{id}",
-    statuses: ["200", "403", "404", "422"],
+    statuses: ["200", "401", "403", "404", "422"],
     pathParams: ["id"],
   },
   {
     method: "patch",
     path: "/patients/{id}",
-    statuses: ["200", "403", "404", "422"],
+    statuses: ["200", "401", "403", "404", "422"],
     pathParams: ["id"],
     hasBody: true,
   },
   {
     method: "delete",
     path: "/patients/{id}",
-    statuses: ["204", "403", "404", "422"],
+    statuses: ["204", "401", "403", "404", "422"],
     pathParams: ["id"],
   },
   {
     method: "post",
     path: "/patients/{patientId}/attendances",
-    statuses: ["201", "403", "404", "422"],
+    statuses: ["201", "401", "403", "404", "422"],
     pathParams: ["patientId"],
     hasBody: true,
   },
   {
     method: "get",
     path: "/patients/{patientId}/attendances",
-    statuses: ["200", "403", "404", "422"],
+    statuses: ["200", "401", "403", "404", "422"],
     pathParams: ["patientId"],
     queryParams: ["limit"],
   },
   {
     method: "get",
     path: "/patients/{patientId}/attendances/{id}",
-    statuses: ["200", "403", "404", "422"],
+    statuses: ["200", "401", "403", "404", "422"],
     pathParams: ["patientId", "id"],
   },
   {
     method: "get",
     path: "/finance/summary",
-    statuses: ["200", "403", "422"],
+    statuses: ["200", "401", "403", "422"],
     queryParams: ["from", "to"],
   },
 ];
@@ -180,37 +183,85 @@ type OpenApiOperation = Operation & {
       >;
     }
   >;
+  security?: Array<Record<string, string[]>>;
 };
 
-describe("bloqueio explícito na documentação (Pacientes + Atendimento + Financeiro)", () => {
-  it("as 9 rotas bloqueadas documentam o 403 honesto (guard + UC 4.2.1)", async () => {
+type OpenApiDocumentWithSecurity = OpenApiDocument & {
+  components?: {
+    securitySchemes?: Record<string, { type?: string; scheme?: string }>;
+  };
+};
+
+describe("autenticação real documentada (Pacientes + Atendimento + Financeiro)", () => {
+  it("as 9 rotas administrativas documentam 401 e 403 fixos de autenticação real", async () => {
     const document = (await fetchDocument()) as unknown as {
       paths: Record<string, Record<string, OpenApiOperation>>;
     };
-    const blockedRoutes = EXPECTED_ROUTES.filter(
+    const protectedRoutes = EXPECTED_ROUTES.filter(
       (route) =>
         route.path.startsWith("/patients") || route.path.startsWith("/finance"),
     );
-    expect(blockedRoutes).toHaveLength(9);
+    expect(protectedRoutes).toHaveLength(9);
 
-    for (const route of blockedRoutes) {
+    for (const route of protectedRoutes) {
       const operation = document.paths[route.path]?.[route.method];
       const label = `${route.method} ${route.path}`;
+
+      const unauthorized = operation?.responses?.["401"];
+      expect(unauthorized, `${label} sem resposta 401`).toBeTruthy();
+      expect(
+        unauthorized?.description ?? "",
+        `${label} 401 sem descrição`,
+      ).toContain("401 fixo");
+      expect(
+        unauthorized?.content?.["application/json"]?.schema?.properties?.code
+          ?.example,
+        `${label} 401 sem o código`,
+      ).toBe("AUTH_UNAUTHENTICATED");
+
       const forbidden = operation?.responses?.["403"];
       expect(forbidden, `${label} sem resposta 403`).toBeTruthy();
-      const description = forbidden?.description ?? "";
-      expect(description, `${label} 403 sem o guard`).toContain(
-        "IdentityPendingGuard",
-      );
-      expect(description, `${label} 403 sem o UC`).toContain("UC 4.2.1");
-      const code =
+      expect(
+        forbidden?.description ?? "",
+        `${label} 403 sem descrição`,
+      ).toContain("403 fixo");
+      expect(
         forbidden?.content?.["application/json"]?.schema?.properties?.code
-          ?.example;
-      expect(code, `${label} 403 sem o código`).toBe("AUTH_NOT_IMPLEMENTED");
+          ?.example,
+        `${label} 403 sem o código`,
+      ).toBe("AUTH_FORBIDDEN");
+
       expect(
         operation?.summary ?? "",
-        `${label} sugere acesso livre`,
-      ).toContain("bloqueado");
+        `${label} ainda sugere bloqueio honesto`,
+      ).not.toContain("bloqueado");
+    }
+  });
+
+  it("o documento declara o esquema bearer e as 9 rotas administrativas o exigem", async () => {
+    const document = (await fetchDocument()) as unknown as {
+      paths: Record<string, Record<string, OpenApiOperation>>;
+    } & OpenApiDocumentWithSecurity;
+
+    const schemes = document.components?.securitySchemes ?? {};
+    expect(schemes.bearer, "sem esquema bearer declarado").toMatchObject({
+      type: "http",
+      scheme: "bearer",
+    });
+
+    const protectedRoutes = EXPECTED_ROUTES.filter(
+      (route) =>
+        route.path.startsWith("/patients") || route.path.startsWith("/finance"),
+    );
+    expect(protectedRoutes).toHaveLength(9);
+
+    for (const route of protectedRoutes) {
+      const operation = document.paths[route.path]?.[route.method];
+      const label = `${route.method} ${route.path}`;
+      expect(
+        operation?.security ?? [],
+        `${label} não exige o esquema bearer`,
+      ).toContainEqual({ bearer: [] });
     }
   });
 });

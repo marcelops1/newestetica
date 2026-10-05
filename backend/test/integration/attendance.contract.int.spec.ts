@@ -3,7 +3,8 @@ import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AttendanceSchema } from "@newestetica/contracts";
 import { AttendanceModule } from "../../src/attendance/attendance.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -28,11 +29,13 @@ const ATTENDANCE_KEYS = [
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [AttendanceModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -67,9 +70,24 @@ beforeEach(async () => {
   });
 });
 
+/* Requisição autenticada (token de admin/reception via verificador fake). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: "test-admin" | "test-reception" } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
+
 describe("saída de atendimentos conforme o contrato (verificação nas duas pontas)", () => {
   it("o detalhe responde no AttendanceSchema, com chaves exatas", async () => {
-    const response = await fetch(
+    const response = await authFetch(
       `${baseUrl}/patients/${ALFA}/attendances/${ATTENDANCE_ID}`,
     );
     const body = (await response.json()) as Record<string, unknown>;
@@ -82,7 +100,7 @@ describe("saída de atendimentos conforme o contrato (verificação nas duas pon
   });
 
   it("a listagem responde no AttendanceSchema, com chaves exatas em cada item", async () => {
-    const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`);
+    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`);
     const body = (await response.json()) as Array<Record<string, unknown>>;
 
     expect(response.status).toBe(200);
@@ -97,15 +115,18 @@ describe("saída de atendimentos conforme o contrato (verificação nas duas pon
   });
 
   it("o registro responde no AttendanceSchema com o vínculo do path e o valor informado", async () => {
-    const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        summary: "Hidratação facial realizada, pele bem tolerada.",
-        amountCents: 20_000,
-        performedAt: "2026-09-12T10:00:00.000Z",
-      }),
-    });
+    const response = await authFetch(
+      `${baseUrl}/patients/${ALFA}/attendances`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          summary: "Hidratação facial realizada, pele bem tolerada.",
+          amountCents: 20_000,
+          performedAt: "2026-09-12T10:00:00.000Z",
+        }),
+      },
+    );
     const body = (await response.json()) as Record<string, unknown>;
 
     expect(response.status).toBe(201);
@@ -118,7 +139,7 @@ describe("saída de atendimentos conforme o contrato (verificação nas duas pon
   });
 
   it("nenhum campo interno vaza para o wire (sem nome de paciente, sem timestamps extras)", async () => {
-    const response = await fetch(`${baseUrl}/patients/${ALFA}/attendances`);
+    const response = await authFetch(`${baseUrl}/patients/${ALFA}/attendances`);
     const body = (await response.json()) as Array<Record<string, unknown>>;
 
     const serialized = JSON.stringify(body);

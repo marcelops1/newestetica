@@ -67,11 +67,21 @@ Toda resposta de leitura/escrita de atendimentos SHALL ser compatível com os sc
 - **WHEN** qualquer resposta de atendimento é validada contra o contrato
 - **THEN** a validação aprova em todos os campos
 
-### Requirement: Bloqueio honesto até a Identidade
+### Requirement: Autenticação real via Keycloak
 
-Todas as rotas de Atendimento SHALL nascer sob o mesmo guard honesto de Pacientes (`IdentityPendingGuard` no kernel compartilhado, via `@UseGuards` no controller, sem exceção): qualquer requisição com o guard ativo SHALL responder 403 com código `AUTH_NOT_IMPLEMENTED` e mensagem explícita de autenticação pendente, sem expor dado algum. A substituição deste guard pelo guard real de Keycloak/RBAC SHALL ser próximo passo obrigatório do módulo de Identidade (UC 4.2.1), não implícito.
+Todas as rotas de Atendimento SHALL exigir autenticação real via Keycloak (guard real no kernel compartilhado, via `@UseGuards` no controller, sem exceção): requisição sem token válido SHALL responder 401; token válido sem papel autorizado SHALL responder 403 com código e mensagem fixos, sem expor dado algum nem distinguir existência de recursos; com token válido e papel autorizado, as rotas SHALL funcionar conforme seus contratos — as suítes existentes servem como caracterização, provando zero regressão de negócio (o contraste "sem token = 401/403" vs "token válido com papel = acesso" substitui o `overrideGuard` anterior).
 
 #### Scenario: Requisição com o guard ativo é bloqueada com 403 explícito
 
-- **WHEN** qualquer rota de Atendimento é chamada com o guard ativo e sem bypass
-- **THEN** a resposta é 403 com o código `AUTH_NOT_IMPLEMENTED` e a mensagem de autenticação pendente, sem corpo de dados
+- **WHEN** qualquer rota de Atendimento é chamada sem token válido, com o guard real ativo (o 403 `AUTH_NOT_IMPLEMENTED` do bloqueio honesto foi substituído por 401/403 reais neste change)
+- **THEN** a resposta é 401, idêntica em todos os casos, sem corpo de dados
+
+#### Scenario: Token válido sem papel autorizado responde 403 idêntico
+
+- **WHEN** qualquer rota de Atendimento é chamada com token válido mas sem papel, ou com papel insuficiente
+- **THEN** a resposta é 403, byte-idêntica nos dois casos, sem expor dado algum
+
+#### Scenario: Token válido com papel autorizado responde conforme o contrato
+
+- **WHEN** as rotas são chamadas com token válido e papel autorizado
+- **THEN** cada rota responde conforme seu contrato, com comportamento idêntico ao caracterizado pelas suítes vigentes

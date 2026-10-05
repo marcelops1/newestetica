@@ -3,7 +3,8 @@ import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { FinanceSummarySchema } from "@newestetica/contracts";
 import { FinanceModule } from "../../src/finance/finance.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -23,11 +24,13 @@ const SUMMARY_KEYS = ["count", "currency", "from", "to", "totalCents"];
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [FinanceModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -63,9 +66,24 @@ beforeEach(async () => {
   });
 });
 
+/* Requisição autenticada (token de admin via verificador fake — o guard é o real). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: string } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
+
 describe("resumo financeiro conforme o contrato (verificação nas duas pontas)", () => {
   it("o corpo responde no FinanceSummarySchema com chaves exatas, janela ecoada e BRL", async () => {
-    const response = await fetch(
+    const response = await authFetch(
       `${baseUrl}/finance/summary?from=2026-09-01&to=2026-09-30`,
     );
     const body = (await response.json()) as Record<string, unknown>;
@@ -84,7 +102,7 @@ describe("resumo financeiro conforme o contrato (verificação nas duas pontas)"
   });
 
   it("nenhum campo de paciente/breakdown vaza para o wire (auditoria de superfície)", async () => {
-    const response = await fetch(
+    const response = await authFetch(
       `${baseUrl}/finance/summary?from=2026-09-01&to=2026-09-30`,
     );
     const body = (await response.json()) as Record<string, unknown>;

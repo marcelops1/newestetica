@@ -2,7 +2,8 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { PatientsModule } from "../../src/patients/patients.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -41,11 +42,15 @@ async function seedPatient(
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  /* Env do validador real (instanciado no bootstrap do IdentityModule; a verificação
+     é substituída pelo fake abaixo); requests levam Bearer de admin por padrão. */
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [PatientsModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -61,12 +66,27 @@ beforeEach(async () => {
   await resetDatabase(prisma);
 });
 
+/* Requisição autenticada (token de admin via verificador fake — o guard é o real). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: string } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
+
 describe("exclusão da anonimizada na leitura pública administrativa (invariante)", () => {
   it("GET /patients contém exatamente o ativo — a anonimizada nunca aparece", async () => {
     await seedPatient(ANONYMIZED_ID, "Paciente Fictícia Delta", false);
     await seedPatient(ACTIVE_ID, "Paciente Fictícia Alfa", true);
 
-    const response = await fetch(`${baseUrl}/patients`);
+    const response = await authFetch(`${baseUrl}/patients`);
     const body = (await response.json()) as Array<{ id: string }>;
 
     expect(response.status).toBe(200);
@@ -77,8 +97,8 @@ describe("exclusão da anonimizada na leitura pública administrativa (invariant
   it("detalhe da anonimizada responde 404 idêntico ao inexistente (sem PII no corpo)", async () => {
     await seedPatient(ANONYMIZED_ID, "Paciente Fictícia Delta", false);
 
-    const anonymized = await fetch(`${baseUrl}/patients/${ANONYMIZED_ID}`);
-    const missing = await fetch(
+    const anonymized = await authFetch(`${baseUrl}/patients/${ANONYMIZED_ID}`);
+    const missing = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000099`,
     );
 
@@ -94,7 +114,7 @@ describe("exclusão da anonimizada na leitura pública administrativa (invariant
   it("sem nenhum ativo, a resposta é vazia mesmo com registros anonimizados no banco", async () => {
     await seedPatient(ANONYMIZED_ID, "Paciente Fictícia Delta", false);
 
-    const response = await fetch(`${baseUrl}/patients`);
+    const response = await authFetch(`${baseUrl}/patients`);
     const body = (await response.json()) as Array<unknown>;
 
     expect(response.status).toBe(200);

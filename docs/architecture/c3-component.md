@@ -241,12 +241,12 @@ flowchart LR
 
 ## Backend (real — módulo Pacientes)
 
-Quarto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **CRUD administrativo com PII mínima** — o contrato nasceu do zero em `contracts/src/patients/` (contexto sem mock no frontend). Estrutura dos direitos do titular (LGPD) já operante: anonimização via delete e visibilidade na query. **Autorização real diferida com mecanismo honesto:** todas as rotas nascem sob `IdentityPendingGuard` (403 `AUTH_NOT_IMPLEMENTED`), substituído pelo guard Keycloak/RBAC quando a Identidade existir (UC 4.2.1 — próximo passo obrigatório). Sem `UnitOfWork`: escrita de entidade única.
+Quarto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **CRUD administrativo com PII mínima** — o contrato nasceu do zero em `contracts/src/patients/` (contexto sem mock no frontend). Estrutura dos direitos do titular (LGPD) já operante: anonimização via delete e visibilidade na query. **Autenticação real desde o change `backend-modulo-identidade`:** guard do kernel com JWT do Keycloak (401 sem token) e RBAC — leitura para `admin`/`reception`; escrita e anonimização só `admin` (403 idêntico para papel ausente/insuficiente). Sem `UnitOfWork`: escrita de entidade única.
 
 ```mermaid
 flowchart LR
     subgraph Presentation
-        GUARD[IdentityPendingGuard<br/>403 AUTH_NOT_IMPLEMENTED<br/>todas as rotas até a Identidade]
+        GUARD[JwtAuthGuard do kernel<br/>401 sem token / 403 sem papel<br/>RBAC: leitura admin+reception; escrita admin]
         CTRL[patients.controller.ts<br/>POST /patients<br/>GET /patients[?limit]<br/>GET /patients/:id<br/>PATCH /patients/:id<br/>DELETE /patients/:id]
         PIPE[ZodValidationPipe<br/>422 estruturado]
         FILTER[DomainExceptionFilter<br/>404]
@@ -289,17 +289,17 @@ flowchart LR
 - Pastas verificadas: `backend/src/patients/` com `domain/` (entidade `Patient` com `anonymize`, erros locais, porta única), `application/use-cases/` (cinco casos de uso), `infrastructure/persistence/` (repositório Prisma + mapper) e `presentation/` (controller, guard honesto, pipe/filtro locais).
 - **Direitos do titular (estrutura operante):** `DELETE` **anonimiza** — PII vira placeholders fixos, `status`/`anonymizedAt` carimbados; o registro sai de todas as leituras visíveis (filtro na query) e id anonimizado responde 404 idêntico ao inexistente. Prova por write-then-throw no `verification.md` do change.
 - **PII mínima:** contrato sem e-mail, sem campo livre de observações e sem qualquer campo clínico; finalidade registrada por registro (LGPD, 03 §4); nenhum log de payload.
-- **Bloqueio honesto:** `IdentityPendingGuard` nega todas as rotas com 403 `AUTH_NOT_IMPLEMENTED` (mensagem aponta o UC 4.2.1) — não simula autenticação; o guard é a única barreira (provado por `overrideGuard` nos testes de rota). Substituição obrigatória no módulo de Identidade. **Movido para o kernel** no change `backend-modulo-atendimento` (uma definição para os dois módulos administrativos).
+- **Autenticação real:** `JwtAuthGuard` do kernel (verificação via `IdentityModule`) — sem token válido `AUTH_UNAUTHENTICATED` (401), sem papel `AUTH_FORBIDDEN` (403), respostas fixas e idênticas por classe; as guard-specs provam o contraste (sem token = 401/403 × token válido com papel = acesso), substituindo o `overrideGuard` do bloqueio honesto (change `backend-modulo-identidade`).
 - **Wiring:** `PatientsModule` com cliente próprio (factory do kernel compartilhado; quarto pool adiado como decisão consciente) e guard nos providers; wireado no `AppModule`.
 
 ## Backend (real — módulo Atendimento/Histórico)
 
-Quinto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **registro e leitura do histórico simples por paciente** (UC 4.2.5) — histórico **imutável** (sem update/delete; correção por novo registro) e **sem prontuário**: `summary` é texto operacional opaco, com teto de 500, sem campo clínico dedicado. Contrato novo em `contracts/src/attendance/` (contexto sem mock no frontend). **Visibilidade herdada do paciente:** primeiro join com Pacientes, respeitando a dívida R3 — porta `PatientDirectory` (leitura cruzada explícita, sem importar o domínio de Pacientes) + filtro de relação na query; histórico de anonimizada nunca é servido (prova write-then-throw em duas camadas no `verification.md`). **Autorização real diferida:** rotas sob o `IdentityPendingGuard` agora compartilhado no kernel (403 `AUTH_NOT_IMPLEMENTED` até a Identidade). Sem `UnitOfWork`: escrita de entidade única.
+Quinto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **registro e leitura do histórico simples por paciente** (UC 4.2.5) — histórico **imutável** (sem update/delete; correção por novo registro) e **sem prontuário**: `summary` é texto operacional opaco, com teto de 500, sem campo clínico dedicado. Contrato novo em `contracts/src/attendance/` (contexto sem mock no frontend). **Visibilidade herdada do paciente:** primeiro join com Pacientes, respeitando a dívida R3 — porta `PatientDirectory` (leitura cruzada explícita, sem importar o domínio de Pacientes) + filtro de relação na query; histórico de anonimizada nunca é servido (prova write-then-throw em duas camadas no `verification.md`). **Autenticação real desde o change `backend-modulo-identidade`:** guard do kernel com JWT do Keycloak (401 sem token) e RBAC operacional `admin`/`reception`. Sem `UnitOfWork`: escrita de entidade única.
 
 ```mermaid
 flowchart LR
     subgraph Presentation
-        GUARD[IdentityPendingGuard<br/>kernel compartilhado<br/>403 AUTH_NOT_IMPLEMENTED]
+        GUARD[JwtAuthGuard do kernel<br/>401 sem token / 403 sem papel]
         CTRL[attendances.controller.ts<br/>POST /patients/:patientId/attendances<br/>GET /patients/:patientId/attendances[?limit]<br/>GET /patients/:patientId/attendances/:id]
         PIPE[ZodValidationPipe<br/>422 estruturado]
         FILTER[DomainExceptionFilter<br/>404 paciente/atendimento]
@@ -343,17 +343,17 @@ flowchart LR
 - Pastas verificadas: `backend/src/attendance/` com `domain/` (entidade `Attendance` imutável, erros locais, portas `AttendanceRepository` e `PatientDirectory`), `application/use-cases/` (três casos de uso), `infrastructure/persistence/` (repositório Prisma + adapter da porta de Pacientes + mapper) e `presentation/` (controller, pipe/filtro locais).
 - **Imutabilidade:** a entidade não expõe update/delete; a API não expõe PATCH/PUT/DELETE (rota não encontrada) — provado em teste; a exclusão de dados pessoais acontece na paciente (anonimização).
 - **PII mínima:** nenhum snapshot de nome no histórico (só FK); a porta de Pacientes seleciona apenas o vínculo; nenhum log de payload. `summary` é dado opaco — nunca interpretado (injeção/unicode preservados literalmente, testado).
-- **Bloqueio honesto:** `IdentityPendingGuard` (agora no kernel `backend/src/shared/http/`) nega todas as rotas com 403 `AUTH_NOT_IMPLEMENTED`; o contraste com os testes de rota com bypass prova que o guard é a única barreira. Substituição obrigatória no módulo de Identidade.
+- **Autenticação real:** `JwtAuthGuard` do kernel — sem token válido 401, sem papel 403 (idêntico para ausente/insuficiente); `admin` e `reception` operam o histórico (change `backend-modulo-identidade`, com as suítes convertidas como caracterização).
 - **Wiring:** `AttendanceModule` com cliente próprio (factory do kernel compartilhado; quinto pool adiado como decisão consciente) e guard nos providers; wireado no `AppModule`.
 
 ## Backend (real — módulo Financeiro)
 
-Sexto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **resumo financeiro essencial por janela** (UC 4.2.6) — `GET /finance/summary?from=&to=` (janela obrigatória, teto de 366 dias), só leitura, agregado **sem PII e sem breakdown por construção** (a resposta não tem campo para vazar). O valor mora no Atendimento como `amountCents` opcional (centavos inteiros, teto de R$ 100.000, imutável depois de criado — sem entidade de cobrança e sem preço no catálogo). **Visibilidade herdada no agregado:** o reader filtra a relação `patient: { status: "active" }` na query; valor de paciente anonimizada nunca compõe total/contagem (prova write-then-throw no `verification.md`). **Autorização real diferida:** rota sob o `IdentityPendingGuard` do kernel (403 `AUTH_NOT_IMPLEMENTED`). Sem `UnitOfWork` (só leitura) e cliente Prisma próprio (sexto pool consciente; factory do kernel).
+Sexto módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega: **resumo financeiro essencial por janela** (UC 4.2.6) — `GET /finance/summary?from=&to=` (janela obrigatória, teto de 366 dias), só leitura, agregado **sem PII e sem breakdown por construção** (a resposta não tem campo para vazar). O valor mora no Atendimento como `amountCents` opcional (centavos inteiros, teto de R$ 100.000, imutável depois de criado — sem entidade de cobrança e sem preço no catálogo). **Visibilidade herdada no agregado:** o reader filtra a relação `patient: { status: "active" }` na query; valor de paciente anonimizada nunca compõe total/contagem (prova write-then-throw no `verification.md`). **Autenticação real desde o change `backend-modulo-identidade`:** guard do kernel com JWT do Keycloak (401 sem token) e RBAC **`admin`-only**. Sem `UnitOfWork` (só leitura) e cliente Prisma próprio (sexto pool consciente; factory do kernel).
 
 ```mermaid
 flowchart LR
     subgraph Presentation
-        GUARD[IdentityPendingGuard<br/>kernel compartilhado<br/>403 AUTH_NOT_IMPLEMENTED]
+        GUARD[JwtAuthGuard do kernel<br/>401 sem token / 403 sem papel]
         CTRL[finance.controller.ts<br/>GET /finance/summary?from=&to=]
         PIPE[ZodValidationPipe<br/>422 estruturado]
         FILTER[DomainExceptionFilter<br/>422 janela inválida]
@@ -385,8 +385,47 @@ flowchart LR
 - Pastas verificadas: `backend/src/finance/` com `domain/` (`summarize` pura + erros locais + porta `FinanceSummaryReader`), `application/use-cases/` (caso de uso do resumo), `infrastructure/persistence/` (reader Prisma + mapper) e `presentation/` (controller, pipe/filtro locais).
 - **Agregado sem PII:** a porta devolve apenas `{ amountCents, performedAt }`; o mapper não materializa nome/vínculo/resumo; a resposta tem exatamente janela/moeda/total/contagem (auditado por inspeção e por chaves exatas nos testes).
 - **Centavos inteiros:** sem float; teto de entrada espelhado no contrato (assertado); soma de 100 mil registros no teto permanece inteira e segura.
-- **Bloqueio honesto:** `IdentityPendingGuard` do kernel nega a rota com 403 `AUTH_NOT_IMPLEMENTED`; o contraste com os testes de rota com bypass prova que o guard é a única barreira. Substituição obrigatória no módulo de Identidade.
+- **Autenticação real:** `JwtAuthGuard` do kernel — sem token válido 401, sem papel (ou `reception`) 403 byte-idêntico; só `admin` alcança o agregado (change `backend-modulo-identidade`).
 - **Wiring:** `FinanceModule` com cliente próprio (factory do kernel compartilhado; sexto pool adiado como decisão consciente), sem `UnitOfWork`; wireado no `AppModule`.
+
+## Backend (real — módulo Identidade e Acesso)
+
+Sétimo módulo do backend, mesma Clean Architecture com TDD por camada (`docs/engineering/07-workflow-de-engenharia.md` §15). Recorte desta entrega (UC 4.2.1): **autenticação real via Keycloak, sem endpoint de login próprio** — o backend valida o JWT (assinatura via JWKS com cache de 10 min, emissor, audiência, expiração com tolerância de 30 s e allowlist `RS256`) e aplica **RBAC com negação por padrão**. O guard vive no kernel; a implementação da porta `TokenVerifier` vive aqui. **2FA** exigido no realm versionado (fluxo com OTP obrigatório + `CONFIGURE_TOTP`) e provado contra o Keycloak real. Erros fixos por classe: 401 `AUTH_UNAUTHENTICATED` (todas as falhas de autenticação) e 403 `AUTH_FORBIDDEN` (sem papel × papel insuficiente, byte-idênticos), sem eco de motivo.
+
+```mermaid
+flowchart LR
+    subgraph Presentation
+        GUARD[JwtAuthGuard do kernel<br/>401/403 fixos + Roles]
+    end
+    subgraph Application
+        UC[AuthenticateUseCase<br/>entrada inválida nem toca a porta]
+    end
+    subgraph Domain
+        ROLES[roles: admin / reception<br/>vocabulário fechado]
+        CLAIMS[fromTokenClaims<br/>claims → identidade, sem TypeError]
+        AUTHZ[isAuthorized<br/>negação por padrão]
+        P[TokenValidator porta<br/>validate → identidade ou nulo]
+    end
+    subgraph Infrastructure
+        JOSE[JoseTokenValidator<br/>jose + JWKS (cache/cooldown)<br/>allowlist RS256 / clockTolerance 30s]
+        CONFIG[createJoseTokenValidatorFromEnv<br/>KEYCLOAK_ISSUER/AUDIENCE → JWKS]
+    end
+    REALLM[Keycloak real<br/>realm versionado + 2FA]
+    GUARD --> UC
+    UC --> P
+    P -.->|implementa| JOSE
+    JOSE --> CONFIG
+    JOSE -.->|valida tokens| REALLM
+    UC --> CLAIMS
+    GUARD --> AUTHZ
+    CLAIMS --> ROLES
+    AUTHZ --> ROLES
+```
+
+- Pastas verificadas: `backend/src/identity/` com `domain/` (papéis, claims, autorização e porta `TokenValidator` — sem imports externos/cruzados), `application/use-cases/` (autenticação contra a porta), `infrastructure/` (validador jose + configuração por ambiente) e `identity.module.ts` (providers por token; exporta `TokenVerifier` e o guard).
+- **Sem login próprio:** nenhum endpoint de emissão/renovação de token no backend; o fluxo padrão do Keycloak no frontend é o Épico 5.
+- **Falha fechado:** qualquer falha de token vira 401 idêntico; falha inesperada do validador também (o guard nunca propaga detalhe interno); `reception`/`admin` são o vocabulário fechado de papéis — papel desconhecido no token é filtrado.
+- **Testes com JWKS fake (design decisão 3):** unit/integração assinam tokens de verdade contra um JWKS local (cache, rotação e queda provados); a prova de 2FA roda contra o Keycloak do compose e é pulada no CI com motivo visível (o pipeline não sobe Keycloak).
 
 ## Backend (kernel técnico compartilhado)
 
@@ -399,7 +438,8 @@ flowchart LR
         FILTER[DomainExceptionFilter base<br/>hook statusFor default 422]
         ERR[DomainError base genérica]
         FACTORY[createPrismaClientFromEnv]
-        GUARD[IdentityPendingGuard<br/>403 AUTH_NOT_IMPLEMENTED]
+        GUARD[JwtAuthGuard real + Roles decorator<br/>TokenVerifier porta<br/>401/403 fixos]
+        TV[token-verifier.ts<br/>porta + códigos fixos + Roles]
     end
     subgraph Módulos
         S[Agendamento<br/>subclasse fina do filtro 404/409<br/>union + subclasse fina de erro]
@@ -408,6 +448,7 @@ flowchart LR
         PA[Pacientes<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
         AT[Atendimento<br/>subclasse fina do filtro 404<br/>union + subclasse fina de erro]
         FI[Financeiro<br/>subclasse fina do filtro 422<br/>union + subclasse fina de erro]
+        ID[Identidade e Acesso<br/>fornece a implementação da porta<br/>subclasse fina do filtro 422<br/>union + subclasse fina de erro]
     end
     S -.->|importa| PIPE
     C -.->|importa| PIPE
@@ -436,11 +477,14 @@ flowchart LR
     PA -.->|usa nas rotas| GUARD
     AT -.->|usa nas rotas| GUARD
     FI -.->|usa nas rotas| GUARD
+    ID -.->|usa e exporta| GUARD
+    ID -.->|implementa| TV
+    GUARD -.->|consome| TV
 ```
 
 - Pastas verificadas: `backend/src/shared/http/` (pipe + base do filtro + `identity-pending.guard.ts`), `backend/src/shared/errors/` (base genérica) e `backend/src/shared/prisma/` (factory) — cada uma com spec unitário próprio.
 - **Mapeamentos continuam locais:** cada módulo mantém a subclasse fina do filtro com o seu status por código e o seu union `DomainErrorCode`; o kernel não conhece código de domínio nenhum.
-- **Guard honesto compartilhado:** `IdentityPendingGuard` (plumbing puro, sem vocabulário de domínio) tem **uma única definição** no kernel e é importado por Pacientes, Atendimento e Financeiro — replicá-lo por módulo foi rejeitado na decisão 6 do change `backend-modulo-atendimento`. Substituição pelo guard Keycloak/RBAC é próximo passo obrigatório do módulo de Identidade (UC 4.2.1).
+- **Guard real compartilhado:** `shared/http/auth/` (plumbing puro, sem vocabulário de domínio) contém `JwtAuthGuard`, o decorator `Roles`, a porta `TokenVerifier` + códigos fixos e os descritores de Swagger 401/403 — importados pelos três módulos administrativos. O `IdentityPendingGuard` (bloqueio honesto) foi **removido** no change `backend-modulo-identidade`; a implementação da porta (JWKS/jose) vive no módulo de Identidade.
 - **Instâncias de PrismaClient continuam por módulo:** a factory compartilha apenas a construção (triggers de unificação adiados — decisões 4 do change `backend-modulo-atendimento` e 4 do `backend-modulo-financeiro`; o Financeiro é o sexto consumidor).
 - **Histórico:** extraído no change `resolver-duplicacao-sonar-backend` (SonarCloud reprovava por duplicação em 3 PRs seguidos; kernel + exclusão de CPD para testes zeram a causa no gate); ampliado no change `backend-modulo-atendimento` (guard) e no `backend-modulo-financeiro` (Financeiro como sexto módulo consumidor).
 

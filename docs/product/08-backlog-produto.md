@@ -332,7 +332,7 @@
 - **Fluxos alternativos/exceção:** Credenciais inválidas → erro genérico, sem indicar se usuário ou senha falhou.
 - **Critérios de aceite:**
   - Nenhuma rota do painel acessível sem autenticação.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (backend pronto para o fluxo: validação do JWT do Keycloak no backend, sem endpoint de login próprio — change `backend-modulo-identidade`; pendente a tela de login no frontend, que nasce no Épico 5).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ### Feature 3.2 — 2FA para painel admin
@@ -347,7 +347,7 @@
 - **Fluxos alternativos/exceção:** Código inválido/expirado → nova tentativa limitada, sem bloquear a conta injustamente.
 - **Critérios de aceite:**
   - 2FA obrigatório para `admin` e `reception`; impossível pular a etapa.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (exigido na configuração versionada do realm — fluxo `browser-with-required-otp` com OTP REQUIRED + `CONFIGURE_TOTP` nos usuários — e **provado contra o Keycloak real**: login só-senha não conclui e para no segundo fator; pendente a UI de configuração/uso do TOTP no painel, no Épico 5).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ### Feature 3.3 — Controle de papéis/permissões
@@ -362,7 +362,7 @@
 - **Fluxos alternativos/exceção:** Tentativa sem permissão → negação registrada, sem vazar existência de dados.
 - **Critérios de aceite:**
   - Menor privilégio em todas as rotas e ações.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (RBAC real aplicado nas rotas administrativas via API — `admin` e `reception` com negação por padrão e 403 idêntico para papel ausente/insuficiente; matriz MVP no change `backend-modulo-identidade`: recepção não acessa o financeiro nem a escrita/anonimização de pacientes; pendente RBAC no frontend, que nasce com o painel do Épico 2).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 ---
@@ -395,7 +395,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. O backend valida sessão/papel e autoriza operações de usuários.
 - **Critérios de aceite:**
   - Autorização RBAC aplicada em todas as rotas protegidas.
-- **Status atual:** Não iniciado.
+- **Status atual:** Em andamento (entregue no módulo `backend/src/identity` — validação real do JWT do Keycloak no backend (assinatura via JWKS, emissor, audiência, expiração, allowlist `RS256`), **sem endpoint de login próprio**; RBAC por papel com **negação por padrão** e 403 idêntico para papel ausente/insuficiente; **2FA exigido no realm versionado** (`infra/docker/keycloak/realm-newestetica.json`) e provado contra o Keycloak real; guard real no kernel (`backend/src/shared/http/auth/`) **substituiu o `IdentityPendingGuard`** nos módulos Pacientes, Atendimento e Financeiro (suítes existentes como caracterização — zero regressão; 401 `AUTH_UNAUTHENTICATED` sem token, 403 `AUTH_FORBIDDEN` sem papel); pendentes com trigger: telas de login no frontend (Épico 5), recuperação de senha, gestão de usuários pela API, rate-limit de autenticação (hardening de staging) e substituição do fluxo de teste local por realm dedicado se o CI passar a subir Keycloak para a prova de 2FA — todos com trigger registrado).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 **Use Case 4.2.2 — Catálogo (API)**
@@ -428,7 +428,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API mantém cadastro e dados básicos com coleta mínima e finalidade informada.
 - **Critérios de aceite:**
   - Direitos do titular preparáveis (acesso, correção, exclusão) sem retrabalho estrutural.
-- **Status atual:** Em andamento (CRUD básico entregue no módulo `backend/src/patients` — cadastro mínimo com finalidade registrada, leitura/atualização só de ativos, **anonimização via delete** (PII substituída por placeholders, `status`/`anonymizedAt`) e **guard honesto de bloqueio** (403 `AUTH_NOT_IMPLEMENTED` em todas as rotas até a Identidade); contrato novo em `contracts/src/patients/`; pendentes: **substituir o guard pelo Keycloak/RBAC real** (próximo passo obrigatório do módulo de Identidade, UC 4.2.1), exportação de dados do titular e campos adicionais — todos com trigger registrado).
+- **Status atual:** Em andamento (CRUD básico entregue no módulo `backend/src/patients` — cadastro mínimo com finalidade registrada, leitura/atualização só de ativos e **anonimização via delete** (PII substituída por placeholders, `status`/`anonymizedAt`); contrato novo em `contracts/src/patients/`; **autenticação real desde o change `backend-modulo-identidade`** — guard do kernel com JWT do Keycloak (401 sem token) e RBAC (leitura para `admin`/`reception`; escrita e anonimização só `admin`, 403 idêntico para papel ausente/insuficiente); pendentes: exportação de dados do titular e campos adicionais — com trigger registrado).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 **Use Case 4.2.5 — Atendimento / Histórico (API)**
@@ -439,7 +439,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API registra e recupera o histórico simples por paciente.
 - **Critérios de aceite:**
   - Somente histórico operacional; sem prontuário médico completo.
-- **Status atual:** Em andamento (registro e leitura do histórico simples entregues no módulo `backend/src/attendance` — `POST /patients/:patientId/attendances`, `GET /patients/:patientId/attendances` e `GET /patients/:patientId/attendances/:id`, histórico **imutável** (sem update/delete), visibilidade **herdada do paciente** (histórico de anonimizada nunca é servido — invariante provada por write-then-throw em duas camadas: porta `PatientDirectory` + filtro de relação na query), contrato novo em `contracts/src/attendance/` e **guard honesto compartilhado no kernel** (`IdentityPendingGuard` em `backend/src/shared/http/` — 403 `AUTH_NOT_IMPLEMENTED` em todas as rotas até a Identidade); pendentes: fluxo de correção (novo registro; trigger se a Fabiana pedir), exportação do histórico, offset/busca textual e substituição do guard pelo Keycloak/RBAC real — todos com trigger registrado).
+- **Status atual:** Em andamento (registro e leitura do histórico simples entregues no módulo `backend/src/attendance` — `POST /patients/:patientId/attendances`, `GET /patients/:patientId/attendances` e `GET /patients/:patientId/attendances/:id`, histórico **imutável** (sem update/delete), visibilidade **herdada do paciente** (histórico de anonimizada nunca é servido — invariante provada por write-then-throw em duas camadas: porta `PatientDirectory` + filtro de relação na query), contrato novo em `contracts/src/attendance/` e **autenticação real desde o change `backend-modulo-identidade`** (guard do kernel com JWT do Keycloak — 401 sem token; RBAC operacional `admin`/`reception`); pendentes: fluxo de correção (novo registro; trigger se a Fabiana pedir), exportação do histórico e offset/busca textual — todos com trigger registrado).
 - **Gatilho de segurança:** revisão obrigatória com security-and-hardening (docs/07 §7).
 
 **Use Case 4.2.6 — Financeiro Básico (API)**
@@ -450,7 +450,7 @@ Bounded contexts conforme `docs/architecture/02-arquitetura.md`. Todos com statu
   1. A API agrega o resumo financeiro essencial.
 - **Critérios de aceite:**
   - Escopo limitado ao essencial; sem fiscal/contábil.
-- **Status atual:** Em andamento (resumo agregado por janela entregue no módulo `backend/src/finance` — `GET /finance/summary?from=&to=` com janela obrigatória (teto de 366 dias), `currency: "BRL"`, `totalCents` e `count`, **sem PII e sem breakdown por construção**; agregação pura no domínio + porta própria de leitura (`FinanceSummaryReader`) com **visibilidade herdada da paciente na query** (`patient: { status: "active" }` — valor de anonimizada nunca compõe o agregado, provado por write-then-throw); valor do atendimento em `amountCents` opcional e imutável no Atendimento (coluna nullable + migration, contrato estendido); guard honesto do kernel na rota (403 `AUTH_NOT_IMPLEMENTED`); cliente Prisma próprio (sexto pool consciente); pendentes com trigger: breakdown por paciente (nasce com RBAC real), fluxo de correção de valor (novo registro, trigger se a Fabiana pedir), unificação de pools e substituição do guard pelo Keycloak/RBAC no módulo de Identidade).
+- **Status atual:** Em andamento (resumo agregado por janela entregue no módulo `backend/src/finance` — `GET /finance/summary?from=&to=` com janela obrigatória (teto de 366 dias), `currency: "BRL"`, `totalCents` e `count`, **sem PII e sem breakdown por construção**; agregação pura no domínio + porta própria de leitura (`FinanceSummaryReader`) com **visibilidade herdada da paciente na query** (`patient: { status: "active" }` — valor de anonimizada nunca compõe o agregado, provado por write-then-throw); valor do atendimento em `amountCents` opcional e imutável no Atendimento (coluna nullable + migration, contrato estendido); **autenticação real desde o change `backend-modulo-identidade`** — guard do kernel com JWT do Keycloak (401 sem token) e RBAC **`admin`-only** na rota financeira; cliente Prisma próprio (sexto pool consciente); pendentes com trigger: breakdown por paciente (nasce com RBAC real), fluxo de correção de valor (novo registro, trigger se a Fabiana pedir) e unificação de pools — todos com trigger registrado).
 
 **Use Case 4.2.7 — Conteúdo Público (API)**
 

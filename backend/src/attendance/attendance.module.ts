@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import type { PrismaClient } from "../generated/prisma/client";
 import { createPrismaClientFromEnv } from "../shared/prisma/client-factory";
-import { IdentityPendingGuard } from "../shared/http/identity-pending.guard";
+import { IdentityModule } from "../identity/identity.module";
 import { CreateAttendanceUseCase } from "./application/use-cases/create-attendance.use-case";
 import { GetAttendanceByIdUseCase } from "./application/use-cases/get-attendance-by-id.use-case";
 import { ListAttendancesUseCase } from "./application/use-cases/list-attendances.use-case";
@@ -17,9 +17,10 @@ export const PATIENT_DIRECTORY = Symbol("PATIENT_DIRECTORY");
    (kernel), a instância não (quinto pool conscientemente adiado — decisão 10).
    Sem UnitOfWork: escrita de entidade única (decisão 4). A porta PatientDirectory
    é implementada pelo adapter Prisma próprio — nenhum import do módulo de Pacientes.
-   O `IdentityPendingGuard` vem do kernel compartilhado (uma única definição para os
-   dois módulos administrativos) — bloqueio honesto até a Identidade. */
+   Autenticação real: `IdentityModule` fornece o guard do kernel e a verificação de
+   token do Keycloak (RBAC operacional: admin e reception). */
 @Module({
+  imports: [IdentityModule],
   controllers: [AttendancesController],
   providers: [
     {
@@ -61,7 +62,6 @@ export const PATIENT_DIRECTORY = Symbol("PATIENT_DIRECTORY");
       ) => new GetAttendanceByIdUseCase(attendances, patients),
       inject: [ATTENDANCE_REPOSITORY, PATIENT_DIRECTORY],
     },
-    IdentityPendingGuard,
   ],
 })
 export class AttendanceModule {}

@@ -12,6 +12,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNoContentResponse,
@@ -21,6 +22,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
 import {
@@ -42,25 +44,18 @@ import { UpdatePatientUseCase } from "../../application/use-cases/update-patient
 import type { Patient } from "../../domain/entities/patient.entity";
 import { DomainExceptionFilter } from "../filters/domain-exception.filter";
 import {
-  AUTH_NOT_IMPLEMENTED_CODE,
-  AUTH_NOT_IMPLEMENTED_MESSAGE,
-  IdentityPendingGuard,
-} from "../../../shared/http/identity-pending.guard";
+  AUTH_401_DESCRIPTION,
+  AUTH_401_SCHEMA,
+  AUTH_403_DESCRIPTION,
+  AUTH_403_SCHEMA,
+} from "../../../shared/http/auth/auth-swagger";
+import { Roles } from "../../../shared/http/auth/roles.decorator";
+import { JwtAuthGuard } from "../../../shared/http/auth/jwt-auth.guard";
 import { ZodValidationPipe } from "../../../shared/http/zod-validation.pipe";
 
 class PatientInputDto extends createZodDto(PatientInputSchema) {}
 class PatientUpdateDto extends createZodDto(PatientUpdateSchema) {}
 class PatientResponseDto extends createZodDto(PatientSchema) {}
-
-const FORBIDDEN_DESCRIPTION =
-  "Bloqueado pelo IdentityPendingGuard: autenticação ainda não implementada para este módulo (UC 4.2.1).";
-const FORBIDDEN_SCHEMA = {
-  type: "object",
-  properties: {
-    code: { type: "string", example: AUTH_NOT_IMPLEMENTED_CODE },
-    message: { type: "string", example: AUTH_NOT_IMPLEMENTED_MESSAGE },
-  },
-};
 
 const IdSchema = z.string().min(1).max(200);
 
@@ -87,9 +82,13 @@ function toResponse(patient: Patient): PatientItemResponse {
   };
 }
 
-@ApiTags("Pacientes (bloqueado até a Identidade)")
+/* Autenticação real (UC 4.2.1): guard do kernel — sem token válido 401, papel
+   insuficiente 403 — e RBAC por papel: leitura operacional para `admin` e
+   `reception`; escrita e anonimização só `admin` (menor privilégio). */
+@ApiTags("Pacientes")
+@ApiBearerAuth()
 @Controller("patients")
-@UseGuards(IdentityPendingGuard)
+@UseGuards(JwtAuthGuard)
 @UseFilters(DomainExceptionFilter)
 export class PatientsController {
   constructor(
@@ -101,12 +100,15 @@ export class PatientsController {
   ) {}
 
   @Post()
-  @ApiOperation({
-    summary: "Cadastra uma paciente (bloqueado até a Identidade)",
+  @Roles("admin")
+  @ApiOperation({ summary: "Cadastra uma paciente" })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
   })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiCreatedResponse({
     description: "Paciente cadastrada.",
@@ -121,18 +123,21 @@ export class PatientsController {
   }
 
   @Get()
-  @ApiOperation({
-    summary: "Lista as pacientes ativas (bloqueado até a Identidade)",
-  })
+  @Roles("admin", "reception")
+  @ApiOperation({ summary: "Lista as pacientes ativas" })
   @ApiQuery({
     name: "limit",
     required: false,
     description: "Limite de itens (padrão 100, máximo 500).",
     schema: { type: "integer", minimum: 1, maximum: 500 },
   })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiOkResponse({
     description: "Pacientes ativas (anonimizadas nunca aparecem).",
@@ -151,13 +156,16 @@ export class PatientsController {
   }
 
   @Get(":id")
-  @ApiOperation({
-    summary: "Consulta uma paciente pelo id (bloqueado até a Identidade)",
-  })
+  @Roles("admin", "reception")
+  @ApiOperation({ summary: "Consulta uma paciente pelo id" })
   @ApiParam({ name: "id", description: "Identificador da paciente." })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiOkResponse({ description: "Paciente ativa.", type: PatientResponseDto })
   @ApiNotFoundResponse({
@@ -172,13 +180,16 @@ export class PatientsController {
   }
 
   @Patch(":id")
-  @ApiOperation({
-    summary: "Atualiza uma paciente (bloqueado até a Identidade)",
-  })
+  @Roles("admin")
+  @ApiOperation({ summary: "Atualiza uma paciente" })
   @ApiParam({ name: "id", description: "Identificador da paciente." })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiOkResponse({
     description: "Paciente atualizada.",
@@ -199,13 +210,16 @@ export class PatientsController {
 
   @Delete(":id")
   @HttpCode(204)
-  @ApiOperation({
-    summary: "Anonimiza uma paciente (bloqueado até a Identidade)",
-  })
+  @Roles("admin")
+  @ApiOperation({ summary: "Anonimiza uma paciente" })
   @ApiParam({ name: "id", description: "Identificador da paciente." })
+  @ApiUnauthorizedResponse({
+    description: AUTH_401_DESCRIPTION,
+    schema: AUTH_401_SCHEMA,
+  })
   @ApiForbiddenResponse({
-    description: FORBIDDEN_DESCRIPTION,
-    schema: FORBIDDEN_SCHEMA,
+    description: AUTH_403_DESCRIPTION,
+    schema: AUTH_403_SCHEMA,
   })
   @ApiNoContentResponse({
     description: "PII substituída por placeholders; sem corpo.",

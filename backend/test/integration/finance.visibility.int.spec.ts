@@ -4,7 +4,8 @@ import { Test } from "@nestjs/testing";
 import { FinanceModule } from "../../src/finance/finance.module";
 import { AnonymizePatientUseCase } from "../../src/patients/application/use-cases/anonymize-patient.use-case";
 import { PrismaPatientRepository } from "../../src/patients/infrastructure/persistence/patient.repository.impl";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
@@ -61,7 +62,7 @@ async function seedAttendance(
 }
 
 async function fetchSummary(): Promise<Record<string, unknown>> {
-  const response = await fetch(
+  const response = await authFetch(
     `${baseUrl}/finance/summary?from=2026-09-01&to=2026-09-30`,
   );
   expect(response.status).toBe(200);
@@ -70,11 +71,13 @@ async function fetchSummary(): Promise<Record<string, unknown>> {
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [FinanceModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -89,6 +92,21 @@ afterAll(async () => {
 beforeEach(async () => {
   await resetDatabase(prisma);
 });
+
+/* Requisição autenticada (token de admin via verificador fake — o guard é o real). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: string } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
 
 describe("agregado não vaza valor de paciente anonimizada (invariante herdada)", () => {
   it("o total e a contagem refletem exatamente a paciente ativa; o valor da anonimizada fica fora", async () => {

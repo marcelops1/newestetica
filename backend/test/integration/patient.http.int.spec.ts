@@ -2,15 +2,16 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { PatientsModule } from "../../src/patients/patients.module";
-import { IdentityPendingGuard } from "../../src/shared/http/identity-pending.guard";
+import { FAKE_TOKEN_VERIFIER, bearer } from "../fakes/fake-token-verifier";
+import { TOKEN_VERIFIER } from "../../src/shared/http/auth/token-verifier";
 import {
   createTestPrismaClient,
   resetDatabase,
   testDatabaseUrl,
 } from "./database";
 
-/* Testes de contrato da Presentation rodam com o guard HONESTO desativado por override
-   (simulando a Identidade futura); o bloqueio real é provado em patient.guard.int.spec. */
+/* Testes de contrato da Presentation com o guard REAL e verificador fake
+   (token Bearer de admin); 401/403 de verdade são provados em patient.guard.int.spec. */
 const prisma = createTestPrismaClient();
 let app: INestApplication;
 let baseUrl: string;
@@ -37,11 +38,15 @@ async function seedPatient(
 
 beforeAll(async () => {
   process.env.DATABASE_URL = testDatabaseUrl();
+  /* Env do validador real (instanciado no bootstrap do IdentityModule; a verificação
+     é substituída pelo fake abaixo); requests levam Bearer de admin por padrão. */
+  process.env.KEYCLOAK_ISSUER = "http://127.0.0.1:1/realms/test";
+  process.env.KEYCLOAK_AUDIENCE = "test-client";
   const moduleRef = await Test.createTestingModule({
     imports: [PatientsModule],
   })
-    .overrideGuard(IdentityPendingGuard)
-    .useValue({ canActivate: () => true })
+    .overrideProvider(TOKEN_VERIFIER)
+    .useValue(FAKE_TOKEN_VERIFIER)
     .compile();
   app = moduleRef.createNestApplication({ logger: false });
   await app.listen(0);
@@ -57,9 +62,24 @@ beforeEach(async () => {
   await resetDatabase(prisma);
 });
 
-describe("Patients HTTP (contrato da Presentation, com guard desativado por override)", () => {
+/* Requisição autenticada (token de admin via verificador fake — o guard é o real). */
+function authFetch(
+  url: string,
+  init: RequestInit & { token?: string } = {},
+): Promise<Response> {
+  const { token = "test-admin", ...rest } = init;
+  return fetch(url, {
+    ...rest,
+    headers: {
+      ...((rest.headers as Record<string, string> | undefined) ?? {}),
+      ...bearer(token),
+    },
+  });
+}
+
+describe("Patients HTTP (contrato da Presentation, com token válido (verificador fake))", () => {
   it("POST /patients cria com 201 e id gerado pelo servidor", async () => {
-    const response = await fetch(`${baseUrl}/patients`, {
+    const response = await authFetch(`${baseUrl}/patients`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -77,7 +97,7 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
   });
 
   it("POST /patients com payload inválido responde 422 sem ecoar PII", async () => {
-    const response = await fetch(`${baseUrl}/patients`, {
+    const response = await authFetch(`${baseUrl}/patients`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -108,7 +128,7 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
       false,
     );
 
-    const response = await fetch(`${baseUrl}/patients`);
+    const response = await authFetch(`${baseUrl}/patients`);
 
     expect(response.status).toBe(200);
     const body = (await response.json()) as Array<{ id: string }>;
@@ -125,17 +145,17 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
       "Paciente Fictícia Bravo",
     );
 
-    const limited = await fetch(`${baseUrl}/patients?limit=1`);
+    const limited = await authFetch(`${baseUrl}/patients?limit=1`);
     expect(limited.status).toBe(200);
     await expect(limited.json()).resolves.toHaveLength(1);
 
-    const midLimit = await fetch(`${baseUrl}/patients?limit=2`);
+    const midLimit = await authFetch(`${baseUrl}/patients?limit=2`);
     expect(midLimit.status).toBe(200);
     await expect(midLimit.json()).resolves.toHaveLength(2);
 
-    const overLimit = await fetch(`${baseUrl}/patients?limit=501`);
+    const overLimit = await authFetch(`${baseUrl}/patients?limit=501`);
     expect(overLimit.status).toBe(422);
-    const invalidLimit = await fetch(`${baseUrl}/patients?limit=abc`);
+    const invalidLimit = await authFetch(`${baseUrl}/patients?limit=abc`);
     expect(invalidLimit.status).toBe(422);
   });
 
@@ -151,7 +171,7 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
       },
     });
 
-    const response = await fetch(`${baseUrl}/patients`);
+    const response = await authFetch(`${baseUrl}/patients`);
 
     expect(response.status).toBe(422);
     const body = (await response.json()) as { code: string; message: string };
@@ -167,13 +187,13 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
       false,
     );
 
-    const found = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`);
+    const found = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`);
     expect(found.status).toBe(200);
 
-    const missing = await fetch(
+    const missing = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000099`,
     );
-    const anonymized = await fetch(
+    const anonymized = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000004`,
     );
     expect(missing.status).toBe(404);
@@ -187,7 +207,7 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
   it("PATCH /patients/:id atualiza parcialmente e preserva o resto", async () => {
     await seedPatient(ACTIVE_ID, "Paciente Fictícia Alfa");
 
-    const response = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
+    const response = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ phone: "(11) 5555-0009" }),
@@ -207,14 +227,14 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
   it("PATCH /patients/:id inválido responde 422 e inexistente 404", async () => {
     await seedPatient(ACTIVE_ID, "Paciente Fictícia Alfa");
 
-    const invalid = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
+    const invalid = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ phone: "(11) 1234" }),
     });
     expect(invalid.status).toBe(422);
 
-    const missing = await fetch(
+    const missing = await authFetch(
       `${baseUrl}/patients/00000000-0000-4000-8000-000000000099`,
       {
         method: "PATCH",
@@ -228,22 +248,22 @@ describe("Patients HTTP (contrato da Presentation, com guard desativado por over
   it("DELETE /patients/:id anonimiza com 204 e o registro some das leituras", async () => {
     await seedPatient(ACTIVE_ID, "Paciente Fictícia Alfa");
 
-    const deleted = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
+    const deleted = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
       method: "DELETE",
     });
     expect(deleted.status).toBe(204);
     expect(await deleted.text()).toBe("");
 
-    const after = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`);
+    const after = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`);
     expect(after.status).toBe(404);
-    const again = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
+    const again = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
       method: "DELETE",
     });
     expect(again.status).toBe(404);
   });
 
   it("PUT /patients/:id (método não exposto) responde 404 de rota", async () => {
-    const response = await fetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
+    const response = await authFetch(`${baseUrl}/patients/${ACTIVE_ID}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({}),

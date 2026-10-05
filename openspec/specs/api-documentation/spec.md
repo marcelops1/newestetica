@@ -38,15 +38,6 @@ Os componentes do schema SHALL derivar dos schemas Zod de `contracts/` sem dupli
 - **WHEN** fixtures válidas de cada contexto são validadas contra os componentes correspondentes do schema gerado
 - **THEN** todas aprovam, e campos dos contratos aparecem sem omissão nem acréscimo
 
-### Requirement: Bloqueio de Pacientes explícito na documentação
-
-As 5 rotas de Pacientes SHALL documentar a resposta 403 com código `AUTH_NOT_IMPLEMENTED` e descrição apontando o `IdentityPendingGuard` e o UC 4.2.1; a documentação SHALL NOT sugerir que essas rotas estejam acessíveis sem autenticação.
-
-#### Scenario: 403 documentado nas rotas de Pacientes
-
-- **WHEN** as operações de `/patients` são lidas no schema gerado
-- **THEN** cada uma lista a resposta 403 com o código e a descrição do bloqueio honesto
-
 ### Requirement: Docs desabilitadas em produção por padrão
 
 Em produção (`NODE_ENV=production`) sem `SWAGGER_ENABLED=true`, `GET /docs` e `GET /docs-json` SHALL responder 404; fora de produção, SHALL responder conforme os cenários acima.
@@ -60,3 +51,17 @@ Em produção (`NODE_ENV=production`) sem `SWAGGER_ENABLED=true`, `GET /docs` e 
 
 - **WHEN** o backend sobe com `NODE_ENV=production` e `SWAGGER_ENABLED=true`
 - **THEN** `GET /docs` e `GET /docs-json` respondem conforme os cenários de desenvolvimento
+
+### Requirement: Autenticação real documentada (401/403 + bearer)
+
+As 9 rotas administrativas (Pacientes, Atendimento e Financeiro) SHALL documentar as respostas 401 com código `AUTH_UNAUTHENTICATED` e 403 com código `AUTH_FORBIDDEN`, ambas com descrições fixas; o documento SHALL declarar um esquema de segurança bearer global e cada rota administrativa SHALL exigi-lo; a documentação SHALL NOT referenciar `IdentityPendingGuard`, `AUTH_NOT_IMPLEMENTED` ou bloqueio honesto.
+
+#### Scenario: 401 e 403 fixos nas rotas administrativas
+
+- **WHEN** as operações de `/patients`, `/patients/{patientId}/attendances` e `/finance/summary` são lidas no schema gerado
+- **THEN** cada uma lista a resposta 401 com o código `AUTH_UNAUTHENTICATED` e a resposta 403 com o código `AUTH_FORBIDDEN`
+
+#### Scenario: Esquema bearer declarado e exigido
+
+- **WHEN** os `securitySchemes` do documento e a chave `security` das 9 operações são lidos no schema gerado
+- **THEN** existe um esquema bearer e cada operação administrativa o exige

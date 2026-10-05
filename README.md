@@ -43,7 +43,39 @@ O backend sobe com o stack local (`make up` — ver `Makefile`) e expõe a docum
 - UI: <http://127.0.0.1:3001/docs>
 - Schema OpenAPI: <http://127.0.0.1:3001/docs-json>
 
-A documentação reflete **somente os módulos implementados até agora** (Agendamento, Catálogo, Conteúdo Público e Pacientes) e é gerada a partir dos contratos de `contracts/` — sem duplicar campos. As rotas de Pacientes aparecem marcadas como bloqueadas (`403 AUTH_NOT_IMPLEMENTED` do guard até o módulo de Identidade). Em produção, `/docs` e `/docs-json` ficam desabilitadas por padrão (só com `SWAGGER_ENABLED=true`).
+A documentação reflete **somente os módulos implementados até agora** (Agendamento, Catálogo, Conteúdo Público, Pacientes, Atendimento, Financeiro e Identidade) e é gerada a partir dos contratos de `contracts/` — sem duplicar campos. As rotas administrativas (Pacientes, Atendimento e Financeiro) exigem **JWT do Keycloak**: sem token válido respondem 401 `AUTH_UNAUTHENTICATED`; sem o papel exigido, 403 `AUTH_FORBIDDEN`. Em produção, `/docs` e `/docs-json` ficam desabilitadas por padrão (só com `SWAGGER_ENABLED=true`).
+
+#### Como obter um token (ambiente local)
+
+O Keycloak do compose sobe em `http://127.0.0.1:8080` com o realm `newestetica` (versão em `infra/docker/keycloak/realm-newestetica.json`) e usuários de desenvolvimento com **2FA (TOTP) obrigatório**:
+
+| Usuária | Papel | Senha (dev) |
+| --- | --- | --- |
+| `fabiana-dev` | `admin` | `dev-fabiana-2fa` |
+| `recepcao-dev` | `reception` | `dev-recepcao-2fa` |
+
+No primeiro login o Keycloak exige configurar o TOTP (aplicativo autenticador); depois, o código de 6 dígitos é pedido a cada login. O frontend fará esse fluxo no Épico 5 — para testar a API manualmente hoje:
+
+1. Abra no navegador: `http://127.0.0.1:8080/realms/newestetica/protocol/openid-connect/auth?client_id=newestetica-frontend&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&response_type=code&scope=openid&state=manual`
+2. Complete login + 2FA e copie o `code` da URL de retorno (`http://localhost:3000/callback?code=...`).
+3. Troque o code por um access token com o REST do Keycloak:
+
+```bash
+curl -s -X POST 'http://127.0.0.1:8080/realms/newestetica/protocol/openid-connect/token' \
+  -d 'grant_type=authorization_code' \
+  -d 'client_id=newestetica-frontend' \
+  -d 'redirect_uri=http://localhost:3000/callback' \
+  -d 'code=<CODE>' | jq -r .access_token
+```
+
+4. Use o token nas rotas administrativas:
+
+```bash
+curl -s 'http://127.0.0.1:3001/finance/summary?from=2026-09-01&to=2026-09-30' \
+  -H "Authorization: Bearer <ACCESS_TOKEN>"
+```
+
+> A configuração do backend vem por ambiente: `KEYCLOAK_ISSUER` (ex.: `http://127.0.0.1:8080/realms/newestetica`) e `KEYCLOAK_AUDIENCE` (`newestetica-frontend`); a URL do JWKS é derivada do issuer (`KEYCLOAK_JWKS_URL` opcional). Sem as duas obrigatórias, o backend falha rápido no boot.
 
 ## Documentação oficial
 
