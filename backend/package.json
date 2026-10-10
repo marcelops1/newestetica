@@ -12,7 +12,8 @@
     "test": "pnpm --filter @newestetica/contracts run build && vitest run --coverage",
     "mutation": "stryker run",
     "postinstall": "prisma generate",
-    "db:migrate": "prisma migrate deploy"
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "node prisma/seed.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.3",

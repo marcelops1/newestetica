@@ -1,7 +1,7 @@
 COMPOSE := docker compose -f infra/docker/docker-compose.yml
 
 .DEFAULT_GOAL := help
-.PHONY: help up down logs build restart ps db-shell
+.PHONY: help up down logs build restart ps db-shell seed
 
 help: ## Lista os comandos disponíveis
 	@echo "Comandos do monorepo Newestetica:"
@@ -27,3 +27,6 @@ ps: ## Mostra o estado dos serviços
 
 db-shell: ## Abre o psql no postgres (ex.: make db-shell ARGS="-c 'select 1'")
 	$(COMPOSE) exec postgres psql -U $${POSTGRES_USER:-newestetica} -d $${POSTGRES_DB:-newestetica} $(ARGS)
+
+seed: ## Popula o banco local com dados fictícios (dev; recusa NODE_ENV=production)
+	NODE_ENV=development DATABASE_URL=postgresql://$${POSTGRES_USER:-newestetica}:$${POSTGRES_PASSWORD:-changeme-dev}@127.0.0.1:$${POSTGRES_PORT:-5432}/$${POSTGRES_DB:-newestetica} pnpm --filter backend db:seed
