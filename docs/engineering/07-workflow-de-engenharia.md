@@ -104,6 +104,10 @@ O lint e a formatação têm três camadas de defesa independentes, nesta ordem 
 
 > O pre-commit **não substitui** as outras duas camadas: é conveniência de feedback local. A verdade sobre "o commit está limpo" é sempre o CI; o pre-commit apenas evita o feedback tardio.
 
+### Seed do banco local (`backend/prisma/seed.mjs`)
+
+O backend tem um seed de desenvolvimento (`make seed`, alias `pnpm --filter backend db:seed`) que popula o banco local com dados 100% fictícios espelhando os mocks do frontend (procedimentos — 1 inativo de propósito, depoimentos, posts, casos de antes/depois — 1 sem consentimento, e horários futuros — 1 indisponível). Regras do seed: **upsert por id estável** (rodar duas vezes não duplica), **recusa `NODE_ENV=production`** (exit ≠ 0 com mensagem clara), **sem pacientes nem atendimentos** (nenhum dado de paciente, nem fictício, em material de dev compartilhável — docs/security/03 §4) e **fora da imagem de produção**: o `Dockerfile` não o executa e o entrypoint roda apenas `prisma migrate deploy`, que não dispara seed. As contagens e os filtros das rotas públicas são travados por teste (`backend/test/integration/seed.int.spec.ts`).
+
 ---
 
 ## 7. Segurança em cada etapa

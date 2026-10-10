@@ -36,6 +36,20 @@ pnpm test       # vitest com cobertura (threshold 80%)
 pnpm build      # build de produção (Next.js)
 ```
 
+### Backend local completo (stack + dados fictícios)
+
+O backend sobe com o stack Docker local (`make up` — Postgres, Keycloak e backend). Num banco novo as leituras públicas vêm vazias; o seed popula tudo com dados **100% fictícios**:
+
+```bash
+make up      # sobe o stack (migrations aplicadas automaticamente)
+make seed    # popula o banco LOCAL: 6 procedimentos ativos, 5 depoimentos,
+             # 4 posts, 2 casos de antes/depois com consentimento e horários
+             # futuros disponíveis (+ itens inativo/indisponível/sem
+             # consentimento, que as rotas públicas filtram de propósito)
+```
+
+O seed é **idempotente** (rodar duas vezes não duplica) e recusa rodar com `NODE_ENV=production`. Nenhum paciente ou atendimento é criado — o seed é só de desenvolvimento e não entra na imagem de produção.
+
 ### Backend e documentação da API (Swagger)
 
 O backend sobe com o stack local (`make up` — ver `Makefile`) e expõe a documentação da API:

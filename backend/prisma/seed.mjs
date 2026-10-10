@@ -1,10 +1,22 @@
 import { Client } from "pg";
 
 /* Seed 100% FICTÍCIO — nunca colocar dado real aqui (docs/security/03-seguranca.md).
-   Alinhado nominalmente aos mocks do frontend (frontend/lib/mocks/procedures.ts) e com
-   um item INATIVO para exercitar a regra "leitura pública nunca retorna desativado".
+   Alinhado nominalmente aos mocks do frontend (frontend/lib/mocks/procedures.ts,
+   testimonials.ts, schedule.ts, results.ts) e com um item INATIVO, um horário
+   INDISPONÍVEL e um caso SEM consentimento — cada um existe para exercitar a
+   respectiva regra de exclusão da leitura pública.
+   Só para desenvolvimento/local: recusa rodar com NODE_ENV=production.
    Usa `pg` direto (o cliente Prisma gerado é TS/CJS e não carrega sob o ESM nativo do
-   Node sem toolchain extra); SQL parametrizado, upsert idempotente. */
+   Node sem toolchain extra); SQL parametrizado, upsert idempotente por id estável. */
+
+/* Guarda de produção: antes de qualquer conexão. O container sobe com
+   NODE_ENV=production, então nem uma execução acidental dentro da imagem passa. */
+if (process.env.NODE_ENV === "production") {
+  console.error(
+    "Seed recusado: NODE_ENV=production. Este seed popula dados fictícios e só roda em desenvolvimento local.",
+  );
+  process.exit(1);
+}
 
 const procedures = [
   {
@@ -196,50 +208,44 @@ const beforeAfterCases = [
   },
 ];
 
-/* Pacientes fictícios (nunca dado real — docs/security/03-seguranca.md §4/§11):
-   nomes e telefones claramente ilustrativos, telefone com prefixo 5555, só ativos.
-   Ids fixos (UUID v4 fictícios) para o upsert idempotente. */
-const patients = [
-  {
-    id: "00000000-0000-4000-8000-000000000101",
-    fullName: "Paciente Ilustrativa Alfa",
-    phone: "(11) 5555-0101",
-    purpose: "Cadastro fictício para desenvolvimento (paciente ilustrativa)",
-  },
-  {
-    id: "00000000-0000-4000-8000-000000000102",
-    fullName: "Paciente Ilustrativa Bravo",
-    phone: "(11) 5555-0102",
-    purpose: "Cadastro fictício para desenvolvimento (paciente ilustrativa)",
-  },
-  {
-    id: "00000000-0000-4000-8000-000000000103",
-    fullName: "Paciente Ilustrativa Charlie",
-    phone: "(11) 5555-0103",
-    purpose: "Cadastro fictício para desenvolvimento (paciente ilustrativa)",
-  },
+/* Horários fictícios de agendamento, alinhados nominalmente a
+   `frontend/lib/mocks/schedule.ts` (slotsMock: 09:00/10:30/14:00, 50–60 min).
+   Datas são calculadas no seed (próximos dias úteis) para nunca nascerem no
+   passado — data fixa envelheceria; ids fixos mantêm o upsert idempotente.
+   O horário indisponível existe para provar o filtro da leitura pública. */
+function nextBusinessDays(count) {
+  const days = [];
+  const cursor = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  while (days.length < count) {
+    if (cursor.getUTCDay() !== 0) {
+      days.push(cursor.toISOString().slice(0, 10));
+    }
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return days;
+}
+
+const SLOT_TIMES = [
+  { time: "09:00", durationMinutes: 60 },
+  { time: "14:00", durationMinutes: 50 },
 ];
 
-/* Atendimentos fictícios (histórico operacional — nunca dado clínico):
-   dois registros simples vinculados às pacientes ilustrativas acima (FK); um com
-   valor fictício arredondado (R$ 150,00) e um SEM valor, exercitando os dois
-   caminhos do resumo financeiro (design decisão 9). */
-const attendances = [
-  {
-    id: "00000000-0000-4000-8000-000000000201",
-    patientId: "00000000-0000-4000-8000-000000000101",
-    summary: "Limpeza de pele realizada, sem intercorrências.",
-    amountCents: 15000,
-    performedAt: "2026-08-12T14:30:00.000Z",
-  },
-  {
-    id: "00000000-0000-4000-8000-000000000202",
-    patientId: "00000000-0000-4000-8000-000000000102",
-    summary: "Hidratação facial realizada, pele bem tolerada.",
-    amountCents: null,
-    performedAt: "2026-09-02T10:00:00.000Z",
-  },
-];
+const slots = nextBusinessDays(4).flatMap((day, index) =>
+  SLOT_TIMES.map(({ time, durationMinutes }, slotIndex) => ({
+    id: `slot-dev-${index * SLOT_TIMES.length + slotIndex + 1}`,
+    start: `${day}T${time}:00-03:00`,
+    durationMinutes,
+    available: true,
+  })),
+);
+
+/* Indisponível de propósito (ex.: já ocupado): a rota pública não pode devolvê-lo. */
+slots.push({
+  id: "slot-dev-indisponivel",
+  start: `${nextBusinessDays(1)[0]}T16:00:00-03:00`,
+  durationMinutes: 50,
+  available: false,
+});
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -343,44 +349,20 @@ try {
     `Seed de antes/depois aplicado: ${beforeAfterCases.length} casos fictícios (${withoutConsent} sem consentimento — nunca servido publicamente).`,
   );
 
-  for (const patient of patients) {
+  for (const slot of slots) {
     await client.query(
-      `INSERT INTO "Patient" (id, "fullName", phone, purpose, status, "updatedAt")
-       VALUES ($1, $2, $3, $4, 'active', now())
+      `INSERT INTO "Slot" (id, start, "durationMinutes", available)
+       VALUES ($1, $2, $3, $4)
        ON CONFLICT (id) DO UPDATE SET
-         "fullName" = EXCLUDED."fullName",
-         phone = EXCLUDED.phone,
-         purpose = EXCLUDED.purpose,
-         status = EXCLUDED.status,
-         "updatedAt" = now()`,
-      [patient.id, patient.fullName, patient.phone, patient.purpose],
+         start = EXCLUDED.start,
+         "durationMinutes" = EXCLUDED."durationMinutes",
+         available = EXCLUDED.available`,
+      [slot.id, slot.start, slot.durationMinutes, slot.available],
     );
   }
+  const unavailable = slots.filter((s) => !s.available).length;
   console.log(
-    `Seed de pacientes aplicado: ${patients.length} fictícios (ilustrativos, só ativos).`,
-  );
-
-  for (const attendance of attendances) {
-    await client.query(
-      `INSERT INTO "Attendance" (id, "patientId", summary, "amountCents", "performedAt", "updatedAt")
-       VALUES ($1, $2, $3, $4, $5, now())
-       ON CONFLICT (id) DO UPDATE SET
-         "patientId" = EXCLUDED."patientId",
-         summary = EXCLUDED.summary,
-         "amountCents" = EXCLUDED."amountCents",
-         "performedAt" = EXCLUDED."performedAt",
-         "updatedAt" = now()`,
-      [
-        attendance.id,
-        attendance.patientId,
-        attendance.summary,
-        attendance.amountCents,
-        attendance.performedAt,
-      ],
-    );
-  }
-  console.log(
-    `Seed de atendimentos aplicado: ${attendances.length} fictícios (histórico operacional, sem dado clínico; um com valor fictício, um sem).`,
+    `Seed de horários aplicado: ${slots.length} fictícios (${unavailable} indisponível — nunca servido publicamente).`,
   );
 } finally {
   await client.end();
