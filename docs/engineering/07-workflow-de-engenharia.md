@@ -98,7 +98,7 @@ Uma task SHALL ser considerada concluída somente quando atender a todos os iten
 
 O lint e a formatação têm três camadas de defesa independentes, nesta ordem de ocorrência:
 
-1. **Pre-commit local** (husky + lint-staged, ativo via `pnpm install`): feedback em segundos, no momento do commit — erros corrigíveis automaticamente são corrigidos e incluídos no commit; erro que o `--fix` não resolve sozinho barra o commit. É a camada mais rápida e a **menos confiável**: burlável via `--no-verify` e inexistente em quem não rodou `pnpm install`. Nunca é fonte da verdade.
+1. **Pre-commit local** (husky + lint-staged, ativo via `pnpm install`): feedback em segundos, no momento do commit — erros corrigíveis automaticamente são corrigidos e incluídos no commit; erro que o `--fix` não resolve sozinho barra o commit. Cobre `frontend/**/*.{ts,tsx}`, `backend/**/*.ts` e `contracts/**/*.ts`, cada pasta com seu próprio config de eslint/prettier (`pnpm -C <pasta> exec`); `backend/src/generated/**` (Prisma gerado) é excluído do hook. É a camada mais rápida e a **menos confiável**: burlável via `--no-verify` e inexistente em quem não rodou `pnpm install`. Nunca é fonte da verdade.
 2. **CI** (`quality.yml`): gate **autoritativo** — roda em todo push e PR, sem como pular, com gates, auditoria de dependências e varredura de segredos.
 3. **Branch protection**: merge para `main` bloqueado sem CI verde.
 
